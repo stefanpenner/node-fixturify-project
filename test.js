@@ -131,4 +131,26 @@ describe('Project', function() {
     expect(input.dependencies().map(x => x.name)).to.contain('asdf');
     expect(output.dependencies().map(x => x.name)).to.not.contain('asdf');
   });
+
+  it('supports readSync', function() {
+    const input = new Project('foo', '3.1.2');
+    const output = new Project('foo', '0.0.0');
+
+    input.addDependency('rsvp', '4.4.4', rsvp => rsvp.addDependency('mkdirp', '4.4.4'));
+    input.addDevDependency('omg', '4.4.4', omg => omg.addDependency('fs-extra', '5.5.5.'));
+
+    input.files = {
+      'index.js': 'OMG',
+      'foo': {
+        'bar': {
+          'baz': 'quz'
+        }
+      }
+    };
+
+    input.writeSync(ROOT);
+    output.readSync(ROOT);
+
+    expect(output.toJSON()).to.eql(input.toJSON());
+  });
 });

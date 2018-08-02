@@ -87,3 +87,4 @@ some/root/rsvp/node_modules/b/node_modules/c/node_modules/e/package.json
 
 * `Project.fromJSON(name, json)` consume a given project from JSON
 * `Project.prototype.clonse()` deep clone a given project
+* `Project.prototype.readSync(root)` assumes the state of the given root

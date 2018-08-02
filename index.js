@@ -43,8 +43,32 @@ module.exports = class Project {
   }
 
   readSync(root) {
-    // TODO: this will update the current state of dependency from root;
-    throw new Error('NotImplementedYet');
+    debugger;
+    let files = fixturify.readSync(root)[this.name];
+
+    let pkg = JSON.parse(files['package.json']);
+    let nodeModules = files['node_modules'];
+
+    // drop "special files"
+    delete files['node_modules'];
+    delete files['package.json'];
+
+    this.name = pkg.name;
+    this.version = pkg.version;
+    this.keywords = pkg.keywords;
+
+    this._dependencies = {};
+    this._devDependencies = {};
+    this.files = files;
+
+    Object.keys(pkg.dependencies).forEach(dependency => {
+      this.addDependency(this.constructor.fromJSON(dependency, nodeModules));
+    });
+
+    Object.keys(pkg.devDependencies).forEach(dependency => {
+      this.addDevDependency(this.constructor.fromJSON(dependency, nodeModules));
+    });
+
   }
 
   addDependency(name, version, cb) {
