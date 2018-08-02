@@ -123,6 +123,14 @@ module.exports = {};`
     return dep;
   }
 
+  removeDependency(name) {
+    delete this._dependencies[name];
+  }
+
+  removeDevDependency(name) {
+    delete this._devDependencies[name];
+  }
+
   addDevDependency(name, version, cb) {
     let dep;
 
