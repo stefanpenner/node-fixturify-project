@@ -175,4 +175,38 @@ describe('Project', function() {
 
     expect(output.toJSON()).to.eql(input.toJSON());
   });
+
+  it('supports custom PKG properties', function() {
+    let project = new Project('foo', '123');
+    project.pkg['ember-addon'] = {
+      name: 'foo'
+    };
+
+    project.writeSync(ROOT);
+    expect(readJSON(`${ROOT}/foo/package.json`)).to.eql({
+      dependencies: {},
+      devDependencies: {},
+      'ember-addon': {
+        name: 'foo'
+      },
+      keywords: [],
+      name: 'foo',
+      version: '123'
+    });
+
+    project.pkg.name = 'apple';
+    project.pkg.version = '123';
+
+    expect(project.name, 'apple');
+    expect(project.version, '123');
+
+    project.name = 'pink';
+    project.version = '1';
+
+    expect(project.name, 'pink');
+    expect(project.version, '1');
+
+    expect(project.pkg.name, 'pink');
+    expect(project.pkg.version, '1');
+  })
 });

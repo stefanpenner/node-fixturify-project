@@ -52,6 +52,10 @@ module.exports = class Project {
       project.addDevDependency(this.fromJSON(nodeModules, dependency));
     });
 
+    delete pkg.dependencies;
+    delete pkg.devDependencies;
+
+    project.pkg = pkg;
     project.files = files;
 
     return project;
