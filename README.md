@@ -2,14 +2,14 @@
 [![Build Status](https://travis-ci.org/stefanpenner/node-fixturify-project.svg?branch=master)](https://travis-ci.org/stefanpenner/node-fixturify-project)
 [![Build status](https://ci.appveyor.com/api/projects/status/li9y4rjfjt7fmvpc/branch/master?svg=true)](https://ci.appveyor.com/project/embercli/node-fixturify-project/branch/master)
 
-A complementary project to [node-fixturify](https://github.com/joliss/node-fixturify)
+A complementary project to [fixturify](https://github.com/joliss/node-fixturify)
 
 When implementing JS build tooling it is common to have complete projects as
 fixture data. Unfortunately fixtures commited to disk can be somewhat to
 maintain and augment.
 
-The node-fixturify library is a great way to co-locate tests and their file
-system fixture information. This project embraces node-fixturify, but aims to
+The fixturify library is a great way to co-locate tests and their file
+system fixture information. This project embraces fixturify, but aims to
 reduce the verbosity when building graphs of node modules and dependencies.
 
 
@@ -40,7 +40,7 @@ some/root/rsvp/node_modules/mocha/package.json
 some/root/rsvp/node_modules/chai/package.json
 ```
 
-One can also produce JSON, which can be used directly by node-fixturify:
+One can also produce JSON, which can be used directly by fixturify:
 
 ```js
 // continued from above
@@ -54,7 +54,7 @@ fixturify.writeSync('some/other/root', project.toJSON());
 Obviously nested dependencies are common, and are not only supported but somewhat ergonomics:
 
 ```js
-const Project = require('node-fixturify-project');
+const Project = require('fixturify-project');
 const project = new Project('rsvp', '3.1.4');
 
 // version 1
