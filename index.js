@@ -80,8 +80,11 @@ module.exports = class Project {
 
   toJSON() {
     return {
-      [this.name]: {
-        'node_modules': depsAsObject([...this.devDependencies(), ...this.dependencies()]),
+      [this.name]: Object.assign({
+        'node_modules': depsAsObject([
+          ...this.devDependencies(),
+          ...this.dependencies()
+        ]),
         'package.json': JSON.stringify({
           name: this.name,
           version: this.version,
@@ -89,8 +92,7 @@ module.exports = class Project {
           dependencies: depsToObject(this.dependencies()),
           devDependencies: depsToObject(this.devDependencies()),
         }, null, 2),
-        ...this.files
-      },
+      }, this.files),
     };
   }
 }

@@ -2,8 +2,8 @@
 
 const expect = require('chai').expect;
 const Project = require('./index');
-const TMPDIR = require('os').tmpdir;
-const ROOT = `${TMPDIR}/node-fixturify-project/`;
+const TMPDIR = require('os').tmpdir();
+const ROOT = `${TMPDIR}/node-fixturify-project-${Date.now()}`;
 const fs = require('fs-extra');
 
 describe('Project', function() {
