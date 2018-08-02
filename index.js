@@ -190,9 +190,28 @@ module.exports = {};`
   }
 }
 
+function parseScoped(name) {
+  let matched = name.match(/@([^@\/]+)\/(.*)/);
+  if (matched) {
+    return {
+      scope: matched[1],
+      name: matched[2],
+    };
+  }
+  return null;
+}
+
 function depsAsObject(modules) {
   let obj = {};
-  modules.forEach(dep => obj[dep.name] = dep.toJSON()[dep.name]);
+  modules.forEach(dep => {
+    let scoped = parseScoped(dep.name);
+    if (scoped) {
+      let root = obj['@' + scoped.scope] = obj['@' + scoped.scope] || {};
+      root[scoped.name] = dep.toJSON()[dep.name];
+    } else {
+      obj[dep.name] = dep.toJSON()[dep.name];
+    }
+  });
   return obj;
 }
 
