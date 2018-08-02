@@ -43,7 +43,6 @@ module.exports = class Project {
   }
 
   readSync(root) {
-    debugger;
     let files = fixturify.readSync(root)[this.name];
 
     let pkg = JSON.parse(files['package.json']);
