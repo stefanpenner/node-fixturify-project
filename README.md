@@ -16,7 +16,7 @@ reduce the verbosity when building graphs of node modules and dependencies.
 ## Usage
 
 ```sh
-yarn add node-fixturify-project
+yarn add fixturify-project
 ```
 
 ```js
