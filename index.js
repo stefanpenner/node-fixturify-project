@@ -14,7 +14,7 @@ module.exports = class Project {
     this.isDependency = true;
   }
 
-  static fromJSON(name, json) {
+  static fromJSON(json, name) {
     let files = JSON.parse(JSON.stringify(json[name]));
     let pkg = JSON.parse(files['package.json']);
     let nodeModules = files['node_modules'];
@@ -26,14 +26,22 @@ module.exports = class Project {
     let project = new this(pkg.name, pkg.version);
 
     Object.keys(pkg.dependencies).forEach(dependency => {
-      project.addDependency(this.fromJSON(dependency, nodeModules));
+      project.addDependency(this.fromJSON(nodeModules, dependency));
     });
 
     Object.keys(pkg.devDependencies).forEach(dependency => {
-      project.addDevDependency(this.fromJSON(dependency, nodeModules));
+      project.addDevDependency(this.fromJSON(nodeModules, dependency));
     });
 
     project.files = files;
+
+    return project;
+  }
+
+  static fromDir(root, name) {
+    let project = new this(name, 'x.x.x');
+
+    project.readSync(root);
 
     return project;
   }
@@ -61,11 +69,11 @@ module.exports = class Project {
     this.files = files;
 
     Object.keys(pkg.dependencies).forEach(dependency => {
-      this.addDependency(this.constructor.fromJSON(dependency, nodeModules));
+      this.addDependency(this.constructor.fromJSON(nodeModules, dependency));
     });
 
     Object.keys(pkg.devDependencies).forEach(dependency => {
-      this.addDevDependency(this.constructor.fromJSON(dependency, nodeModules));
+      this.addDevDependency(this.constructor.fromJSON(nodeModules, dependency));
     });
 
   }
@@ -154,7 +162,7 @@ module.exports = class Project {
   }
 
   clone() {
-    return this.constructor.fromJSON(this.name, this.toJSON());
+    return this.constructor.fromJSON(this.toJSON(), this.name);
   }
 }
 

@@ -99,7 +99,7 @@ describe('Project', function() {
     };
 
     const json = input.toJSON();
-    const project = Project.fromJSON('foo', json);
+    const project = Project.fromJSON(json, 'foo');
 
     expect(project.toJSON()).to.eql(json);
   });
@@ -150,6 +150,28 @@ describe('Project', function() {
 
     input.writeSync(ROOT);
     output.readSync(ROOT);
+
+    expect(output.toJSON()).to.eql(input.toJSON());
+  });
+
+  it('supports static readSync', function() {
+    const input = new Project('foo', '3.1.2');
+
+    input.addDependency('rsvp', '4.4.4', rsvp => rsvp.addDependency('mkdirp', '4.4.4'));
+    input.addDevDependency('omg', '4.4.4', omg => omg.addDependency('fs-extra', '5.5.5.'));
+
+    input.files = {
+      'index.js': 'OMG',
+      'foo': {
+        'bar': {
+          'baz': 'quz'
+        }
+      }
+    };
+
+    input.writeSync(ROOT);
+
+    const output = Project.fromDir(ROOT, 'foo');
 
     expect(output.toJSON()).to.eql(input.toJSON());
   });
