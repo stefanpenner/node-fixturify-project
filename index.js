@@ -13,7 +13,11 @@ module.exports = class Project {
     this._dependencies = {};
     this._devDependencies = {};
     this.validate();
-    this.files = {};
+    this.files = {
+      'index.js': `
+'use strict';
+module.exports = {};`
+    };
     this.isDependency = true;
   }
 
