@@ -4,14 +4,33 @@ const fixturify = require('fixturify');
 
 module.exports = class Project {
   constructor(name, version) {
-    this.name = name;
-    this.version = version;
-    this.keywords = [];
+    this.pkg = {
+      name,
+      version,
+      keywords: []
+    };
+
     this._dependencies = {};
     this._devDependencies = {};
     this.validate();
     this.files = {};
     this.isDependency = true;
+  }
+
+  get name() {
+    return this.pkg.name;
+  }
+
+  set name(value) {
+    this.pkg.name = value;
+  }
+
+  get version() {
+    return this.pkg.version;
+  }
+
+  set version(value) {
+    this.pkg.version = value;
   }
 
   static fromJSON(json, name) {
@@ -150,13 +169,10 @@ module.exports = class Project {
           ...this.devDependencies(),
           ...this.dependencies()
         ]),
-        'package.json': JSON.stringify({
-          name: this.name,
-          version: this.version,
-          keywords: this.keywords,
+        'package.json': JSON.stringify(Object.assign(this.pkg, {
           dependencies: depsToObject(this.dependencies()),
           devDependencies: depsToObject(this.devDependencies()),
-        }, null, 2),
+        }), null, 2),
       }, this.files),
     };
   }
