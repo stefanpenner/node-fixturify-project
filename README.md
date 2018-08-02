@@ -1,4 +1,5 @@
 # node-fixturify-project
+[![Build Status](https://travis-ci.org/stefanpenner/node-fixturify-project.svg?branch=master)](https://travis-ci.org/stefanpenner/node-fixturify-project)
 
 A complementary project to [node-fixturify](https://github.com/joliss/node-fixturify)
 
