@@ -51,9 +51,11 @@ project.addDependecy('a', '1.2.3', a => a.addDependency('d', '3.2.1'));
 
 // version 2
 let b = project.addDependecy('b', '3.2.3');
-b.addDependency('c', '4.4.4');
+let c = b.addDependency('c', '4.4.4');
 
 // and this works recurisively:
+let e = c.addDependency('e', '5.4.4');
+
 project.writeSync('some/root/');
 ```
 
@@ -65,6 +67,7 @@ some/root/rsvp/index.js
 some/root/rsvp/node_modules/a/package.json
 some/root/rsvp/node_modules/a/node_modules/d/package.json
 some/root/rsvp/node_modules/b/package.json
-some/root/rsvp/node_modules/a/node_modules/c/package.json
+some/root/rsvp/node_modules/b/node_modules/c/package.json
+some/root/rsvp/node_modules/b/node_modules/c/node_modules/e/package.json
 ```
 
