@@ -18,7 +18,7 @@ yarn add node-fixturify-project
 ```
 
 ```js
-const Project = require('node-fixturify-project');
+const Project = require('fixturify-project');
 const project = new Project('rsvp', '3.1.4');
 
 project.addDependency('mocha', '5.2.0');
@@ -36,6 +36,15 @@ some/root/rsvp/package.json
 some/root/rsvp/index.js
 some/root/rsvp/node_modules/mocha/package.json
 some/root/rsvp/node_modules/chai/package.json
+```
+
+One can also produce JSON, which can be used directly by node-fixturify:
+
+```js
+// continued from above
+const fixturify = require('fixturify');
+
+fixturify.writeSync('some/other/root', project.toJSON());
 ```
 
 ### Adanced
