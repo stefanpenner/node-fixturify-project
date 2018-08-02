@@ -33,6 +33,9 @@ describe('Project', function() {
     project.files['index.js'] = `module.exports = "Hello, World!";`;
     project.addDependency('ember-cli', '3.1.1', cli => cli.addDependency('console-ui', '3.3.3')).addDependency('rsvp', '3.1.4');
     project.addDevDependency('ember-source', '3.1.1');
+    debugger;
+    project.addDevDependency('@ember/ordered-set', '3.1.1');
+    debugger;
     project.writeSync(ROOT);
 
     let index = read(`${ROOT}/rsvp/index.js`, 'UTF8');
@@ -48,6 +51,7 @@ describe('Project', function() {
         'ember-cli': '3.1.1',
       },
       devDependencies: {
+        '@ember/ordered-set': '3.1.1',
         'ember-source': '3.1.1'
       },
     });
@@ -77,6 +81,9 @@ describe('Project', function() {
     expect(read(`${ROOT}/rsvp/node_modules/ember-cli/node_modules/console-ui/index.js`)).to.contain(`module.exports`);
     expect(require(`${ROOT}/rsvp/node_modules/ember-cli/node_modules/console-ui/index.js`)).to.eql({});
 
+    expect(read(`${ROOT}/rsvp/node_modules/@ember/ordered-set/index.js`)).to.contain(`module.exports`);
+    expect(require(`${ROOT}/rsvp/node_modules/@ember/ordered-set/index.js`)).to.eql({});
+
     expect(readJSON(`${ROOT}/rsvp/node_modules/ember-cli/node_modules/console-ui/package.json`, 'UTF8')).to.eql({
       name: 'console-ui',
       version: '3.3.3',
@@ -86,6 +93,7 @@ describe('Project', function() {
     });
 
     expect(nodeModules.sort()).to.eql([
+      '@ember',
       'ember-cli',
       'ember-source'
     ]);
