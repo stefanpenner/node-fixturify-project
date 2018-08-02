@@ -82,3 +82,8 @@ some/root/rsvp/node_modules/b/node_modules/c/package.json
 some/root/rsvp/node_modules/b/node_modules/c/node_modules/e/package.json
 ```
 
+
+### Other API
+
+* `Project.fromJSON(name, json)` consume a given project from JSON
+* `Project.prototype.clonse()` deep clone a given project

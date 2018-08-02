@@ -1,4 +1,5 @@
 'use strict';
+
 const fixturify = require('fixturify');
 
 module.exports = class Project {
@@ -10,6 +11,31 @@ module.exports = class Project {
     this._devDependencies = {};
     this.validate();
     this.files = {};
+    this.isDependency = true;
+  }
+
+  static fromJSON(name, json) {
+    let files = JSON.parse(JSON.stringify(json[name]));
+    let pkg = JSON.parse(files['package.json']);
+    let nodeModules = files['node_modules'];
+
+    // drop "special files"
+    delete files['node_modules'];
+    delete files['package.json'];
+
+    let project = new this(pkg.name, pkg.version);
+
+    Object.keys(pkg.dependencies).forEach(dependency => {
+      project.addDependency(this.fromJSON(dependency, nodeModules));
+    });
+
+    Object.keys(pkg.devDependencies).forEach(dependency => {
+      project.addDevDependency(this.fromJSON(dependency, nodeModules));
+    });
+
+    project.files = files;
+
+    return project;
   }
 
   writeSync(root) {
@@ -22,7 +48,15 @@ module.exports = class Project {
   }
 
   addDependency(name, version, cb) {
-    let dep = this._dependencies[name] = new this.constructor(name, version);
+    let dep;
+
+    if (typeof name === 'string') {
+      dep = this._dependencies[name] = new this.constructor(name, version);
+    } else if (name.isDependency) {
+      dep = this._dependencies[name.name] = name;
+    } else {
+      throw new TypeError('WTF');
+    }
 
     if (typeof cb === 'function') {
       cb(dep);
@@ -32,21 +66,21 @@ module.exports = class Project {
   }
 
   addDevDependency(name, version, cb) {
-    let dep = this._devDependencies[name] = new this.constructor(name, version);
+    let dep;
+
+    if (typeof name === 'string')  {
+      dep = this._devDependencies[name] = new this.constructor(name, version);
+    } else if (name.isDependency) {
+      dep = this._devDependencies[name.name] = name;
+    } else {
+      throw new TypeError('WTF');
+    }
 
     if (typeof cb === 'function') {
       cb(dep);
     }
 
     return dep;
-  }
-
-  addDependencies(dependencies) {
-    Object.keys(dependencies).forEach(name => this.addDependency(name, dependencies[name]));
-  }
-
-  addDevDependencies(dependencies) {
-    Object.keys(dependencies).forEach(name => this.addDevDependency(name, dependencies[name]));
   }
 
   dependencies() {
@@ -94,6 +128,10 @@ module.exports = class Project {
         }, null, 2),
       }, this.files),
     };
+  }
+
+  clone() {
+    return this.constructor.fromJSON(this.name, this.toJSON());
   }
 }
 

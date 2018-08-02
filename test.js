@@ -19,7 +19,7 @@ describe('Project', function() {
     return JSON.parse(fs.readFileSync(file, 'UTF8'));
   }
 
-  it('basic', function() {
+  it('has the basic', function() {
     let project = new Project('rsvp', '3.1.4');
 
     project.addFile('index.js', `module.exports = "Hello, World!";`);
@@ -81,5 +81,54 @@ describe('Project', function() {
   it('requires name and version', function() {
     expect(() => new Project('rsvp', null)).to.throw(/rsvp is missing a version/);
     expect(() => new Project(null, null)).to.throw(/Missing name/);
+  });
+
+  it('it supports construction of a project via JSON', function() {
+    const input = new Project('foo', '3.1.2');
+
+    input.addDependency('rsvp', '4.4.4', rsvp => rsvp.addDependency('mkdirp', '4.4.4'));
+    input.addDevDependency('omg', '4.4.4', omg => omg.addDependency('fs-extra', '5.5.5.'));
+
+    input.files = {
+      'index.js': 'OMG',
+      'foo': {
+        'bar': {
+          'baz': 'quz'
+        }
+      }
+    };
+
+    const json = input.toJSON();
+    const project = Project.fromJSON('foo', json);
+
+    expect(project.toJSON()).to.eql(json);
+  });
+
+  it('it supports deep cloning', function() {
+    const input = new Project('foo', '3.1.2');
+
+    input.addDependency('rsvp', '4.4.4', rsvp => rsvp.addDependency('mkdirp', '4.4.4'));
+    input.addDevDependency('omg', '4.4.4', omg => omg.addDependency('fs-extra', '5.5.5.'));
+
+    input.files = {
+      'index.js': 'OMG',
+      'foo': {
+        'bar': {
+          'baz': 'quz'
+        }
+      }
+    };
+
+    const output = input.clone();
+
+    expect(output.toJSON()).to.eql(input.toJSON());
+    input.name = 'bar';
+
+    expect(output.name).to.eql('foo');
+    expect(input.name).to.eql('bar');
+
+    input.addDependency('asdf', '22');
+    expect(input.dependencies().map(x => x.name)).to.contain('asdf');
+    expect(output.dependencies().map(x => x.name)).to.not.contain('asdf');
   });
 });
