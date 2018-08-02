@@ -33,9 +33,7 @@ describe('Project', function() {
     project.files['index.js'] = `module.exports = "Hello, World!";`;
     project.addDependency('ember-cli', '3.1.1', cli => cli.addDependency('console-ui', '3.3.3')).addDependency('rsvp', '3.1.4');
     project.addDevDependency('ember-source', '3.1.1');
-    debugger;
     project.addDevDependency('@ember/ordered-set', '3.1.1');
-    debugger;
     project.writeSync(ROOT);
 
     let index = read(`${ROOT}/rsvp/index.js`, 'UTF8');
