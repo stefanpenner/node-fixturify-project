@@ -30,7 +30,7 @@ describe('Project', function() {
   it('has the basic', function() {
     let project = new Project('rsvp', '3.1.4');
 
-    project.addFile('index.js', `module.exports = "Hello, World!";`);
+    project.files['index.js'] = `module.exports = "Hello, World!";`;
     project.addDependency('ember-cli', '3.1.1', cli => cli.addDependency('console-ui', '3.3.3')).addDependency('rsvp', '3.1.4');
     project.addDevDependency('ember-source', '3.1.1');
     project.writeSync(ROOT);
@@ -91,6 +91,22 @@ describe('Project', function() {
     ]);
 
     expect(index).to.eql('module.exports = "Hello, World!";');
+  });
+
+  it('supports removing packages', function() {
+    const input = new Project('foo', '3.1.2');
+
+    input.addDependency('rsvp', '4.4.4', rsvp => rsvp.addDependency('mkdirp', '4.4.4'));
+    input.addDevDependency('omg', '4.4.4', omg => omg.addDependency('fs-extra', '5.5.5.'));
+
+    expect(input.dependencies().map(dep => dep.name)).to.eql(['rsvp']);
+    expect(input.devDependencies().map(dep => dep.name)).to.eql(['omg']);
+
+    input.removeDependency('rsvp');
+    input.removeDevDependency('omg');
+
+    expect(input.dependencies().map(dep => dep.name)).to.eql([]);
+    expect(input.devDependencies().map(dep => dep.name)).to.eql([]);
   });
 
   it('requires name and version', function() {

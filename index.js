@@ -123,6 +123,14 @@ module.exports = {};`
     return dep;
   }
 
+  removeDependency(name) {
+    delete this._dependencies[name];
+  }
+
+  removeDevDependency(name) {
+    delete this._devDependencies[name];
+  }
+
   addDevDependency(name, version, cb) {
     let dep;
 
@@ -160,14 +168,6 @@ module.exports = {};`
 
     this.dependencies().forEach(dep => dep.validate());
     this.devDependencies().forEach(dep => dep.validate());
-  }
-
-  addFile(file, contents) {
-    if (file === 'package.json') {
-      throw new Error('cannot add package.json');
-    }
-
-    this.files[file] = contents;
   }
 
   toJSON() {
