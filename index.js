@@ -170,14 +170,6 @@ module.exports = {};`
     this.devDependencies().forEach(dep => dep.validate());
   }
 
-  addFile(file, contents) {
-    if (file === 'package.json') {
-      throw new Error('cannot add package.json');
-    }
-
-    this.files[file] = contents;
-  }
-
   toJSON() {
     return {
       [this.name]: Object.assign({

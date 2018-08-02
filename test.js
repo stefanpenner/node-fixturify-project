@@ -30,7 +30,7 @@ describe('Project', function() {
   it('has the basic', function() {
     let project = new Project('rsvp', '3.1.4');
 
-    project.addFile('index.js', `module.exports = "Hello, World!";`);
+    project.files['index.js'] = `module.exports = "Hello, World!";`;
     project.addDependency('ember-cli', '3.1.1', cli => cli.addDependency('console-ui', '3.3.3')).addDependency('rsvp', '3.1.4');
     project.addDevDependency('ember-source', '3.1.1');
     project.writeSync(ROOT);
