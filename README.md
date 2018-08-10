@@ -49,7 +49,7 @@ const fixturify = require('fixturify');
 fixturify.writeSync('some/other/root', project.toJSON());
 ```
 
-### Adanced
+### Advanced
 
 Obviously nested dependencies are common, and are not only supported but somewhat ergonomics:
 
