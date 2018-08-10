@@ -236,5 +236,23 @@ describe('Project', function() {
 
     expect(project.pkg.name, 'pink');
     expect(project.pkg.version, '1');
-  })
+  });
+
+  it('to JSON with 1 arg, is an alias for toJSON()[project.name][arg]', function() {
+    let project = new Project('foo', '123');
+    project.addDependency('rsvp', '1.2.3');
+    project.addDevDependency('q', '1.2.4');
+
+    expect(JSON.parse(project.toJSON('package.json'))).to.deep.eql({
+      name: 'foo',
+      version: '123',
+      keywords: [],
+      dependencies: {
+        rsvp: '1.2.3'
+      },
+      devDependencies: {
+        q: '1.2.4'
+      },
+    });
+  });
 });
