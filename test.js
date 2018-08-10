@@ -3,18 +3,9 @@
 const expect = require('chai').expect;
 const Project = require('./index');
 const TMPDIR = require('os').tmpdir();
-const ROOT = `${TMPDIR}/node-fixturify-project-${Date.now()}`;
 const fs = require('fs-extra');
 
 describe('Project', function() {
-  beforeEach(function() {
-    fs.mkdirpSync(ROOT);
-  });
-
-  afterEach(function() {
-    fs.removeSync(ROOT);
-  });
-
   function readJSON(file) {
     return JSON.parse(fs.readFileSync(file, 'UTF8'));
   }
@@ -34,14 +25,14 @@ describe('Project', function() {
     project.addDependency('ember-cli', '3.1.1', cli => cli.addDependency('console-ui', '3.3.3')).addDependency('rsvp', '3.1.4');
     project.addDevDependency('ember-source', '3.1.1');
     project.addDevDependency('@ember/ordered-set', '3.1.1');
-    project.writeSync(ROOT);
+    project.writeSync();
 
-    let index = read(`${ROOT}/rsvp/index.js`, 'UTF8');
-    let nodeModules = readDir(`${ROOT}/rsvp/node_modules`);
+    let index = read(`${project.root}/rsvp/index.js`, 'UTF8');
+    let nodeModules = readDir(`${project.root}/rsvp/node_modules`);
 
-    expect(read(`${ROOT}/rsvp/index.js`)).to.eql(`module.exports = "Hello, World!";`);
+    expect(read(`${project.root}/rsvp/index.js`)).to.eql(`module.exports = "Hello, World!";`);
 
-    expect(readJSON(`${ROOT}/rsvp/package.json`, 'UTF8')).to.eql({
+    expect(readJSON(`${project.root}/rsvp/package.json`, 'UTF8')).to.eql({
       name: 'rsvp',
       version: '3.1.4',
       keywords: [],
@@ -54,10 +45,10 @@ describe('Project', function() {
       },
     });
 
-    expect(read(`${ROOT}/rsvp/node_modules/ember-source/index.js`)).to.contain(`module.exports`);
-    expect(require(`${ROOT}/rsvp/node_modules/ember-source/index.js`)).to.eql({});
+    expect(read(`${project.root}/rsvp/node_modules/ember-source/index.js`)).to.contain(`module.exports`);
+    expect(require(`${project.root}/rsvp/node_modules/ember-source/index.js`)).to.eql({});
 
-    expect(readJSON(`${ROOT}/rsvp/node_modules/ember-source/package.json`, 'UTF8')).to.eql({
+    expect(readJSON(`${project.root}/rsvp/node_modules/ember-source/package.json`, 'UTF8')).to.eql({
       name: 'ember-source',
       version: '3.1.1',
       keywords: [],
@@ -65,7 +56,7 @@ describe('Project', function() {
       devDependencies: { },
     });
 
-    expect(readJSON(`${ROOT}/rsvp/node_modules/ember-cli/package.json`, 'UTF8')).to.eql({
+    expect(readJSON(`${project.root}/rsvp/node_modules/ember-cli/package.json`, 'UTF8')).to.eql({
       name: 'ember-cli',
       version: '3.1.1',
       keywords: [],
@@ -76,13 +67,13 @@ describe('Project', function() {
       devDependencies: { }
     });
 
-    expect(read(`${ROOT}/rsvp/node_modules/ember-cli/node_modules/console-ui/index.js`)).to.contain(`module.exports`);
-    expect(require(`${ROOT}/rsvp/node_modules/ember-cli/node_modules/console-ui/index.js`)).to.eql({});
+    expect(read(`${project.root}/rsvp/node_modules/ember-cli/node_modules/console-ui/index.js`)).to.contain(`module.exports`);
+    expect(require(`${project.root}/rsvp/node_modules/ember-cli/node_modules/console-ui/index.js`)).to.eql({});
 
-    expect(read(`${ROOT}/rsvp/node_modules/@ember/ordered-set/index.js`)).to.contain(`module.exports`);
-    expect(require(`${ROOT}/rsvp/node_modules/@ember/ordered-set/index.js`)).to.eql({});
+    expect(read(`${project.root}/rsvp/node_modules/@ember/ordered-set/index.js`)).to.contain(`module.exports`);
+    expect(require(`${project.root}/rsvp/node_modules/@ember/ordered-set/index.js`)).to.eql({});
 
-    expect(readJSON(`${ROOT}/rsvp/node_modules/ember-cli/node_modules/console-ui/package.json`, 'UTF8')).to.eql({
+    expect(readJSON(`${project.root}/rsvp/node_modules/ember-cli/node_modules/console-ui/package.json`, 'UTF8')).to.eql({
       name: 'console-ui',
       version: '3.3.3',
       keywords: [],
@@ -185,8 +176,8 @@ describe('Project', function() {
       }
     };
 
-    input.writeSync(ROOT);
-    output.readSync(ROOT);
+    input.writeSync();
+    output.readSync(input.root);
 
     expect(output.toJSON()).to.eql(input.toJSON());
   });
@@ -206,9 +197,9 @@ describe('Project', function() {
       }
     };
 
-    input.writeSync(ROOT);
+    input.writeSync();
 
-    const output = Project.fromDir(ROOT, 'foo');
+    const output = Project.fromDir(input.root, 'foo');
 
     expect(output.toJSON()).to.eql(input.toJSON());
   });
@@ -219,8 +210,8 @@ describe('Project', function() {
       name: 'foo'
     };
 
-    project.writeSync(ROOT);
-    expect(readJSON(`${ROOT}/foo/package.json`)).to.eql({
+    project.writeSync();
+    expect(readJSON(`${project.root}/foo/package.json`)).to.eql({
       dependencies: {},
       devDependencies: {},
       'ember-addon': {

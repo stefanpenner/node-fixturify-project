@@ -1,6 +1,8 @@
 'use strict';
 
 const fixturify = require('fixturify');
+const tmp = require('tmp');
+tmp.setGracefulCleanup();
 
 module.exports = class Project {
   constructor(name, version) {
@@ -19,6 +21,11 @@ module.exports = class Project {
 module.exports = {};`
     };
     this.isDependency = true;
+    this._root = tmp.dirSync({ unsafeCleanup: true }).name;
+  }
+
+  get root() {
+    return this._root;
   }
 
   get name() {
@@ -73,11 +80,11 @@ module.exports = {};`
     return project;
   }
 
-  writeSync(root) {
+  writeSync(root = this._root) {
     fixturify.writeSync(root, this.toJSON());
   }
 
-  readSync(root) {
+  readSync(root = this._root) {
     let files = fixturify.readSync(root)[this.name];
 
     let pkg = JSON.parse(files['package.json']);
