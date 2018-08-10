@@ -255,4 +255,14 @@ describe('Project', function() {
       },
     });
   });
+
+  it('has a working dispose to allow early cleanup', function() {
+    let project = new Project('foo', '123');
+    project.addDependency('rsvp', '1.2.3');
+    project.addDevDependency('q', '1.2.4');
+    project.writeSync();
+    expect(fs.readdirSync(project.root)).to.eql(["foo"]);
+    project.dispose();
+    expect(fs.existsSync(project.root)).to.eql(false);
+  });
 });

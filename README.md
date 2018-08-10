@@ -92,3 +92,4 @@ some/root/rsvp/node_modules/b/node_modules/c/node_modules/e/package.json
 * `Project.prototype.writeSync(root)` writes the project to disk at `root`
 * `Project.prototype.addDependency(name, version)` add a dependency to the given project
 * `Project.prototype.addDevDependency(name, version)` add a devDependency to the given project
+* `Project.prototype.dispose()` immediately delete the given projects tmp directories. If left not invoked, these files will be deleted when the process exists.
