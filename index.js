@@ -178,18 +178,22 @@ module.exports = {};`
   }
 
   toJSON() {
-    return {
-      [this.name]: Object.assign({
-        'node_modules': depsAsObject([
-          ...this.devDependencies(),
-          ...this.dependencies()
-        ]),
-        'package.json': JSON.stringify(Object.assign(this.pkg, {
-          dependencies: depsToObject(this.dependencies()),
-          devDependencies: depsToObject(this.devDependencies()),
-        }), null, 2),
-      }, this.files),
-    };
+    if (arguments.length > 0) {
+      return this.toJSON()[this.name][arguments[0]];
+    } else {
+      return {
+        [this.name]: Object.assign({
+          'node_modules': depsAsObject([
+            ...this.devDependencies(),
+            ...this.dependencies()
+          ]),
+          'package.json': JSON.stringify(Object.assign(this.pkg, {
+            dependencies: depsToObject(this.dependencies()),
+            devDependencies: depsToObject(this.devDependencies()),
+          }), null, 2),
+        }, this.files),
+      };
+    }
   }
 
   clone() {
