@@ -21,11 +21,11 @@ module.exports = class Project {
 module.exports = {};`
     };
     this.isDependency = true;
-    this._root = tmp.dirSync({ unsafeCleanup: true }).name;
+    this._tmp = tmp.dirSync({ unsafeCleanup: true });
   }
 
   get root() {
-    return this._root;
+    return this._tmp.name;
   }
 
   get name() {
@@ -80,11 +80,11 @@ module.exports = {};`
     return project;
   }
 
-  writeSync(root = this._root) {
+  writeSync(root = this.root) {
     fixturify.writeSync(root, this.toJSON());
   }
 
-  readSync(root = this._root) {
+  readSync(root = this.root) {
     let files = fixturify.readSync(root)[this.name];
 
     let pkg = JSON.parse(files['package.json']);
@@ -198,6 +198,10 @@ module.exports = {};`
 
   clone() {
     return this.constructor.fromJSON(this.toJSON(), this.name);
+  }
+
+  dispose() {
+    this._tmp.removeCallback();
   }
 }
 
