@@ -4,6 +4,14 @@ const fixturify = require('fixturify');
 const tmp = require('tmp');
 tmp.setGracefulCleanup();
 
+function keys(object) {
+  if (object !== null && (typeof object === 'object' || Array.isArray(object))) {
+    return Object.keys(object);
+  } else {
+    return [];
+  }
+}
+
 module.exports = class Project {
   constructor(name, version = '0.0.0') {
     this.pkg = {
@@ -55,11 +63,11 @@ module.exports = {};`
 
     let project = new this(pkg.name, pkg.version);
 
-    Object.keys(pkg.dependencies).forEach(dependency => {
+    keys(pkg.dependencies).forEach(dependency => {
       project.addDependency(this.fromJSON(nodeModules, dependency));
     });
 
-    Object.keys(pkg.devDependencies).forEach(dependency => {
+    keys(pkg.devDependencies).forEach(dependency => {
       project.addDevDependency(this.fromJSON(nodeModules, dependency));
     });
 
@@ -182,7 +190,7 @@ module.exports = {};`
       return this.toJSON()[this.name][arguments[0]];
     } else {
       return {
-        [this.name]: Object.assign({
+        [this.name]: Object.assign({}, this.files, {
           'node_modules': depsAsObject([
             ...this.devDependencies(),
             ...this.dependencies()
@@ -191,7 +199,7 @@ module.exports = {};`
             dependencies: depsToObject(this.dependencies()),
             devDependencies: depsToObject(this.devDependencies()),
           }), null, 2),
-        }, this.files),
+        }),
       };
     }
   }
