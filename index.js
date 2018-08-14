@@ -5,7 +5,7 @@ const tmp = require('tmp');
 tmp.setGracefulCleanup();
 
 module.exports = class Project {
-  constructor(name, version) {
+  constructor(name, version = '0.0.0') {
     this.pkg = {
       name,
       version,

@@ -90,6 +90,12 @@ describe('Project', function() {
     expect(index).to.eql('module.exports = "Hello, World!";');
   });
 
+  it('supports default version', function() {
+    const input = new Project('foo');
+    expect(input.version).to.eql('0.0.0');
+    expect(JSON.parse(input.toJSON('package.json'))).to.have.property('version', '0.0.0');
+  });
+
   it('supports removing packages', function() {
     const input = new Project('foo', '3.1.2');
 
