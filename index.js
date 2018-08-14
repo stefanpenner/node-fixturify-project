@@ -110,11 +110,11 @@ module.exports = {};`
     this._devDependencies = {};
     this.files = files;
 
-    Object.keys(pkg.dependencies).forEach(dependency => {
+    keys(pkg.dependencies).forEach(dependency => {
       this.addDependency(this.constructor.fromJSON(nodeModules, dependency));
     });
 
-    Object.keys(pkg.devDependencies).forEach(dependency => {
+    keys(pkg.devDependencies).forEach(dependency => {
       this.addDevDependency(this.constructor.fromJSON(nodeModules, dependency));
     });
 
