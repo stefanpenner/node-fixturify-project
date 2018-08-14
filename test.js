@@ -129,7 +129,26 @@ describe('Project', function() {
         'bar': {
           'baz': 'quz'
         }
-      }
+      },
+    };
+
+    const json = input.toJSON();
+    const project = Project.fromJSON(json, 'foo');
+
+    expect(project.toJSON()).to.eql(json);
+  });
+
+  it('it supports construction of a project via JSON but without package.json#devDependencies or package.json#dependencies', function() {
+    const input = new Project('foo', '3.1.2');
+
+    input.files = {
+      'index.js': 'OMG',
+      'foo': {
+        'bar': {
+          'baz': 'quz'
+        }
+      },
+      'package.json': '{"name": "foo"}'
     };
 
     const json = input.toJSON();
