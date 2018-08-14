@@ -2,6 +2,8 @@
 
 const fixturify = require('fixturify');
 const tmp = require('tmp');
+const fs = require('fs');
+
 tmp.setGracefulCleanup();
 
 function keys(object) {
@@ -13,7 +15,7 @@ function keys(object) {
 }
 
 module.exports = class Project {
-  constructor(name, version = '0.0.0') {
+  constructor(name, version = '0.0.0', cb) {
     this.pkg = {
       name,
       version,
@@ -30,10 +32,15 @@ module.exports = {};`
     };
     this.isDependency = true;
     this._tmp = tmp.dirSync({ unsafeCleanup: true });
+    this._root = fs.realpathSync(this._tmp.name);
+
+    if (typeof cb === 'function') {
+      cb(this);
+    }
   }
 
   get root() {
-    return this._tmp.name;
+    return this._root;
   }
 
   get name() {
@@ -53,6 +60,10 @@ module.exports = {};`
   }
 
   static fromJSON(json, name) {
+    if (json[name] === undefined) {
+      throw new Error(`${name} was expected, but not found`);
+    }
+
     let files = JSON.parse(JSON.stringify(json[name]));
     let pkg = JSON.parse(files['package.json']);
     let nodeModules = files['node_modules'];
