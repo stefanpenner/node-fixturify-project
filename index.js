@@ -15,7 +15,7 @@ function keys(object) {
 }
 
 module.exports = class Project {
-  constructor(name, version = '0.0.0', cb) {
+  constructor(name, version = '0.0.0', cb, root) {
     this.pkg = {
       name,
       version,
@@ -31,8 +31,12 @@ module.exports = class Project {
 module.exports = {};`
     };
     this.isDependency = true;
-    this._tmp = tmp.dirSync({ unsafeCleanup: true });
-    this._root = fs.realpathSync(this._tmp.name);
+    if (root) {
+      this._root = root;
+    } else {
+      this._tmp = tmp.dirSync({ unsafeCleanup: true });
+      this._root = fs.realpathSync(this._tmp.name);
+    }
 
     if (typeof cb === 'function') {
       cb(this);
@@ -41,6 +45,10 @@ module.exports = {};`
 
   get root() {
     return this._root;
+  }
+
+  get baseDir() {
+    return `${this._root}/${this.name}`;
   }
 
   get name() {
@@ -135,7 +143,7 @@ module.exports = {};`
     let dep;
 
     if (typeof name === 'string') {
-      dep = this._dependencies[name] = new this.constructor(name, version);
+      dep = this._dependencies[name] = new this.constructor(name, version, null, `${this.root}/${this.name}/node_modules`);
     } else if (name.isDependency) {
       dep = this._dependencies[name.name] = name;
     } else {
@@ -161,7 +169,7 @@ module.exports = {};`
     let dep;
 
     if (typeof name === 'string')  {
-      dep = this._devDependencies[name] = new this.constructor(name, version);
+      dep = this._devDependencies[name] = new this.constructor(name, version, null, `${this.root}/${this.name}/node_modules`);
     } else if (name.isDependency) {
       dep = this._devDependencies[name.name] = name;
     } else {
@@ -220,7 +228,9 @@ module.exports = {};`
   }
 
   dispose() {
-    this._tmp.removeCallback();
+    if (this._tmp) {
+      this._tmp.removeCallback();
+    }
   }
 }
 
