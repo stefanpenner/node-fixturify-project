@@ -22,13 +22,18 @@ describe('Project', function() {
     let project = new Project('rsvp', '3.1.4');
 
     project.files['index.js'] = `module.exports = "Hello, World!";`;
-    project.addDependency('ember-cli', '3.1.1', cli => cli.addDependency('console-ui', '3.3.3')).addDependency('rsvp', '3.1.4');
-    project.addDevDependency('ember-source', '3.1.1');
+    let rsvp = project.addDependency('ember-cli', '3.1.1', cli => cli.addDependency('console-ui', '3.3.3')).addDependency('rsvp', '3.1.4');
+    let source = project.addDevDependency('ember-source', '3.1.1');
     project.addDevDependency('@ember/ordered-set', '3.1.1');
     project.writeSync();
 
     let index = read(`${project.root}/rsvp/index.js`, 'UTF8');
     let nodeModules = readDir(`${project.root}/rsvp/node_modules`);
+
+    expect(rsvp.root).to.eql(`${project.root}/rsvp/node_modules/ember-cli/node_modules`);
+    expect(source.root).to.eql(`${project.root}/rsvp/node_modules`);
+    expect(rsvp.baseDir).to.eql(`${project.root}/rsvp/node_modules/ember-cli/node_modules/rsvp`);
+    expect(source.baseDir).to.eql(`${project.root}/rsvp/node_modules/ember-source`);
 
     expect(read(`${project.root}/rsvp/index.js`)).to.eql(`module.exports = "Hello, World!";`);
 
