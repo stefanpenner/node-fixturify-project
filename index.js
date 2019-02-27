@@ -3,6 +3,7 @@
 const fixturify = require('fixturify');
 const tmp = require('tmp');
 const fs = require('fs');
+const path = require('path');
 
 tmp.setGracefulCleanup();
 
@@ -48,7 +49,7 @@ module.exports = {};`
   }
 
   get baseDir() {
-    return `${this._root}/${this.name}`;
+    return path.join(this._root, this.name);
   }
 
   get name() {
@@ -143,7 +144,7 @@ module.exports = {};`
     let dep;
 
     if (typeof name === 'string') {
-      dep = this._dependencies[name] = new this.constructor(name, version, null, `${this.root}/${this.name}/node_modules`);
+      dep = this._dependencies[name] = new this.constructor(name, version, null, path.join(this.root, this.name, 'node_modules'));
     } else if (name.isDependency) {
       dep = this._dependencies[name.name] = name;
     } else {
@@ -169,7 +170,7 @@ module.exports = {};`
     let dep;
 
     if (typeof name === 'string')  {
-      dep = this._devDependencies[name] = new this.constructor(name, version, null, `${this.root}/${this.name}/node_modules`);
+      dep = this._devDependencies[name] = new this.constructor(name, version, null, path.join(this.root, this.name, 'node_modules'));
     } else if (name.isDependency) {
       dep = this._devDependencies[name.name] = name;
     } else {

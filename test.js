@@ -4,6 +4,7 @@ const expect = require('chai').expect;
 const Project = require('./index');
 const TMPDIR = require('os').tmpdir();
 const fs = require('fs-extra');
+const path = require('path');
 
 describe('Project', function() {
   function readJSON(file) {
@@ -30,10 +31,10 @@ describe('Project', function() {
     let index = read(`${project.root}/rsvp/index.js`, 'UTF8');
     let nodeModules = readDir(`${project.root}/rsvp/node_modules`);
 
-    expect(rsvp.root).to.eql(`${project.root}/rsvp/node_modules/ember-cli/node_modules`);
-    expect(source.root).to.eql(`${project.root}/rsvp/node_modules`);
-    expect(rsvp.baseDir).to.eql(`${project.root}/rsvp/node_modules/ember-cli/node_modules/rsvp`);
-    expect(source.baseDir).to.eql(`${project.root}/rsvp/node_modules/ember-source`);
+    expect(rsvp.root).to.eql(path.normalize(`${project.root}/rsvp/node_modules/ember-cli/node_modules`));
+    expect(source.root).to.eql(path.normalize(`${project.root}/rsvp/node_modules`));
+    expect(rsvp.baseDir).to.eql(path.normalize(`${project.root}/rsvp/node_modules/ember-cli/node_modules/rsvp`));
+    expect(source.baseDir).to.eql(path.normalize(`${project.root}/rsvp/node_modules/ember-source`));
 
     expect(read(`${project.root}/rsvp/index.js`)).to.eql(`module.exports = "Hello, World!";`);
 
