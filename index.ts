@@ -1,13 +1,11 @@
-'use strict';
-
-const fixturify = require('fixturify');
-const tmp = require('tmp');
-const fs = require('fs');
-const path = require('path');
+import fixturify = require('fixturify');
+import tmp = require('tmp');
+import fs = require('fs');
+import path = require('path');
 
 tmp.setGracefulCleanup();
 
-function keys(object) {
+function keys(object: any) {
   if (object !== null && (typeof object === 'object' || Array.isArray(object))) {
     return Object.keys(object);
   } else {
@@ -15,23 +13,39 @@ function keys(object) {
   }
 }
 
-module.exports = class Project {
-  constructor(name, version = '0.0.0', cb, root) {
+interface DirJSON {
+  [filename: string]: DirJSON | string;
+}
+
+interface ProjectConstructor {
+  new(name: string, version?: string, cb?: (project: Project) => void, root?: string): Project;
+  fromJSON(json: DirJSON, name: string): Project;
+  fromDir(root: string, name: string): Project;
+}
+
+class Project {
+  pkg: any;
+  files: DirJSON = {
+    'index.js': `
+'use strict';
+module.exports = {};`
+  };
+  readonly isDependency = true;
+
+  private _dependencies: { [name: string]: Project } = {};
+  private _devDependencies: { [name: string]: Project } = {};
+  private _root: string;
+  private _tmp: tmp.SynchrounousResult | undefined;
+
+  constructor(name: string, version = '0.0.0', cb?: (project: Project) => void, root?: string) {
     this.pkg = {
       name,
       version,
       keywords: []
     };
 
-    this._dependencies = {};
-    this._devDependencies = {};
     this.validate();
-    this.files = {
-      'index.js': `
-'use strict';
-module.exports = {};`
-    };
-    this.isDependency = true;
+
     if (root) {
       this._root = root;
     } else {
@@ -52,23 +66,23 @@ module.exports = {};`
     return path.join(this._root, this.name);
   }
 
-  get name() {
+  get name(): string {
     return this.pkg.name;
   }
 
-  set name(value) {
+  set name(value: string) {
     this.pkg.name = value;
   }
 
-  get version() {
+  get version(): string {
     return this.pkg.version;
   }
 
-  set version(value) {
+  set version(value: string) {
     this.pkg.version = value;
   }
 
-  static fromJSON(json, name) {
+  static fromJSON(json: DirJSON, name: string) {
     if (json[name] === undefined) {
       throw new Error(`${name} was expected, but not found`);
     }
@@ -100,7 +114,7 @@ module.exports = {};`
     return project;
   }
 
-  static fromDir(root, name) {
+  static fromDir(root: string, name: string) {
     let project = new this(name, 'x.x.x');
 
     project.readSync(root);
@@ -124,27 +138,26 @@ module.exports = {};`
 
     this.name = pkg.name;
     this.version = pkg.version;
-    this.keywords = pkg.keywords;
 
     this._dependencies = {};
     this._devDependencies = {};
     this.files = files;
 
     keys(pkg.dependencies).forEach(dependency => {
-      this.addDependency(this.constructor.fromJSON(nodeModules, dependency));
+      this.addDependency((this.constructor as ProjectConstructor).fromJSON(nodeModules, dependency));
     });
 
     keys(pkg.devDependencies).forEach(dependency => {
-      this.addDevDependency(this.constructor.fromJSON(nodeModules, dependency));
+      this.addDevDependency((this.constructor as ProjectConstructor).fromJSON(nodeModules, dependency));
     });
 
   }
 
-  addDependency(name, version, cb) {
+  addDependency(name: string | Project, version?: string, cb?: (project: Project) => void) {
     let dep;
 
     if (typeof name === 'string') {
-      dep = this._dependencies[name] = new this.constructor(name, version, null, path.join(this.root, this.name, 'node_modules'));
+      dep = this._dependencies[name] = new (this.constructor as ProjectConstructor)(name, version, undefined, path.join(this.root, this.name, 'node_modules'));
     } else if (name.isDependency) {
       dep = this._dependencies[name.name] = name;
     } else {
@@ -158,19 +171,19 @@ module.exports = {};`
     return dep;
   }
 
-  removeDependency(name) {
+  removeDependency(name: string) {
     delete this._dependencies[name];
   }
 
-  removeDevDependency(name) {
+  removeDevDependency(name: string) {
     delete this._devDependencies[name];
   }
 
-  addDevDependency(name, version, cb) {
+  addDevDependency(name: string | Project, version?: string, cb?: (project: Project) => void) {
     let dep;
 
     if (typeof name === 'string')  {
-      dep = this._devDependencies[name] = new this.constructor(name, version, null, path.join(this.root, this.name, 'node_modules'));
+      dep = this._devDependencies[name] = new (this.constructor as ProjectConstructor)(name, version, undefined, path.join(this.root, this.name, 'node_modules'));
     } else if (name.isDependency) {
       dep = this._devDependencies[name.name] = name;
     } else {
@@ -205,9 +218,11 @@ module.exports = {};`
     this.devDependencies().forEach(dep => dep.validate());
   }
 
-  toJSON() {
-    if (arguments.length > 0) {
-      return this.toJSON()[this.name][arguments[0]];
+  toJSON(): DirJSON
+  toJSON(key: string): DirJSON | string
+  toJSON(key?: string) {
+    if (key) {
+      return (this.toJSON()[this.name] as DirJSON)[key];
     } else {
       return {
         [this.name]: Object.assign({}, this.files, {
@@ -225,7 +240,7 @@ module.exports = {};`
   }
 
   clone() {
-    return this.constructor.fromJSON(this.toJSON(), this.name);
+    return (this.constructor as ProjectConstructor).fromJSON(this.toJSON(), this.name);
   }
 
   dispose() {
@@ -235,7 +250,7 @@ module.exports = {};`
   }
 }
 
-function parseScoped(name) {
+function parseScoped(name: string) {
   let matched = name.match(/@([^@\/]+)\/(.*)/);
   if (matched) {
     return {
@@ -246,13 +261,13 @@ function parseScoped(name) {
   return null;
 }
 
-function depsAsObject(modules) {
-  let obj = {};
+function depsAsObject(modules: Project[]) {
+  let obj: { [name: string]: string | DirJSON } = {};
   modules.forEach(dep => {
     let scoped = parseScoped(dep.name);
     if (scoped) {
       let root = obj['@' + scoped.scope] = obj['@' + scoped.scope] || {};
-      root[scoped.name] = dep.toJSON()[dep.name];
+      (root as DirJSON)[scoped.name] = dep.toJSON()[dep.name];
     } else {
       obj[dep.name] = dep.toJSON()[dep.name];
     }
@@ -260,8 +275,10 @@ function depsAsObject(modules) {
   return obj;
 }
 
-function depsToObject(deps) {
-  let obj = {};
+function depsToObject(deps: Project[]) {
+  let obj: { [name: string]: string } = {};
   deps.forEach(dep => obj[dep.name] = dep.version);
   return obj;
 }
+
+export = Project;

@@ -1,21 +1,20 @@
-'use strict';
+import chai = require('chai');
+import Project = require('./index');
+import fs = require('fs-extra');
+import path = require('path');
 
-const expect = require('chai').expect;
-const Project = require('./index');
-const TMPDIR = require('os').tmpdir();
-const fs = require('fs-extra');
-const path = require('path');
+const expect = chai.expect;
 
 describe('Project', function() {
-  function readJSON(file) {
+  function readJSON(file: string) {
     return JSON.parse(fs.readFileSync(file, 'UTF8'));
   }
 
-  function read(file) {
+  function read(file: string) {
     return fs.readFileSync(file, 'UTF8');
   }
 
-  function readDir(path) {
+  function readDir(path: string) {
     return fs.readdirSync(path);
   }
 
@@ -28,7 +27,7 @@ describe('Project', function() {
     project.addDevDependency('@ember/ordered-set', '3.1.1');
     project.writeSync();
 
-    let index = read(`${project.root}/rsvp/index.js`, 'UTF8');
+    let index = read(`${project.root}/rsvp/index.js`);
     let nodeModules = readDir(`${project.root}/rsvp/node_modules`);
 
     expect(rsvp.root).to.eql(path.normalize(`${project.root}/rsvp/node_modules/ember-cli/node_modules`));
@@ -38,7 +37,7 @@ describe('Project', function() {
 
     expect(read(`${project.root}/rsvp/index.js`)).to.eql(`module.exports = "Hello, World!";`);
 
-    expect(readJSON(`${project.root}/rsvp/package.json`, 'UTF8')).to.eql({
+    expect(readJSON(`${project.root}/rsvp/package.json`)).to.eql({
       name: 'rsvp',
       version: '3.1.4',
       keywords: [],
@@ -54,7 +53,7 @@ describe('Project', function() {
     expect(read(`${project.root}/rsvp/node_modules/ember-source/index.js`)).to.contain(`module.exports`);
     expect(require(`${project.root}/rsvp/node_modules/ember-source/index.js`)).to.eql({});
 
-    expect(readJSON(`${project.root}/rsvp/node_modules/ember-source/package.json`, 'UTF8')).to.eql({
+    expect(readJSON(`${project.root}/rsvp/node_modules/ember-source/package.json`)).to.eql({
       name: 'ember-source',
       version: '3.1.1',
       keywords: [],
@@ -62,7 +61,7 @@ describe('Project', function() {
       devDependencies: { },
     });
 
-    expect(readJSON(`${project.root}/rsvp/node_modules/ember-cli/package.json`, 'UTF8')).to.eql({
+    expect(readJSON(`${project.root}/rsvp/node_modules/ember-cli/package.json`)).to.eql({
       name: 'ember-cli',
       version: '3.1.1',
       keywords: [],
@@ -79,7 +78,7 @@ describe('Project', function() {
     expect(read(`${project.root}/rsvp/node_modules/@ember/ordered-set/index.js`)).to.contain(`module.exports`);
     expect(require(`${project.root}/rsvp/node_modules/@ember/ordered-set/index.js`)).to.eql({});
 
-    expect(readJSON(`${project.root}/rsvp/node_modules/ember-cli/node_modules/console-ui/package.json`, 'UTF8')).to.eql({
+    expect(readJSON(`${project.root}/rsvp/node_modules/ember-cli/node_modules/console-ui/package.json`)).to.eql({
       name: 'console-ui',
       version: '3.3.3',
       keywords: [],
@@ -99,7 +98,7 @@ describe('Project', function() {
   it('supports default version', function() {
     const input = new Project('foo');
     expect(input.version).to.eql('0.0.0');
-    expect(JSON.parse(input.toJSON('package.json'))).to.have.property('version', '0.0.0');
+    expect(JSON.parse(input.toJSON('package.json') as string)).to.have.property('version', '0.0.0');
   });
 
   it('supports removing packages', function() {
@@ -119,8 +118,9 @@ describe('Project', function() {
   });
 
   it('requires name and version', function() {
-    expect(() => new Project('rsvp', null)).to.throw(/rsvp is missing a version/);
-    expect(() => new Project(null, null)).to.throw(/Missing name/);
+    let P = Project as any;
+    expect(() => new P('rsvp', null)).to.throw(/rsvp is missing a version/);
+    expect(() => new P(null, null)).to.throw(/Missing name/);
   });
 
   it('it supports construction of a project via JSON', function() {
@@ -274,7 +274,7 @@ describe('Project', function() {
     project.addDependency('rsvp', '1.2.3');
     project.addDevDependency('q', '1.2.4');
 
-    expect(JSON.parse(project.toJSON('package.json'))).to.deep.eql({
+    expect(JSON.parse(project.toJSON('package.json') as string)).to.deep.equal({
       name: 'foo',
       version: '123',
       keywords: [],
