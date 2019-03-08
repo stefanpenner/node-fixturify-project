@@ -2,6 +2,8 @@ import fixturify = require('fixturify');
 import tmp = require('tmp');
 import fs = require('fs');
 import path = require('path');
+import resolve = require('resolve');
+import getCallerFile = require('get-caller-file');
 
 tmp.setGracefulCleanup();
 
@@ -18,7 +20,7 @@ interface DirJSON {
 }
 
 interface ProjectConstructor {
-  new(name: string, version?: string, cb?: (project: Project) => void, root?: string): Project;
+  new(name: string, version?: string, cb?: (project: Project) => void, root?: string, link?: string): Project;
   fromJSON(json: DirJSON, name: string): Project;
   fromDir(root: string, name: string): Project;
 }
@@ -31,19 +33,23 @@ class Project {
 module.exports = {};`
   };
   readonly isDependency = true;
+  readonly link?: string;
 
   private _dependencies: { [name: string]: Project } = {};
   private _devDependencies: { [name: string]: Project } = {};
   private _root: string;
   private _tmp: tmp.SynchrounousResult | undefined;
 
-  constructor(name: string, version = '0.0.0', cb?: (project: Project) => void, root?: string) {
+  constructor(name: string, version = '0.0.0', cb?: (project: Project) => void, root?: string, link?: string) {
     this.pkg = {
       name,
       version,
       keywords: []
     };
 
+    if (typeof link === 'string') {
+      this.link = link;
+    }
     this.validate();
 
     if (root) {
@@ -205,6 +211,22 @@ module.exports = {};`
     return Object.keys(this._devDependencies).map(dependency => this._devDependencies[dependency]);
   }
 
+  linkDependency(name: string, link?: string) {
+    const root = path.join(this.root, this.name, 'node_modules')
+    const basedir = path.dirname(getCallerFile());
+    const actualLink = typeof link === 'string' ? resolve.sync(link, { basedir }) : undefined;
+    const project = new (this.constructor as ProjectConstructor)(name, '*', undefined, root, actualLink);
+    this.addDependency(project);
+  }
+
+  linkDevDependency(name: string, link?: string) {
+    const root = path.join(this.root, this.name, 'node_modules')
+    const basedir = path.dirname(getCallerFile());
+    const actualLink = typeof link === 'string' ? resolve.sync(link, { basedir }) : undefined;
+    const project = new (this.constructor as ProjectConstructor)(name, '*', undefined, root, actualLink);
+    this.addDevDependency(project);
+  }
+
   validate() {
     if (typeof this.name !== 'string') {
       throw new TypeError('Missing name');
@@ -224,6 +246,11 @@ module.exports = {};`
     if (key) {
       return (this.toJSON()[this.name] as DirJSON)[key];
     } else {
+      if (this.link) {
+        return {
+          [this.name]: { __fixturify_symlink_to__: this.link }
+        };
+      }
       return {
         [this.name]: Object.assign({}, this.files, {
           'node_modules': depsAsObject([

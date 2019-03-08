@@ -296,4 +296,45 @@ describe('Project', function() {
     project.dispose();
     expect(fs.existsSync(project.root)).to.eql(false);
   });
+
+  it('supports linkDependency', function() {
+    const otherProject = new Project('other-project', '123');
+    const project = new Project('foo', '123');
+
+    project.addDependency('apple', '1');
+    project.linkDependency('fixturify'); // resolves the link relative to the `linkDependency` invocation
+    project.linkDependency('other-project',  otherProject.baseDir); // links to an absolute path
+
+    otherProject.writeSync();
+
+    const pkg: any = JSON.parse(project.toJSON('package.json') as string);
+
+    expect(pkg.dependencies['fixturify']).to.eql('*');
+    expect(pkg.dependencies['other-project']).to.eql('*');
+
+    project.writeSync();
+
+    expect(fs.realpathSync(project.baseDir + '/node_modules/fixturify')).to.eql(require.resolve('fixturify'));
+    expect(fs.realpathSync(project.baseDir + '/node_modules/other-project')).to.eql(otherProject.baseDir);
+  });
+
+  it('supports linkDevDependency', function() {
+    const otherProject = new Project('other-project', '123');
+    const project = new Project('foo', '123');
+
+    otherProject.writeSync();
+
+    const pkg: any = JSON.parse(project.toJSON('package.json') as string);
+
+    expect(pkg.devDependencies['fixturify']).to.eql('*');
+    expect(pkg.devDependencies['other-project']).to.eql('*');
+
+    project.linkDevDependency('fixturify'); // resolves the link relative to the `linkDependency` invocation
+    project.linkDevDependency('other-project',  otherProject.baseDir); // links to an absolute path
+
+    project.writeSync();
+
+    expect(fs.realpathSync(project.baseDir + '/node_modules/fixturify')).to.eql(require.resolve('fixturify'));
+    expect(fs.realpathSync(project.baseDir + '/node_modules/other-project')).to.eql(otherProject.baseDir);
+  });
 });
