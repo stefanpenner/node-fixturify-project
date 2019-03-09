@@ -1,0 +1,1191 @@
+yarn run v1.13.0
+$ tsc
+======== Resolving module 'fixturify' from '/Users/spenner/src/stefanpenner/node-fixturify-project/index.ts'. ========
+Module resolution kind is not specified, using 'NodeJs'.
+Loading module 'fixturify' from 'node_modules' folder, target file type 'TypeScript'.
+'package.json' does not have a 'typings' field.
+'package.json' does not have a 'types' field.
+'package.json' has 'main' field 'index.js' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/fixturify/index.js'.
+'package.json' does not have a 'typesVersions' field.
+Found 'package.json' at '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/fixturify/package.json'. Package ID is 'fixturify/index.d.ts@1.0.0'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/fixturify.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/fixturify.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/fixturify.d.ts' does not exist.
+'package.json' does not have a 'typings' field.
+'package.json' does not have a 'types' field.
+'package.json' has 'main' field 'index.js' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/fixturify/index.js'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/fixturify/index.js' exist - use it as a name resolution result.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/fixturify/index.js' has an unsupported extension, so skipping it.
+Loading module as file / folder, candidate module location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/fixturify/index.js', target file type 'TypeScript'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/fixturify/index.js.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/fixturify/index.js.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/fixturify/index.js.d.ts' does not exist.
+File name '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/fixturify/index.js' has a '.js' extension - stripping it.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/fixturify/index.ts' exist - use it as a name resolution result.
+Resolving real path for '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/fixturify/index.ts', result '/Users/spenner/src/joliss/node-fixturify/index.ts'.
+======== Module name 'fixturify' was successfully resolved to '/Users/spenner/src/joliss/node-fixturify/index.ts'. ========
+======== Resolving module 'tmp' from '/Users/spenner/src/stefanpenner/node-fixturify-project/index.ts'. ========
+Module resolution kind is not specified, using 'NodeJs'.
+Loading module 'tmp' from 'node_modules' folder, target file type 'TypeScript'.
+'package.json' does not have a 'typings' field.
+'package.json' does not have a 'types' field.
+'package.json' has 'main' field 'lib/tmp.js' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/tmp/lib/tmp.js'.
+'package.json' does not have a 'typesVersions' field.
+Found 'package.json' at '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/tmp/package.json'. Package ID is 'tmp/lib/tmp.d.ts@0.0.33'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/tmp.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/tmp.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/tmp.d.ts' does not exist.
+'package.json' does not have a 'typings' field.
+'package.json' does not have a 'types' field.
+'package.json' has 'main' field 'lib/tmp.js' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/tmp/lib/tmp.js'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/tmp/lib/tmp.js' exist - use it as a name resolution result.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/tmp/lib/tmp.js' has an unsupported extension, so skipping it.
+Loading module as file / folder, candidate module location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/tmp/lib/tmp.js', target file type 'TypeScript'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/tmp/lib/tmp.js.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/tmp/lib/tmp.js.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/tmp/lib/tmp.js.d.ts' does not exist.
+File name '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/tmp/lib/tmp.js' has a '.js' extension - stripping it.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/tmp/lib/tmp.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/tmp/lib/tmp.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/tmp/lib/tmp.d.ts' does not exist.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/tmp/lib/tmp.js' does not exist, skipping all lookups in it.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/tmp/index.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/tmp/index.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/tmp/index.d.ts' does not exist.
+'package.json' does not have a 'typings' field.
+'package.json' has 'types' field 'index' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/tmp/index'.
+'package.json' does not have a 'typesVersions' field.
+Found 'package.json' at '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/tmp/package.json'. Package ID is '@types/tmp/index.d.ts@0.0.34'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/tmp.d.ts' does not exist.
+'package.json' does not have a 'typings' field.
+'package.json' has 'types' field 'index' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/tmp/index'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/tmp/index' does not exist.
+Loading module as file / folder, candidate module location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/tmp/index', target file type 'TypeScript'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/tmp/index.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/tmp/index.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/tmp/index.d.ts' exist - use it as a name resolution result.
+Resolving real path for '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/tmp/index.d.ts', result '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/tmp/index.d.ts'.
+======== Module name 'tmp' was successfully resolved to '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/tmp/index.d.ts'. ========
+======== Resolving module 'fs' from '/Users/spenner/src/stefanpenner/node-fixturify-project/index.ts'. ========
+Module resolution kind is not specified, using 'NodeJs'.
+Loading module 'fs' from 'node_modules' folder, target file type 'TypeScript'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/fs.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/fs.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/fs.d.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/fs.d.ts' does not exist.
+Directory '/Users/spenner/src/stefanpenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/node_modules' does not exist, skipping all lookups in it.
+Directory '/node_modules' does not exist, skipping all lookups in it.
+Loading module 'fs' from 'node_modules' folder, target file type 'JavaScript'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/fs.js' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/fs.jsx' does not exist.
+Directory '/Users/spenner/src/stefanpenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/node_modules' does not exist, skipping all lookups in it.
+Directory '/node_modules' does not exist, skipping all lookups in it.
+======== Module name 'fs' was not resolved. ========
+======== Resolving module 'path' from '/Users/spenner/src/stefanpenner/node-fixturify-project/index.ts'. ========
+Module resolution kind is not specified, using 'NodeJs'.
+Loading module 'path' from 'node_modules' folder, target file type 'TypeScript'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/path.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/path.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/path.d.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/path.d.ts' does not exist.
+Directory '/Users/spenner/src/stefanpenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/node_modules' does not exist, skipping all lookups in it.
+Directory '/node_modules' does not exist, skipping all lookups in it.
+Loading module 'path' from 'node_modules' folder, target file type 'JavaScript'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/path.js' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/path.jsx' does not exist.
+Directory '/Users/spenner/src/stefanpenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/node_modules' does not exist, skipping all lookups in it.
+Directory '/node_modules' does not exist, skipping all lookups in it.
+======== Module name 'path' was not resolved. ========
+======== Resolving module 'resolve' from '/Users/spenner/src/stefanpenner/node-fixturify-project/index.ts'. ========
+Module resolution kind is not specified, using 'NodeJs'.
+Loading module 'resolve' from 'node_modules' folder, target file type 'TypeScript'.
+'package.json' does not have a 'typings' field.
+'package.json' does not have a 'types' field.
+'package.json' has 'main' field 'index.js' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/resolve/index.js'.
+'package.json' does not have a 'typesVersions' field.
+Found 'package.json' at '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/resolve/package.json'. Package ID is 'resolve/index.d.ts@1.10.0'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/resolve.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/resolve.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/resolve.d.ts' does not exist.
+'package.json' does not have a 'typings' field.
+'package.json' does not have a 'types' field.
+'package.json' has 'main' field 'index.js' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/resolve/index.js'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/resolve/index.js' exist - use it as a name resolution result.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/resolve/index.js' has an unsupported extension, so skipping it.
+Loading module as file / folder, candidate module location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/resolve/index.js', target file type 'TypeScript'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/resolve/index.js.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/resolve/index.js.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/resolve/index.js.d.ts' does not exist.
+File name '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/resolve/index.js' has a '.js' extension - stripping it.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/resolve/index.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/resolve/index.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/resolve/index.d.ts' does not exist.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/resolve/index.js' does not exist, skipping all lookups in it.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/resolve/index.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/resolve/index.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/resolve/index.d.ts' does not exist.
+'package.json' does not have a 'typings' field.
+'package.json' does not have a 'types' field.
+'package.json' has 'main' field '' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/resolve'.
+'package.json' does not have a 'typesVersions' field.
+Found 'package.json' at '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/resolve/package.json'. Package ID is '@types/resolve/index.d.ts@0.0.8'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/resolve.d.ts' does not exist.
+'package.json' does not have a 'typings' field.
+'package.json' does not have a 'types' field.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/resolve/index.d.ts' exist - use it as a name resolution result.
+Resolving real path for '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/resolve/index.d.ts', result '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/resolve/index.d.ts'.
+======== Module name 'resolve' was successfully resolved to '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/resolve/index.d.ts'. ========
+======== Resolving module 'get-caller-file' from '/Users/spenner/src/stefanpenner/node-fixturify-project/index.ts'. ========
+Module resolution kind is not specified, using 'NodeJs'.
+Loading module 'get-caller-file' from 'node_modules' folder, target file type 'TypeScript'.
+'package.json' does not have a 'typings' field.
+'package.json' does not have a 'types' field.
+'package.json' has 'main' field 'index.js' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/get-caller-file/index.js'.
+'package.json' does not have a 'typesVersions' field.
+Found 'package.json' at '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/get-caller-file/package.json'. Package ID is 'get-caller-file/index.d.ts@2.0.4'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/get-caller-file.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/get-caller-file.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/get-caller-file.d.ts' does not exist.
+'package.json' does not have a 'typings' field.
+'package.json' does not have a 'types' field.
+'package.json' has 'main' field 'index.js' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/get-caller-file/index.js'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/get-caller-file/index.js' exist - use it as a name resolution result.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/get-caller-file/index.js' has an unsupported extension, so skipping it.
+Loading module as file / folder, candidate module location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/get-caller-file/index.js', target file type 'TypeScript'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/get-caller-file/index.js.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/get-caller-file/index.js.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/get-caller-file/index.js.d.ts' does not exist.
+File name '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/get-caller-file/index.js' has a '.js' extension - stripping it.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/get-caller-file/index.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/get-caller-file/index.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/get-caller-file/index.d.ts' exist - use it as a name resolution result.
+Resolving real path for '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/get-caller-file/index.d.ts', result '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/get-caller-file/index.d.ts'.
+======== Module name 'get-caller-file' was successfully resolved to '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/get-caller-file/index.d.ts'. ========
+======== Resolving module 'path' from '/Users/spenner/src/joliss/node-fixturify/index.ts'. ========
+Module resolution kind is not specified, using 'NodeJs'.
+Loading module 'path' from 'node_modules' folder, target file type 'TypeScript'.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/path.ts' does not exist.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/path.tsx' does not exist.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/path.d.ts' does not exist.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/@types/path.d.ts' does not exist.
+Directory '/Users/spenner/src/joliss/node_modules' does not exist, skipping all lookups in it.
+Resolution for module 'path' was found in cache from location '/Users/spenner/src'.
+======== Module name 'path' was not resolved. ========
+======== Resolving module 'fs-extra' from '/Users/spenner/src/joliss/node-fixturify/index.ts'. ========
+Module resolution kind is not specified, using 'NodeJs'.
+Loading module 'fs-extra' from 'node_modules' folder, target file type 'TypeScript'.
+'package.json' does not have a 'typings' field.
+'package.json' does not have a 'types' field.
+'package.json' has 'main' field './lib/index.js' that references '/Users/spenner/src/joliss/node-fixturify/node_modules/fs-extra/lib/index.js'.
+'package.json' does not have a 'typesVersions' field.
+Found 'package.json' at '/Users/spenner/src/joliss/node-fixturify/node_modules/fs-extra/package.json'. Package ID is 'fs-extra/lib/index.d.ts@7.0.1'.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/fs-extra.ts' does not exist.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/fs-extra.tsx' does not exist.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/fs-extra.d.ts' does not exist.
+'package.json' does not have a 'typings' field.
+'package.json' does not have a 'types' field.
+'package.json' has 'main' field './lib/index.js' that references '/Users/spenner/src/joliss/node-fixturify/node_modules/fs-extra/lib/index.js'.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/fs-extra/lib/index.js' exist - use it as a name resolution result.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/fs-extra/lib/index.js' has an unsupported extension, so skipping it.
+Loading module as file / folder, candidate module location '/Users/spenner/src/joliss/node-fixturify/node_modules/fs-extra/lib/index.js', target file type 'TypeScript'.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/fs-extra/lib/index.js.ts' does not exist.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/fs-extra/lib/index.js.tsx' does not exist.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/fs-extra/lib/index.js.d.ts' does not exist.
+File name '/Users/spenner/src/joliss/node-fixturify/node_modules/fs-extra/lib/index.js' has a '.js' extension - stripping it.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/fs-extra/lib/index.ts' does not exist.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/fs-extra/lib/index.tsx' does not exist.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/fs-extra/lib/index.d.ts' does not exist.
+Directory '/Users/spenner/src/joliss/node-fixturify/node_modules/fs-extra/lib/index.js' does not exist, skipping all lookups in it.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/fs-extra/index.ts' does not exist.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/fs-extra/index.tsx' does not exist.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/fs-extra/index.d.ts' does not exist.
+'package.json' does not have a 'typings' field.
+'package.json' has 'types' field 'index' that references '/Users/spenner/src/joliss/node-fixturify/node_modules/@types/fs-extra/index'.
+'package.json' does not have a 'typesVersions' field.
+Found 'package.json' at '/Users/spenner/src/joliss/node-fixturify/node_modules/@types/fs-extra/package.json'. Package ID is '@types/fs-extra/index.d.ts@5.0.5'.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/@types/fs-extra.d.ts' does not exist.
+'package.json' does not have a 'typings' field.
+'package.json' has 'types' field 'index' that references '/Users/spenner/src/joliss/node-fixturify/node_modules/@types/fs-extra/index'.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/@types/fs-extra/index' does not exist.
+Loading module as file / folder, candidate module location '/Users/spenner/src/joliss/node-fixturify/node_modules/@types/fs-extra/index', target file type 'TypeScript'.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/@types/fs-extra/index.ts' does not exist.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/@types/fs-extra/index.tsx' does not exist.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/@types/fs-extra/index.d.ts' exist - use it as a name resolution result.
+Resolving real path for '/Users/spenner/src/joliss/node-fixturify/node_modules/@types/fs-extra/index.d.ts', result '/Users/spenner/src/joliss/node-fixturify/node_modules/@types/fs-extra/index.d.ts'.
+======== Module name 'fs-extra' was successfully resolved to '/Users/spenner/src/joliss/node-fixturify/node_modules/@types/fs-extra/index.d.ts'. ========
+======== Resolving module 'matcher-collection' from '/Users/spenner/src/joliss/node-fixturify/index.ts'. ========
+Module resolution kind is not specified, using 'NodeJs'.
+Loading module 'matcher-collection' from 'node_modules' folder, target file type 'TypeScript'.
+'package.json' does not have a 'typings' field.
+'package.json' does not have a 'types' field.
+'package.json' has 'main' field 'index.js' that references '/Users/spenner/src/joliss/node-fixturify/node_modules/matcher-collection/index.js'.
+'package.json' does not have a 'typesVersions' field.
+Found 'package.json' at '/Users/spenner/src/joliss/node-fixturify/node_modules/matcher-collection/package.json'. Package ID is 'matcher-collection/index.d.ts@2.0.0'.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/matcher-collection.ts' does not exist.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/matcher-collection.tsx' does not exist.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/matcher-collection.d.ts' does not exist.
+'package.json' does not have a 'typings' field.
+'package.json' does not have a 'types' field.
+'package.json' has 'main' field 'index.js' that references '/Users/spenner/src/joliss/node-fixturify/node_modules/matcher-collection/index.js'.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/matcher-collection/index.js' exist - use it as a name resolution result.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/matcher-collection/index.js' has an unsupported extension, so skipping it.
+Loading module as file / folder, candidate module location '/Users/spenner/src/joliss/node-fixturify/node_modules/matcher-collection/index.js', target file type 'TypeScript'.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/matcher-collection/index.js.ts' does not exist.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/matcher-collection/index.js.tsx' does not exist.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/matcher-collection/index.js.d.ts' does not exist.
+File name '/Users/spenner/src/joliss/node-fixturify/node_modules/matcher-collection/index.js' has a '.js' extension - stripping it.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/matcher-collection/index.ts' does not exist.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/matcher-collection/index.tsx' does not exist.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/matcher-collection/index.d.ts' exist - use it as a name resolution result.
+Resolving real path for '/Users/spenner/src/joliss/node-fixturify/node_modules/matcher-collection/index.d.ts', result '/Users/spenner/src/joliss/node-fixturify/node_modules/matcher-collection/index.d.ts'.
+======== Module name 'matcher-collection' was successfully resolved to '/Users/spenner/src/joliss/node-fixturify/node_modules/matcher-collection/index.d.ts'. ========
+======== Resolving module 'minimatch' from '/Users/spenner/src/joliss/node-fixturify/index.ts'. ========
+Module resolution kind is not specified, using 'NodeJs'.
+Loading module 'minimatch' from 'node_modules' folder, target file type 'TypeScript'.
+'package.json' does not have a 'typings' field.
+'package.json' does not have a 'types' field.
+'package.json' has 'main' field 'minimatch.js' that references '/Users/spenner/src/joliss/node-fixturify/node_modules/minimatch/minimatch.js'.
+'package.json' does not have a 'typesVersions' field.
+Found 'package.json' at '/Users/spenner/src/joliss/node-fixturify/node_modules/minimatch/package.json'. Package ID is 'minimatch/minimatch.d.ts@3.0.4'.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/minimatch.ts' does not exist.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/minimatch.tsx' does not exist.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/minimatch.d.ts' does not exist.
+'package.json' does not have a 'typings' field.
+'package.json' does not have a 'types' field.
+'package.json' has 'main' field 'minimatch.js' that references '/Users/spenner/src/joliss/node-fixturify/node_modules/minimatch/minimatch.js'.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/minimatch/minimatch.js' exist - use it as a name resolution result.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/minimatch/minimatch.js' has an unsupported extension, so skipping it.
+Loading module as file / folder, candidate module location '/Users/spenner/src/joliss/node-fixturify/node_modules/minimatch/minimatch.js', target file type 'TypeScript'.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/minimatch/minimatch.js.ts' does not exist.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/minimatch/minimatch.js.tsx' does not exist.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/minimatch/minimatch.js.d.ts' does not exist.
+File name '/Users/spenner/src/joliss/node-fixturify/node_modules/minimatch/minimatch.js' has a '.js' extension - stripping it.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/minimatch/minimatch.ts' does not exist.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/minimatch/minimatch.tsx' does not exist.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/minimatch/minimatch.d.ts' does not exist.
+Directory '/Users/spenner/src/joliss/node-fixturify/node_modules/minimatch/minimatch.js' does not exist, skipping all lookups in it.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/minimatch/index.ts' does not exist.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/minimatch/index.tsx' does not exist.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/minimatch/index.d.ts' does not exist.
+'package.json' does not have a 'typings' field.
+'package.json' does not have a 'types' field.
+'package.json' has 'main' field '' that references '/Users/spenner/src/joliss/node-fixturify/node_modules/@types/minimatch'.
+'package.json' does not have a 'typesVersions' field.
+Found 'package.json' at '/Users/spenner/src/joliss/node-fixturify/node_modules/@types/minimatch/package.json'. Package ID is '@types/minimatch/index.d.ts@3.0.3'.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/@types/minimatch.d.ts' does not exist.
+'package.json' does not have a 'typings' field.
+'package.json' does not have a 'types' field.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/@types/minimatch/index.d.ts' exist - use it as a name resolution result.
+Resolving real path for '/Users/spenner/src/joliss/node-fixturify/node_modules/@types/minimatch/index.d.ts', result '/Users/spenner/src/joliss/node-fixturify/node_modules/@types/minimatch/index.d.ts'.
+======== Module name 'minimatch' was successfully resolved to '/Users/spenner/src/joliss/node-fixturify/node_modules/@types/minimatch/index.d.ts'. ========
+======== Resolving type reference directive 'node', containing file '/Users/spenner/src/joliss/node-fixturify/node_modules/@types/fs-extra/index.d.ts', root directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types'. ========
+Resolving with primary search path '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types'.
+'package.json' does not have a 'typings' field.
+'package.json' has 'types' field 'index' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/index'.
+'package.json' has a 'typesVersions' field with version-specific path mappings.
+Found 'package.json' at '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/package.json'. Package ID is '@types/node/index.d.ts@11.10.4'.
+'package.json' has a 'typesVersions' field with version-specific path mappings.
+'package.json' does not have a 'typings' field.
+'package.json' has 'types' field 'index' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/index'.
+'package.json' has a 'typesVersions' entry '>=3.2.0-0' that matches compiler version '3.3.3333', looking for a pattern to match module name 'index'.
+Module name 'index', matched pattern '*'.
+Trying substitution 'ts3.2/*', candidate module location: 'ts3.2/index'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/ts3.2/index' does not exist.
+Loading module as file / folder, candidate module location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/ts3.2/index', target file type 'TypeScript'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/ts3.2/index.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/ts3.2/index.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/ts3.2/index.d.ts' exist - use it as a name resolution result.
+Resolving real path for '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/ts3.2/index.d.ts', result '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/ts3.2/index.d.ts'.
+======== Type reference directive 'node' was successfully resolved to '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/ts3.2/index.d.ts', primary: true. ========
+======== Resolving module 'events' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/child_process.d.ts'. ========
+Module resolution kind is not specified, using 'NodeJs'.
+Loading module 'events' from 'node_modules' folder, target file type 'TypeScript'.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node_modules' does not exist, skipping all lookups in it.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/events.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/events.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/events.d.ts' does not exist.
+'package.json' does not have a 'typings' field.
+'package.json' has 'types' field 'index' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/events/index'.
+'package.json' does not have a 'typesVersions' field.
+Found 'package.json' at '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/events/package.json'. Package ID is '@types/events/index.d.ts@3.0.0'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/events.d.ts' does not exist.
+'package.json' does not have a 'typings' field.
+'package.json' has 'types' field 'index' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/events/index'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/events/index' does not exist.
+Loading module as file / folder, candidate module location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/events/index', target file type 'TypeScript'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/events/index.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/events/index.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/events/index.d.ts' exist - use it as a name resolution result.
+Resolving real path for '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/events/index.d.ts', result '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/events/index.d.ts'.
+======== Module name 'events' was successfully resolved to '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/events/index.d.ts'. ========
+======== Resolving module 'net' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/child_process.d.ts'. ========
+Module resolution kind is not specified, using 'NodeJs'.
+Loading module 'net' from 'node_modules' folder, target file type 'TypeScript'.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node_modules' does not exist, skipping all lookups in it.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/net.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/net.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/net.d.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/net.d.ts' does not exist.
+Directory '/Users/spenner/src/stefanpenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/node_modules' does not exist, skipping all lookups in it.
+Directory '/node_modules' does not exist, skipping all lookups in it.
+Loading module 'net' from 'node_modules' folder, target file type 'JavaScript'.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node_modules' does not exist, skipping all lookups in it.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/net.js' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/net.jsx' does not exist.
+Directory '/Users/spenner/src/stefanpenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/node_modules' does not exist, skipping all lookups in it.
+Directory '/node_modules' does not exist, skipping all lookups in it.
+======== Module name 'net' was not resolved. ========
+======== Resolving module 'stream' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/child_process.d.ts'. ========
+Module resolution kind is not specified, using 'NodeJs'.
+Loading module 'stream' from 'node_modules' folder, target file type 'TypeScript'.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node_modules' does not exist, skipping all lookups in it.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/stream.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/stream.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/stream.d.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/stream.d.ts' does not exist.
+Directory '/Users/spenner/src/stefanpenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/node_modules' does not exist, skipping all lookups in it.
+Directory '/node_modules' does not exist, skipping all lookups in it.
+Loading module 'stream' from 'node_modules' folder, target file type 'JavaScript'.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node_modules' does not exist, skipping all lookups in it.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/stream.js' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/stream.jsx' does not exist.
+Directory '/Users/spenner/src/stefanpenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/node_modules' does not exist, skipping all lookups in it.
+Directory '/node_modules' does not exist, skipping all lookups in it.
+======== Module name 'stream' was not resolved. ========
+======== Resolving module 'child_process' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/cluster.d.ts'. ========
+Module resolution kind is not specified, using 'NodeJs'.
+Loading module 'child_process' from 'node_modules' folder, target file type 'TypeScript'.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node_modules' does not exist, skipping all lookups in it.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/child_process.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/child_process.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/child_process.d.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/child_process.d.ts' does not exist.
+Directory '/Users/spenner/src/stefanpenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/node_modules' does not exist, skipping all lookups in it.
+Directory '/node_modules' does not exist, skipping all lookups in it.
+Loading module 'child_process' from 'node_modules' folder, target file type 'JavaScript'.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node_modules' does not exist, skipping all lookups in it.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/child_process.js' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/child_process.jsx' does not exist.
+Directory '/Users/spenner/src/stefanpenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/node_modules' does not exist, skipping all lookups in it.
+Directory '/node_modules' does not exist, skipping all lookups in it.
+======== Module name 'child_process' was not resolved. ========
+======== Resolving module 'events' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/cluster.d.ts'. ========
+Resolution for module 'events' was found in cache from location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node'.
+======== Module name 'events' was successfully resolved to '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/events/index.d.ts'. ========
+======== Resolving module 'net' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/cluster.d.ts'. ========
+Resolution for module 'net' was found in cache from location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node'.
+======== Module name 'net' was not resolved. ========
+======== Resolving module 'stream' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/crypto.d.ts'. ========
+Resolution for module 'stream' was found in cache from location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node'.
+======== Module name 'stream' was not resolved. ========
+======== Resolving module 'net' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/dgram.d.ts'. ========
+Resolution for module 'net' was found in cache from location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node'.
+======== Module name 'net' was not resolved. ========
+======== Resolving module 'dns' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/dgram.d.ts'. ========
+Module resolution kind is not specified, using 'NodeJs'.
+Loading module 'dns' from 'node_modules' folder, target file type 'TypeScript'.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node_modules' does not exist, skipping all lookups in it.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/dns.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/dns.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/dns.d.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/dns.d.ts' does not exist.
+Directory '/Users/spenner/src/stefanpenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/node_modules' does not exist, skipping all lookups in it.
+Directory '/node_modules' does not exist, skipping all lookups in it.
+Loading module 'dns' from 'node_modules' folder, target file type 'JavaScript'.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node_modules' does not exist, skipping all lookups in it.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/dns.js' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/dns.jsx' does not exist.
+Directory '/Users/spenner/src/stefanpenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/node_modules' does not exist, skipping all lookups in it.
+Directory '/node_modules' does not exist, skipping all lookups in it.
+======== Module name 'dns' was not resolved. ========
+======== Resolving module 'events' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/dgram.d.ts'. ========
+Resolution for module 'events' was found in cache from location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node'.
+======== Module name 'events' was successfully resolved to '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/events/index.d.ts'. ========
+======== Resolving module 'events' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/domain.d.ts'. ========
+Resolution for module 'events' was found in cache from location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node'.
+======== Module name 'events' was successfully resolved to '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/events/index.d.ts'. ========
+======== Resolving module 'stream' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/fs.d.ts'. ========
+Resolution for module 'stream' was found in cache from location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node'.
+======== Module name 'stream' was not resolved. ========
+======== Resolving module 'events' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/fs.d.ts'. ========
+Resolution for module 'events' was found in cache from location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node'.
+======== Module name 'events' was successfully resolved to '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/events/index.d.ts'. ========
+======== Resolving module 'url' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/fs.d.ts'. ========
+Module resolution kind is not specified, using 'NodeJs'.
+Loading module 'url' from 'node_modules' folder, target file type 'TypeScript'.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node_modules' does not exist, skipping all lookups in it.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/url.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/url.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/url.d.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/url.d.ts' does not exist.
+Directory '/Users/spenner/src/stefanpenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/node_modules' does not exist, skipping all lookups in it.
+Directory '/node_modules' does not exist, skipping all lookups in it.
+Loading module 'url' from 'node_modules' folder, target file type 'JavaScript'.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node_modules' does not exist, skipping all lookups in it.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/url.js' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/url.jsx' does not exist.
+Directory '/Users/spenner/src/stefanpenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/node_modules' does not exist, skipping all lookups in it.
+Directory '/node_modules' does not exist, skipping all lookups in it.
+======== Module name 'url' was not resolved. ========
+======== Resolving module 'events' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/http.d.ts'. ========
+Resolution for module 'events' was found in cache from location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node'.
+======== Module name 'events' was successfully resolved to '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/events/index.d.ts'. ========
+======== Resolving module 'net' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/http.d.ts'. ========
+Resolution for module 'net' was found in cache from location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node'.
+======== Module name 'net' was not resolved. ========
+======== Resolving module 'stream' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/http.d.ts'. ========
+Resolution for module 'stream' was found in cache from location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node'.
+======== Module name 'stream' was not resolved. ========
+======== Resolving module 'url' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/http.d.ts'. ========
+Resolution for module 'url' was found in cache from location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node'.
+======== Module name 'url' was not resolved. ========
+======== Resolving module 'events' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/http2.d.ts'. ========
+Resolution for module 'events' was found in cache from location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node'.
+======== Module name 'events' was successfully resolved to '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/events/index.d.ts'. ========
+======== Resolving module 'fs' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/http2.d.ts'. ========
+Module resolution kind is not specified, using 'NodeJs'.
+Loading module 'fs' from 'node_modules' folder, target file type 'TypeScript'.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node_modules' does not exist, skipping all lookups in it.
+Resolution for module 'fs' was found in cache from location '/Users/spenner/src/stefanpenner/node-fixturify-project'.
+======== Module name 'fs' was not resolved. ========
+======== Resolving module 'net' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/http2.d.ts'. ========
+Resolution for module 'net' was found in cache from location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node'.
+======== Module name 'net' was not resolved. ========
+======== Resolving module 'stream' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/http2.d.ts'. ========
+Resolution for module 'stream' was found in cache from location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node'.
+======== Module name 'stream' was not resolved. ========
+======== Resolving module 'tls' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/http2.d.ts'. ========
+Module resolution kind is not specified, using 'NodeJs'.
+Loading module 'tls' from 'node_modules' folder, target file type 'TypeScript'.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node_modules' does not exist, skipping all lookups in it.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/tls.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/tls.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/tls.d.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/tls.d.ts' does not exist.
+Directory '/Users/spenner/src/stefanpenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/node_modules' does not exist, skipping all lookups in it.
+Directory '/node_modules' does not exist, skipping all lookups in it.
+Loading module 'tls' from 'node_modules' folder, target file type 'JavaScript'.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node_modules' does not exist, skipping all lookups in it.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/tls.js' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/tls.jsx' does not exist.
+Directory '/Users/spenner/src/stefanpenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/node_modules' does not exist, skipping all lookups in it.
+Directory '/node_modules' does not exist, skipping all lookups in it.
+======== Module name 'tls' was not resolved. ========
+======== Resolving module 'url' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/http2.d.ts'. ========
+Resolution for module 'url' was found in cache from location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node'.
+======== Module name 'url' was not resolved. ========
+======== Resolving module 'http' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/http2.d.ts'. ========
+Module resolution kind is not specified, using 'NodeJs'.
+Loading module 'http' from 'node_modules' folder, target file type 'TypeScript'.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node_modules' does not exist, skipping all lookups in it.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/http.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/http.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/http.d.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/http.d.ts' does not exist.
+Directory '/Users/spenner/src/stefanpenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/node_modules' does not exist, skipping all lookups in it.
+Directory '/node_modules' does not exist, skipping all lookups in it.
+Loading module 'http' from 'node_modules' folder, target file type 'JavaScript'.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node_modules' does not exist, skipping all lookups in it.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/http.js' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/http.jsx' does not exist.
+Directory '/Users/spenner/src/stefanpenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/node_modules' does not exist, skipping all lookups in it.
+Directory '/node_modules' does not exist, skipping all lookups in it.
+======== Module name 'http' was not resolved. ========
+======== Resolving module 'tls' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/https.d.ts'. ========
+Resolution for module 'tls' was found in cache from location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node'.
+======== Module name 'tls' was not resolved. ========
+======== Resolving module 'events' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/https.d.ts'. ========
+Resolution for module 'events' was found in cache from location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node'.
+======== Module name 'events' was successfully resolved to '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/events/index.d.ts'. ========
+======== Resolving module 'http' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/https.d.ts'. ========
+Resolution for module 'http' was found in cache from location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node'.
+======== Module name 'http' was not resolved. ========
+======== Resolving module 'url' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/https.d.ts'. ========
+Resolution for module 'url' was found in cache from location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node'.
+======== Module name 'url' was not resolved. ========
+======== Resolving module 'events' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/inspector.d.ts'. ========
+Resolution for module 'events' was found in cache from location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node'.
+======== Module name 'events' was successfully resolved to '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/events/index.d.ts'. ========
+======== Resolving module 'stream' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/net.d.ts'. ========
+Resolution for module 'stream' was found in cache from location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node'.
+======== Module name 'stream' was not resolved. ========
+======== Resolving module 'events' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/net.d.ts'. ========
+Resolution for module 'events' was found in cache from location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node'.
+======== Module name 'events' was successfully resolved to '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/events/index.d.ts'. ========
+======== Resolving module 'dns' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/net.d.ts'. ========
+Resolution for module 'dns' was found in cache from location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node'.
+======== Module name 'dns' was not resolved. ========
+======== Resolving module 'async_hooks' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/perf_hooks.d.ts'. ========
+Module resolution kind is not specified, using 'NodeJs'.
+Loading module 'async_hooks' from 'node_modules' folder, target file type 'TypeScript'.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node_modules' does not exist, skipping all lookups in it.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/async_hooks.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/async_hooks.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/async_hooks.d.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/async_hooks.d.ts' does not exist.
+Directory '/Users/spenner/src/stefanpenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/node_modules' does not exist, skipping all lookups in it.
+Directory '/node_modules' does not exist, skipping all lookups in it.
+Loading module 'async_hooks' from 'node_modules' folder, target file type 'JavaScript'.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node_modules' does not exist, skipping all lookups in it.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/async_hooks.js' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/async_hooks.jsx' does not exist.
+Directory '/Users/spenner/src/stefanpenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/node_modules' does not exist, skipping all lookups in it.
+Directory '/node_modules' does not exist, skipping all lookups in it.
+======== Module name 'async_hooks' was not resolved. ========
+======== Resolving module 'events' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/readline.d.ts'. ========
+Resolution for module 'events' was found in cache from location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node'.
+======== Module name 'events' was successfully resolved to '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/events/index.d.ts'. ========
+======== Resolving module 'stream' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/readline.d.ts'. ========
+Resolution for module 'stream' was found in cache from location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node'.
+======== Module name 'stream' was not resolved. ========
+======== Resolving module 'readline' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/repl.d.ts'. ========
+Module resolution kind is not specified, using 'NodeJs'.
+Loading module 'readline' from 'node_modules' folder, target file type 'TypeScript'.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node_modules' does not exist, skipping all lookups in it.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/readline.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/readline.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/readline.d.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/readline.d.ts' does not exist.
+Directory '/Users/spenner/src/stefanpenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/node_modules' does not exist, skipping all lookups in it.
+Directory '/node_modules' does not exist, skipping all lookups in it.
+Loading module 'readline' from 'node_modules' folder, target file type 'JavaScript'.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node_modules' does not exist, skipping all lookups in it.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/readline.js' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/readline.jsx' does not exist.
+Directory '/Users/spenner/src/stefanpenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/node_modules' does not exist, skipping all lookups in it.
+Directory '/node_modules' does not exist, skipping all lookups in it.
+======== Module name 'readline' was not resolved. ========
+======== Resolving module 'vm' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/repl.d.ts'. ========
+Module resolution kind is not specified, using 'NodeJs'.
+Loading module 'vm' from 'node_modules' folder, target file type 'TypeScript'.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node_modules' does not exist, skipping all lookups in it.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/vm.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/vm.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/vm.d.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/vm.d.ts' does not exist.
+Directory '/Users/spenner/src/stefanpenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/node_modules' does not exist, skipping all lookups in it.
+Directory '/node_modules' does not exist, skipping all lookups in it.
+Loading module 'vm' from 'node_modules' folder, target file type 'JavaScript'.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node_modules' does not exist, skipping all lookups in it.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/vm.js' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/vm.jsx' does not exist.
+Directory '/Users/spenner/src/stefanpenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/node_modules' does not exist, skipping all lookups in it.
+Directory '/node_modules' does not exist, skipping all lookups in it.
+======== Module name 'vm' was not resolved. ========
+======== Resolving module 'util' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/repl.d.ts'. ========
+Module resolution kind is not specified, using 'NodeJs'.
+Loading module 'util' from 'node_modules' folder, target file type 'TypeScript'.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node_modules' does not exist, skipping all lookups in it.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/util.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/util.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/util.d.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/util.d.ts' does not exist.
+Directory '/Users/spenner/src/stefanpenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/node_modules' does not exist, skipping all lookups in it.
+Directory '/node_modules' does not exist, skipping all lookups in it.
+Loading module 'util' from 'node_modules' folder, target file type 'JavaScript'.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node_modules' does not exist, skipping all lookups in it.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/util.js' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/util.jsx' does not exist.
+Directory '/Users/spenner/src/stefanpenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/node_modules' does not exist, skipping all lookups in it.
+Directory '/node_modules' does not exist, skipping all lookups in it.
+======== Module name 'util' was not resolved. ========
+======== Resolving module 'events' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/stream.d.ts'. ========
+Resolution for module 'events' was found in cache from location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node'.
+======== Module name 'events' was successfully resolved to '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/events/index.d.ts'. ========
+======== Resolving module 'crypto' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/tls.d.ts'. ========
+Module resolution kind is not specified, using 'NodeJs'.
+Loading module 'crypto' from 'node_modules' folder, target file type 'TypeScript'.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node_modules' does not exist, skipping all lookups in it.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/crypto.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/crypto.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/crypto.d.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/crypto.d.ts' does not exist.
+Directory '/Users/spenner/src/stefanpenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/node_modules' does not exist, skipping all lookups in it.
+Directory '/node_modules' does not exist, skipping all lookups in it.
+Loading module 'crypto' from 'node_modules' folder, target file type 'JavaScript'.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node_modules' does not exist, skipping all lookups in it.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/crypto.js' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/crypto.jsx' does not exist.
+Directory '/Users/spenner/src/stefanpenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/node_modules' does not exist, skipping all lookups in it.
+Directory '/node_modules' does not exist, skipping all lookups in it.
+======== Module name 'crypto' was not resolved. ========
+======== Resolving module 'dns' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/tls.d.ts'. ========
+Resolution for module 'dns' was found in cache from location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node'.
+======== Module name 'dns' was not resolved. ========
+======== Resolving module 'net' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/tls.d.ts'. ========
+Resolution for module 'net' was found in cache from location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node'.
+======== Module name 'net' was not resolved. ========
+======== Resolving module 'stream' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/tls.d.ts'. ========
+Resolution for module 'stream' was found in cache from location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node'.
+======== Module name 'stream' was not resolved. ========
+======== Resolving module 'net' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/tty.d.ts'. ========
+Resolution for module 'net' was found in cache from location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node'.
+======== Module name 'net' was not resolved. ========
+======== Resolving module 'querystring' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/url.d.ts'. ========
+Module resolution kind is not specified, using 'NodeJs'.
+Loading module 'querystring' from 'node_modules' folder, target file type 'TypeScript'.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node_modules' does not exist, skipping all lookups in it.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/querystring.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/querystring.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/querystring.d.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/querystring.d.ts' does not exist.
+Directory '/Users/spenner/src/stefanpenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/node_modules' does not exist, skipping all lookups in it.
+Directory '/node_modules' does not exist, skipping all lookups in it.
+Loading module 'querystring' from 'node_modules' folder, target file type 'JavaScript'.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node_modules' does not exist, skipping all lookups in it.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/querystring.js' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/querystring.jsx' does not exist.
+Directory '/Users/spenner/src/stefanpenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/node_modules' does not exist, skipping all lookups in it.
+Directory '/node_modules' does not exist, skipping all lookups in it.
+======== Module name 'querystring' was not resolved. ========
+======== Resolving module 'events' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/worker_threads.d.ts'. ========
+Resolution for module 'events' was found in cache from location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node'.
+======== Module name 'events' was successfully resolved to '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/events/index.d.ts'. ========
+======== Resolving module 'stream' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/worker_threads.d.ts'. ========
+Resolution for module 'stream' was found in cache from location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node'.
+======== Module name 'stream' was not resolved. ========
+======== Resolving module 'stream' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/zlib.d.ts'. ========
+Resolution for module 'stream' was found in cache from location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node'.
+======== Module name 'stream' was not resolved. ========
+======== Resolving module 'fs' from '/Users/spenner/src/joliss/node-fixturify/node_modules/@types/fs-extra/index.d.ts'. ========
+Module resolution kind is not specified, using 'NodeJs'.
+Loading module 'fs' from 'node_modules' folder, target file type 'TypeScript'.
+Directory '/Users/spenner/src/joliss/node-fixturify/node_modules/@types/fs-extra/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/joliss/node-fixturify/node_modules/@types/node_modules' does not exist, skipping all lookups in it.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/fs.ts' does not exist.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/fs.tsx' does not exist.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/fs.d.ts' does not exist.
+File '/Users/spenner/src/joliss/node-fixturify/node_modules/@types/fs.d.ts' does not exist.
+Directory '/Users/spenner/src/joliss/node_modules' does not exist, skipping all lookups in it.
+Resolution for module 'fs' was found in cache from location '/Users/spenner/src'.
+======== Module name 'fs' was not resolved. ========
+======== Resolving module 'minimatch' from '/Users/spenner/src/joliss/node-fixturify/node_modules/matcher-collection/index.d.ts'. ========
+Module resolution kind is not specified, using 'NodeJs'.
+Loading module 'minimatch' from 'node_modules' folder, target file type 'TypeScript'.
+Directory '/Users/spenner/src/joliss/node-fixturify/node_modules/matcher-collection/node_modules' does not exist, skipping all lookups in it.
+Resolution for module 'minimatch' was found in cache from location '/Users/spenner/src/joliss/node-fixturify'.
+======== Module name 'minimatch' was successfully resolved to '/Users/spenner/src/joliss/node-fixturify/node_modules/@types/minimatch/index.d.ts'. ========
+======== Resolving type reference directive 'node', containing file '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/resolve/index.d.ts', root directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types'. ========
+Resolving with primary search path '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types'.
+'package.json' does not have a 'typings' field.
+'package.json' has 'types' field 'index' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/index'.
+'package.json' has a 'typesVersions' field with version-specific path mappings.
+Found 'package.json' at '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/package.json'. Package ID is '@types/node/index.d.ts@11.10.4'.
+'package.json' has a 'typesVersions' field with version-specific path mappings.
+'package.json' does not have a 'typings' field.
+'package.json' has 'types' field 'index' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/index'.
+'package.json' has a 'typesVersions' entry '>=3.2.0-0' that matches compiler version '3.3.3333', looking for a pattern to match module name 'index'.
+Module name 'index', matched pattern '*'.
+Trying substitution 'ts3.2/*', candidate module location: 'ts3.2/index'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/ts3.2/index' does not exist.
+Loading module as file / folder, candidate module location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/ts3.2/index', target file type 'TypeScript'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/ts3.2/index.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/ts3.2/index.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/ts3.2/index.d.ts' exist - use it as a name resolution result.
+Resolving real path for '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/ts3.2/index.d.ts', result '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/ts3.2/index.d.ts'.
+======== Type reference directive 'node' was successfully resolved to '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/ts3.2/index.d.ts', primary: true. ========
+======== Resolving module 'chai' from '/Users/spenner/src/stefanpenner/node-fixturify-project/test.ts'. ========
+Module resolution kind is not specified, using 'NodeJs'.
+Loading module 'chai' from 'node_modules' folder, target file type 'TypeScript'.
+'package.json' does not have a 'typings' field.
+'package.json' does not have a 'types' field.
+'package.json' has 'main' field './index' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/chai/index'.
+'package.json' does not have a 'typesVersions' field.
+Found 'package.json' at '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/chai/package.json'. Package ID is 'chai/index.d.ts@4.1.2'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/chai.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/chai.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/chai.d.ts' does not exist.
+'package.json' does not have a 'typings' field.
+'package.json' does not have a 'types' field.
+'package.json' has 'main' field './index' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/chai/index'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/chai/index' does not exist.
+Loading module as file / folder, candidate module location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/chai/index', target file type 'TypeScript'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/chai/index.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/chai/index.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/chai/index.d.ts' does not exist.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/chai/index' does not exist, skipping all lookups in it.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/chai/index.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/chai/index.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/chai/index.d.ts' does not exist.
+'package.json' does not have a 'typings' field.
+'package.json' has 'types' field '' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/chai'.
+'package.json' does not have a 'typesVersions' field.
+Found 'package.json' at '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/chai/package.json'. Package ID is '@types/chai/index.d.ts@4.1.7'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/chai.d.ts' does not exist.
+'package.json' does not have a 'typings' field.
+'package.json' has 'types' field '' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/chai'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/chai' does not exist.
+Loading module as file / folder, candidate module location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/chai', target file type 'TypeScript'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/chai.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/chai.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/chai.d.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/chai/index.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/chai/index.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/chai/index.d.ts' exist - use it as a name resolution result.
+Resolving real path for '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/chai/index.d.ts', result '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/chai/index.d.ts'.
+======== Module name 'chai' was successfully resolved to '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/chai/index.d.ts'. ========
+======== Resolving module './index' from '/Users/spenner/src/stefanpenner/node-fixturify-project/test.ts'. ========
+Module resolution kind is not specified, using 'NodeJs'.
+Loading module as file / folder, candidate module location '/Users/spenner/src/stefanpenner/node-fixturify-project/index', target file type 'TypeScript'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/index.ts' exist - use it as a name resolution result.
+======== Module name './index' was successfully resolved to '/Users/spenner/src/stefanpenner/node-fixturify-project/index.ts'. ========
+======== Resolving module 'fs-extra' from '/Users/spenner/src/stefanpenner/node-fixturify-project/test.ts'. ========
+Module resolution kind is not specified, using 'NodeJs'.
+Loading module 'fs-extra' from 'node_modules' folder, target file type 'TypeScript'.
+'package.json' does not have a 'typings' field.
+'package.json' does not have a 'types' field.
+'package.json' has 'main' field './lib/index.js' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/fs-extra/lib/index.js'.
+'package.json' does not have a 'typesVersions' field.
+Found 'package.json' at '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/fs-extra/package.json'. Package ID is 'fs-extra/lib/index.d.ts@7.0.0'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/fs-extra.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/fs-extra.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/fs-extra.d.ts' does not exist.
+'package.json' does not have a 'typings' field.
+'package.json' does not have a 'types' field.
+'package.json' has 'main' field './lib/index.js' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/fs-extra/lib/index.js'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/fs-extra/lib/index.js' exist - use it as a name resolution result.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/fs-extra/lib/index.js' has an unsupported extension, so skipping it.
+Loading module as file / folder, candidate module location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/fs-extra/lib/index.js', target file type 'TypeScript'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/fs-extra/lib/index.js.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/fs-extra/lib/index.js.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/fs-extra/lib/index.js.d.ts' does not exist.
+File name '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/fs-extra/lib/index.js' has a '.js' extension - stripping it.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/fs-extra/lib/index.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/fs-extra/lib/index.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/fs-extra/lib/index.d.ts' does not exist.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/fs-extra/lib/index.js' does not exist, skipping all lookups in it.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/fs-extra/index.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/fs-extra/index.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/fs-extra/index.d.ts' does not exist.
+'package.json' does not have a 'typings' field.
+'package.json' has 'types' field 'index' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/fs-extra/index'.
+'package.json' does not have a 'typesVersions' field.
+Found 'package.json' at '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/fs-extra/package.json'. Package ID is '@types/fs-extra/index.d.ts@5.0.5'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/fs-extra.d.ts' does not exist.
+'package.json' does not have a 'typings' field.
+'package.json' has 'types' field 'index' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/fs-extra/index'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/fs-extra/index' does not exist.
+Loading module as file / folder, candidate module location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/fs-extra/index', target file type 'TypeScript'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/fs-extra/index.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/fs-extra/index.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/fs-extra/index.d.ts' exist - use it as a name resolution result.
+Resolving real path for '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/fs-extra/index.d.ts', result '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/fs-extra/index.d.ts'.
+======== Module name 'fs-extra' was successfully resolved to '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/fs-extra/index.d.ts'. ========
+======== Resolving module 'path' from '/Users/spenner/src/stefanpenner/node-fixturify-project/test.ts'. ========
+Resolution for module 'path' was found in cache from location '/Users/spenner/src/stefanpenner/node-fixturify-project'.
+======== Module name 'path' was not resolved. ========
+======== Resolving type reference directive 'chai', containing file '/Users/spenner/src/stefanpenner/node-fixturify-project/__inferred type names__.ts', root directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types'. ========
+Resolving with primary search path '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types'.
+'package.json' does not have a 'typings' field.
+'package.json' has 'types' field '' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/chai'.
+'package.json' does not have a 'typesVersions' field.
+Found 'package.json' at '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/chai/package.json'. Package ID is '@types/chai/index.d.ts@4.1.7'.
+'package.json' does not have a 'typesVersions' field.
+'package.json' does not have a 'typings' field.
+'package.json' has 'types' field '' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/chai'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/chai' does not exist.
+Loading module as file / folder, candidate module location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/chai', target file type 'TypeScript'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/chai.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/chai.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/chai.d.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/chai/index.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/chai/index.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/chai/index.d.ts' exist - use it as a name resolution result.
+Resolving real path for '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/chai/index.d.ts', result '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/chai/index.d.ts'.
+======== Type reference directive 'chai' was successfully resolved to '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/chai/index.d.ts', primary: true. ========
+======== Resolving type reference directive 'events', containing file '/Users/spenner/src/stefanpenner/node-fixturify-project/__inferred type names__.ts', root directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types'. ========
+Resolving with primary search path '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types'.
+'package.json' does not have a 'typings' field.
+'package.json' has 'types' field 'index' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/events/index'.
+'package.json' does not have a 'typesVersions' field.
+Found 'package.json' at '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/events/package.json'. Package ID is '@types/events/index.d.ts@3.0.0'.
+'package.json' does not have a 'typesVersions' field.
+'package.json' does not have a 'typings' field.
+'package.json' has 'types' field 'index' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/events/index'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/events/index' does not exist.
+Loading module as file / folder, candidate module location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/events/index', target file type 'TypeScript'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/events/index.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/events/index.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/events/index.d.ts' exist - use it as a name resolution result.
+Resolving real path for '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/events/index.d.ts', result '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/events/index.d.ts'.
+======== Type reference directive 'events' was successfully resolved to '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/events/index.d.ts', primary: true. ========
+======== Resolving type reference directive 'fs-extra', containing file '/Users/spenner/src/stefanpenner/node-fixturify-project/__inferred type names__.ts', root directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types'. ========
+Resolving with primary search path '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types'.
+'package.json' does not have a 'typings' field.
+'package.json' has 'types' field 'index' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/fs-extra/index'.
+'package.json' does not have a 'typesVersions' field.
+Found 'package.json' at '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/fs-extra/package.json'. Package ID is '@types/fs-extra/index.d.ts@5.0.5'.
+'package.json' does not have a 'typesVersions' field.
+'package.json' does not have a 'typings' field.
+'package.json' has 'types' field 'index' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/fs-extra/index'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/fs-extra/index' does not exist.
+Loading module as file / folder, candidate module location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/fs-extra/index', target file type 'TypeScript'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/fs-extra/index.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/fs-extra/index.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/fs-extra/index.d.ts' exist - use it as a name resolution result.
+Resolving real path for '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/fs-extra/index.d.ts', result '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/fs-extra/index.d.ts'.
+======== Type reference directive 'fs-extra' was successfully resolved to '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/fs-extra/index.d.ts', primary: true. ========
+======== Resolving type reference directive 'glob', containing file '/Users/spenner/src/stefanpenner/node-fixturify-project/__inferred type names__.ts', root directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types'. ========
+Resolving with primary search path '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types'.
+'package.json' does not have a 'typings' field.
+'package.json' does not have a 'types' field.
+'package.json' has 'main' field '' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/glob'.
+'package.json' does not have a 'typesVersions' field.
+Found 'package.json' at '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/glob/package.json'. Package ID is '@types/glob/index.d.ts@7.1.1'.
+'package.json' does not have a 'typesVersions' field.
+'package.json' does not have a 'typings' field.
+'package.json' does not have a 'types' field.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/glob/index.d.ts' exist - use it as a name resolution result.
+Resolving real path for '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/glob/index.d.ts', result '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/glob/index.d.ts'.
+======== Type reference directive 'glob' was successfully resolved to '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/glob/index.d.ts', primary: true. ========
+======== Resolving type reference directive 'minimatch', containing file '/Users/spenner/src/stefanpenner/node-fixturify-project/__inferred type names__.ts', root directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types'. ========
+Resolving with primary search path '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types'.
+'package.json' does not have a 'typings' field.
+'package.json' does not have a 'types' field.
+'package.json' has 'main' field '' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/minimatch'.
+'package.json' does not have a 'typesVersions' field.
+Found 'package.json' at '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/minimatch/package.json'. Package ID is '@types/minimatch/index.d.ts@3.0.3'.
+'package.json' does not have a 'typesVersions' field.
+'package.json' does not have a 'typings' field.
+'package.json' does not have a 'types' field.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/minimatch/index.d.ts' exist - use it as a name resolution result.
+Resolving real path for '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/minimatch/index.d.ts', result '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/minimatch/index.d.ts'.
+======== Type reference directive 'minimatch' was successfully resolved to '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/minimatch/index.d.ts', primary: true. ========
+======== Resolving type reference directive 'mocha', containing file '/Users/spenner/src/stefanpenner/node-fixturify-project/__inferred type names__.ts', root directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types'. ========
+Resolving with primary search path '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types'.
+'package.json' does not have a 'typings' field.
+'package.json' has 'types' field 'index' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/mocha/index'.
+'package.json' does not have a 'typesVersions' field.
+Found 'package.json' at '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/mocha/package.json'. Package ID is '@types/mocha/index.d.ts@5.2.6'.
+'package.json' does not have a 'typesVersions' field.
+'package.json' does not have a 'typings' field.
+'package.json' has 'types' field 'index' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/mocha/index'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/mocha/index' does not exist.
+Loading module as file / folder, candidate module location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/mocha/index', target file type 'TypeScript'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/mocha/index.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/mocha/index.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/mocha/index.d.ts' exist - use it as a name resolution result.
+Resolving real path for '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/mocha/index.d.ts', result '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/mocha/index.d.ts'.
+======== Type reference directive 'mocha' was successfully resolved to '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/mocha/index.d.ts', primary: true. ========
+======== Resolving type reference directive 'node', containing file '/Users/spenner/src/stefanpenner/node-fixturify-project/__inferred type names__.ts', root directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types'. ========
+Resolving with primary search path '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types'.
+'package.json' does not have a 'typings' field.
+'package.json' has 'types' field 'index' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/index'.
+'package.json' has a 'typesVersions' field with version-specific path mappings.
+Found 'package.json' at '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/package.json'. Package ID is '@types/node/index.d.ts@11.10.4'.
+'package.json' has a 'typesVersions' field with version-specific path mappings.
+'package.json' does not have a 'typings' field.
+'package.json' has 'types' field 'index' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/index'.
+'package.json' has a 'typesVersions' entry '>=3.2.0-0' that matches compiler version '3.3.3333', looking for a pattern to match module name 'index'.
+Module name 'index', matched pattern '*'.
+Trying substitution 'ts3.2/*', candidate module location: 'ts3.2/index'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/ts3.2/index' does not exist.
+Loading module as file / folder, candidate module location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/ts3.2/index', target file type 'TypeScript'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/ts3.2/index.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/ts3.2/index.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/ts3.2/index.d.ts' exist - use it as a name resolution result.
+Resolving real path for '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/ts3.2/index.d.ts', result '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/ts3.2/index.d.ts'.
+======== Type reference directive 'node' was successfully resolved to '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/ts3.2/index.d.ts', primary: true. ========
+======== Resolving type reference directive 'resolve', containing file '/Users/spenner/src/stefanpenner/node-fixturify-project/__inferred type names__.ts', root directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types'. ========
+Resolving with primary search path '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types'.
+'package.json' does not have a 'typings' field.
+'package.json' does not have a 'types' field.
+'package.json' has 'main' field '' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/resolve'.
+'package.json' does not have a 'typesVersions' field.
+Found 'package.json' at '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/resolve/package.json'. Package ID is '@types/resolve/index.d.ts@0.0.8'.
+'package.json' does not have a 'typesVersions' field.
+'package.json' does not have a 'typings' field.
+'package.json' does not have a 'types' field.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/resolve/index.d.ts' exist - use it as a name resolution result.
+Resolving real path for '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/resolve/index.d.ts', result '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/resolve/index.d.ts'.
+======== Type reference directive 'resolve' was successfully resolved to '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/resolve/index.d.ts', primary: true. ========
+======== Resolving type reference directive 'rimraf', containing file '/Users/spenner/src/stefanpenner/node-fixturify-project/__inferred type names__.ts', root directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types'. ========
+Resolving with primary search path '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types'.
+'package.json' does not have a 'typings' field.
+'package.json' does not have a 'types' field.
+'package.json' has 'main' field '' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/rimraf'.
+'package.json' does not have a 'typesVersions' field.
+Found 'package.json' at '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/rimraf/package.json'. Package ID is '@types/rimraf/index.d.ts@2.0.2'.
+'package.json' does not have a 'typesVersions' field.
+'package.json' does not have a 'typings' field.
+'package.json' does not have a 'types' field.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/rimraf/index.d.ts' exist - use it as a name resolution result.
+Resolving real path for '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/rimraf/index.d.ts', result '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/rimraf/index.d.ts'.
+======== Type reference directive 'rimraf' was successfully resolved to '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/rimraf/index.d.ts', primary: true. ========
+======== Resolving type reference directive 'tmp', containing file '/Users/spenner/src/stefanpenner/node-fixturify-project/__inferred type names__.ts', root directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types'. ========
+Resolving with primary search path '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types'.
+'package.json' does not have a 'typings' field.
+'package.json' has 'types' field 'index' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/tmp/index'.
+'package.json' does not have a 'typesVersions' field.
+Found 'package.json' at '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/tmp/package.json'. Package ID is '@types/tmp/index.d.ts@0.0.34'.
+'package.json' does not have a 'typesVersions' field.
+'package.json' does not have a 'typings' field.
+'package.json' has 'types' field 'index' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/tmp/index'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/tmp/index' does not exist.
+Loading module as file / folder, candidate module location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/tmp/index', target file type 'TypeScript'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/tmp/index.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/tmp/index.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/tmp/index.d.ts' exist - use it as a name resolution result.
+Resolving real path for '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/tmp/index.d.ts', result '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/tmp/index.d.ts'.
+======== Type reference directive 'tmp' was successfully resolved to '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/tmp/index.d.ts', primary: true. ========
+======== Resolving type reference directive 'node', containing file '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/glob/index.d.ts', root directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types'. ========
+Resolving with primary search path '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types'.
+'package.json' does not have a 'typings' field.
+'package.json' has 'types' field 'index' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/index'.
+'package.json' has a 'typesVersions' field with version-specific path mappings.
+Found 'package.json' at '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/package.json'. Package ID is '@types/node/index.d.ts@11.10.4'.
+'package.json' has a 'typesVersions' field with version-specific path mappings.
+'package.json' does not have a 'typings' field.
+'package.json' has 'types' field 'index' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/index'.
+'package.json' has a 'typesVersions' entry '>=3.2.0-0' that matches compiler version '3.3.3333', looking for a pattern to match module name 'index'.
+Module name 'index', matched pattern '*'.
+Trying substitution 'ts3.2/*', candidate module location: 'ts3.2/index'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/ts3.2/index' does not exist.
+Loading module as file / folder, candidate module location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/ts3.2/index', target file type 'TypeScript'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/ts3.2/index.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/ts3.2/index.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/ts3.2/index.d.ts' exist - use it as a name resolution result.
+Resolving real path for '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/ts3.2/index.d.ts', result '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/ts3.2/index.d.ts'.
+======== Type reference directive 'node' was successfully resolved to '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/ts3.2/index.d.ts', primary: true. ========
+======== Resolving module 'events' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/glob/index.d.ts'. ========
+Module resolution kind is not specified, using 'NodeJs'.
+Loading module 'events' from 'node_modules' folder, target file type 'TypeScript'.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/glob/node_modules' does not exist, skipping all lookups in it.
+Resolution for module 'events' was found in cache from location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types'.
+======== Module name 'events' was successfully resolved to '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/events/index.d.ts'. ========
+======== Resolving module 'minimatch' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/glob/index.d.ts'. ========
+Module resolution kind is not specified, using 'NodeJs'.
+Loading module 'minimatch' from 'node_modules' folder, target file type 'TypeScript'.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/glob/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node_modules' does not exist, skipping all lookups in it.
+'package.json' does not have a 'typings' field.
+'package.json' does not have a 'types' field.
+'package.json' has 'main' field 'minimatch.js' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/minimatch/minimatch.js'.
+'package.json' does not have a 'typesVersions' field.
+Found 'package.json' at '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/minimatch/package.json'. Package ID is 'minimatch/minimatch.d.ts@3.0.4'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/minimatch.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/minimatch.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/minimatch.d.ts' does not exist.
+'package.json' does not have a 'typings' field.
+'package.json' does not have a 'types' field.
+'package.json' has 'main' field 'minimatch.js' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/minimatch/minimatch.js'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/minimatch/minimatch.js' exist - use it as a name resolution result.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/minimatch/minimatch.js' has an unsupported extension, so skipping it.
+Loading module as file / folder, candidate module location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/minimatch/minimatch.js', target file type 'TypeScript'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/minimatch/minimatch.js.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/minimatch/minimatch.js.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/minimatch/minimatch.js.d.ts' does not exist.
+File name '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/minimatch/minimatch.js' has a '.js' extension - stripping it.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/minimatch/minimatch.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/minimatch/minimatch.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/minimatch/minimatch.d.ts' does not exist.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/minimatch/minimatch.js' does not exist, skipping all lookups in it.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/minimatch/index.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/minimatch/index.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/minimatch/index.d.ts' does not exist.
+'package.json' does not have a 'typings' field.
+'package.json' does not have a 'types' field.
+'package.json' has 'main' field '' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/minimatch'.
+'package.json' does not have a 'typesVersions' field.
+Found 'package.json' at '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/minimatch/package.json'. Package ID is '@types/minimatch/index.d.ts@3.0.3'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/minimatch.d.ts' does not exist.
+'package.json' does not have a 'typings' field.
+'package.json' does not have a 'types' field.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/minimatch/index.d.ts' exist - use it as a name resolution result.
+Resolving real path for '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/minimatch/index.d.ts', result '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/minimatch/index.d.ts'.
+======== Module name 'minimatch' was successfully resolved to '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/minimatch/index.d.ts'. ========
+======== Resolving type reference directive 'node', containing file '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/rimraf/index.d.ts', root directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types'. ========
+Resolving with primary search path '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types'.
+'package.json' does not have a 'typings' field.
+'package.json' has 'types' field 'index' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/index'.
+'package.json' has a 'typesVersions' field with version-specific path mappings.
+Found 'package.json' at '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/package.json'. Package ID is '@types/node/index.d.ts@11.10.4'.
+'package.json' has a 'typesVersions' field with version-specific path mappings.
+'package.json' does not have a 'typings' field.
+'package.json' has 'types' field 'index' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/index'.
+'package.json' has a 'typesVersions' entry '>=3.2.0-0' that matches compiler version '3.3.3333', looking for a pattern to match module name 'index'.
+Module name 'index', matched pattern '*'.
+Trying substitution 'ts3.2/*', candidate module location: 'ts3.2/index'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/ts3.2/index' does not exist.
+Loading module as file / folder, candidate module location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/ts3.2/index', target file type 'TypeScript'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/ts3.2/index.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/ts3.2/index.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/ts3.2/index.d.ts' exist - use it as a name resolution result.
+Resolving real path for '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/ts3.2/index.d.ts', result '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/ts3.2/index.d.ts'.
+======== Type reference directive 'node' was successfully resolved to '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node/ts3.2/index.d.ts', primary: true. ========
+======== Resolving module 'glob' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/rimraf/index.d.ts'. ========
+Module resolution kind is not specified, using 'NodeJs'.
+Loading module 'glob' from 'node_modules' folder, target file type 'TypeScript'.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/rimraf/node_modules' does not exist, skipping all lookups in it.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/node_modules' does not exist, skipping all lookups in it.
+'package.json' does not have a 'typings' field.
+'package.json' does not have a 'types' field.
+'package.json' has 'main' field 'glob.js' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/glob/glob.js'.
+'package.json' does not have a 'typesVersions' field.
+Found 'package.json' at '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/glob/package.json'. Package ID is 'glob/glob.d.ts@7.1.2'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/glob.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/glob.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/glob.d.ts' does not exist.
+'package.json' does not have a 'typings' field.
+'package.json' does not have a 'types' field.
+'package.json' has 'main' field 'glob.js' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/glob/glob.js'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/glob/glob.js' exist - use it as a name resolution result.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/glob/glob.js' has an unsupported extension, so skipping it.
+Loading module as file / folder, candidate module location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/glob/glob.js', target file type 'TypeScript'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/glob/glob.js.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/glob/glob.js.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/glob/glob.js.d.ts' does not exist.
+File name '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/glob/glob.js' has a '.js' extension - stripping it.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/glob/glob.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/glob/glob.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/glob/glob.d.ts' does not exist.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/glob/glob.js' does not exist, skipping all lookups in it.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/glob/index.ts' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/glob/index.tsx' does not exist.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/glob/index.d.ts' does not exist.
+'package.json' does not have a 'typings' field.
+'package.json' does not have a 'types' field.
+'package.json' has 'main' field '' that references '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/glob'.
+'package.json' does not have a 'typesVersions' field.
+Found 'package.json' at '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/glob/package.json'. Package ID is '@types/glob/index.d.ts@7.1.1'.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/glob.d.ts' does not exist.
+'package.json' does not have a 'typings' field.
+'package.json' does not have a 'types' field.
+File '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/glob/index.d.ts' exist - use it as a name resolution result.
+Resolving real path for '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/glob/index.d.ts', result '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/glob/index.d.ts'.
+======== Module name 'glob' was successfully resolved to '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/glob/index.d.ts'. ========
+======== Resolving module 'fs' from '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/rimraf/index.d.ts'. ========
+Module resolution kind is not specified, using 'NodeJs'.
+Loading module 'fs' from 'node_modules' folder, target file type 'TypeScript'.
+Directory '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types/rimraf/node_modules' does not exist, skipping all lookups in it.
+Resolution for module 'fs' was found in cache from location '/Users/spenner/src/stefanpenner/node-fixturify-project/node_modules/@types'.
+======== Module name 'fs' was not resolved. ========
+../../joliss/node-fixturify/index.ts(17,9): error TS6133: 'abs' is declared but its value is never read.
+index.ts(8,11): error TS2339: Property 'Options' does not exist on type 'typeof import("fixturify")'.
+index.ts(22,28): error TS2694: Namespace '"fixturify"' has no exported member 'DirJSON'.
+index.ts(28,20): error TS2694: Namespace '"fixturify"' has no exported member 'DirJSON'.
+index.ts(89,35): error TS2694: Namespace '"fixturify"' has no exported member 'DirJSON'.
+index.ts(241,23): error TS2694: Namespace '"fixturify"' has no exported member 'DirJSON'.
+index.ts(242,34): error TS2694: Namespace '"fixturify"' has no exported member 'DirJSON'.
+index.ts(245,53): error TS2694: Namespace '"fixturify"' has no exported member 'DirJSON'.
+index.ts(290,49): error TS2694: Namespace '"fixturify"' has no exported member 'DirJSON'.
+index.ts(295,26): error TS2694: Namespace '"fixturify"' has no exported member 'DirJSON'.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.

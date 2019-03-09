@@ -15,19 +15,15 @@ function keys(object: any) {
   }
 }
 
-interface DirJSON {
-  [filename: string]: DirJSON | string;
-}
-
 interface ProjectConstructor {
   new(name: string, version?: string, cb?: (project: Project) => void, root?: string, link?: string): Project;
-  fromJSON(json: DirJSON, name: string): Project;
+  fromJSON(json: fixturify.DirJSON, name: string): Project;
   fromDir(root: string, name: string): Project;
 }
 
 class Project {
   pkg: any;
-  files: DirJSON = {
+  files: fixturify.DirJSON = {
     'index.js': `
 'use strict';
 module.exports = {};`
@@ -88,7 +84,7 @@ module.exports = {};`
     this.pkg.version = value;
   }
 
-  static fromJSON(json: DirJSON, name: string) {
+  static fromJSON(json: fixturify.DirJSON, name: string) {
     if (json[name] === undefined) {
       throw new Error(`${name} was expected, but not found`);
     }
@@ -240,11 +236,11 @@ module.exports = {};`
     this.devDependencies().forEach(dep => dep.validate());
   }
 
-  toJSON(): DirJSON
-  toJSON(key: string): DirJSON | string
+  toJSON(): fixturify.DirJSON
+  toJSON(key: string): fixturify.DirJSON | string
   toJSON(key?: string) {
     if (key) {
-      return (this.toJSON()[this.name] as DirJSON)[key];
+      return (this.toJSON()[this.name] as fixturify.DirJSON)[key];
     } else {
       if (this.link) {
         return {
@@ -289,12 +285,12 @@ function parseScoped(name: string) {
 }
 
 function depsAsObject(modules: Project[]) {
-  let obj: { [name: string]: string | DirJSON } = {};
+  let obj: { [name: string]: string | fixturify.DirJSON } = {};
   modules.forEach(dep => {
     let scoped = parseScoped(dep.name);
     if (scoped) {
       let root = obj['@' + scoped.scope] = obj['@' + scoped.scope] || {};
-      (root as DirJSON)[scoped.name] = dep.toJSON()[dep.name];
+      (root as fixturify.DirJSON)[scoped.name] = dep.toJSON()[dep.name];
     } else {
       obj[dep.name] = dep.toJSON()[dep.name];
     }
