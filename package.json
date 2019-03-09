@@ -7,7 +7,7 @@
   "license": "MIT",
   "dependencies": {
     "@types/resolve": "^0.0.8",
-    "fixturify": "^0.3.4",
+    "fixturify": "^1.0.0",
     "get-caller-file": "^2.0.3",
     "resolve": "^1.10.0",
     "tmp": "^0.0.33"
