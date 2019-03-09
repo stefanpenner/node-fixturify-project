@@ -129,7 +129,8 @@ module.exports = {};`
   }
 
   readSync(root = this.root) {
-    let files = fixturify.readSync(root)[this.name];
+    // TODO: improve error message and improve type safety
+    let files = fixturify.readSync(root)[this.name] as any;
 
     let pkg = JSON.parse(files['package.json']);
     let nodeModules = files['node_modules'];
@@ -285,7 +286,7 @@ function parseScoped(name: string) {
 }
 
 function depsAsObject(modules: Project[]) {
-  let obj: { [name: string]: string | fixturify.DirJSON } = {};
+  let obj: fixturify.DirJSON = {};
   modules.forEach(dep => {
     let scoped = parseScoped(dep.name);
     if (scoped) {
