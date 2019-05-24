@@ -26,7 +26,7 @@ const project = new Project('rsvp', '3.1.4');
 project.addDependency('mocha', '5.2.0');
 project.addDependency('chai', '5.2.0');
 
-project.addFile('index.js', 'module.exports = "Hello, World!"');
+project.files['index.js'] = 'module.exports = "Hello, World!"';
 
 project.writeSync('some/root/');
 ```
@@ -87,6 +87,8 @@ some/root/rsvp/node_modules/b/node_modules/c/node_modules/e/package.json
 
 * `Project.fromJSON(json, name)` consume a given project from JSON
 * `Project.fromDir(root, name)` consume a given project from disk, assuming it has been written to by `Project.prototype.writeSync(root)`;
+* `Project.prototype.root` the path that `Project.prototype.writeSync` will write to by default, if not specified as constructor argument will default to a temp directory
+* `Project.prototype.files` a POJO (in the format of `fixturify`) representing the files within the project root
 * `Project.prototype.clone()` deep clone a given project
 * `Project.prototype.readSync(root)` assumes the state of the given root (symmetrical to `Project.prototype.writeSync(root)`)
 * `Project.prototype.writeSync(root)` writes the project to disk at `root`
