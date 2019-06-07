@@ -86,6 +86,7 @@ some/root/rsvp/node_modules/b/node_modules/c/node_modules/e/package.json
 ### Other API
 
 * `Project.fromJSON(json, name)` consume a given project from JSON
+* `Project.fromDir(pathToProject)` consume a given project from disk, infer name and version from the existing package.json`
 * `Project.fromDir(root, name)` consume a given project from disk, assuming it has been written to by `Project.prototype.writeSync(root)`;
 * `Project.prototype.root` the path that `Project.prototype.writeSync` will write to by default, if not specified as constructor argument will default to a temp directory
 * `Project.prototype.files` a POJO (in the format of `fixturify`) representing the files within the project root
