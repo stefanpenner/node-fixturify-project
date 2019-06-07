@@ -235,6 +235,33 @@ describe('Project', function() {
     expect(output.toJSON()).to.eql(input.toJSON());
   });
 
+  it('supports infering package#name if Project.fromDir is invoked without a second argument', function() {
+    const input = new Project('foo', '3.1.2');
+
+    input.addDependency('rsvp', '4.4.4', rsvp => rsvp.addDependency('mkdirp', '4.4.4'));
+    input.addDevDependency('omg', '4.4.4', omg => omg.addDependency('fs-extra', '5.5.5.'));
+
+    input.files = {
+      'index.js': 'OMG',
+      'foo': {
+        'bar': {
+          'baz': 'quz'
+        }
+      }
+    };
+
+    input.writeSync();
+
+    const output = Project.fromDir(input.root + '/foo');
+
+    expect(output.name).to.eql('foo');
+    expect(output.version).to.eql('3.1.2');
+    expect(output.toJSON()).to.eql(input.toJSON());
+    expect(() => {
+       Project.fromDir(input.root + '/foo', undefined);
+    }).to.throw(`fromDir's second optional argument, when provided, must not be undefined.`)
+  });
+
   it('supports custom PKG properties', function() {
     let project = new Project('foo', '123');
     project.pkg['ember-addon'] = {

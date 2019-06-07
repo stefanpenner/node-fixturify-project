@@ -114,12 +114,21 @@ module.exports = {};`
     return project;
   }
 
-  static fromDir(root: string, name: string) {
-    let project = new this(name, 'x.x.x');
+  static fromDir(root: string, name?: string) {
+    if (arguments.length === 1) {
+      const pkg = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'UTF8'));
+      let project = new this(pkg.name, pkg.version, undefined, path.dirname(root));
+      project.readSync();
+      return project;
+    } else if (name !== undefined){
+      // TODO: consider deprecating this branch
+      let project = new this(name, 'x.x.x');
 
-    project.readSync(root);
-
-    return project;
+      project.readSync(root);
+      return project;
+    } else {
+      throw new TypeError(`fromDir's second optional argument, when provided, must not be undefined.`);
+    }
   }
 
   writeSync(root = this.root) {
