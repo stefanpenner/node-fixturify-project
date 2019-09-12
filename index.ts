@@ -138,28 +138,24 @@ module.exports = {};`
   readSync(root = this.root) {
     let files = fixturify.readSync(root)[this.name];
 
-    let pkg = JSON.parse(files['package.json']);
+    this.pkg = JSON.parse(files['package.json']);
     let nodeModules = files['node_modules'];
 
     // drop "special files"
     delete files['node_modules'];
     delete files['package.json'];
 
-    this.name = pkg.name;
-    this.version = pkg.version;
-
     this._dependencies = {};
     this._devDependencies = {};
     this.files = files;
 
-    keys(pkg.dependencies).forEach(dependency => {
+    keys(this.pkg.dependencies).forEach(dependency => {
       this.addDependency((this.constructor as ProjectConstructor).fromJSON(nodeModules, dependency));
     });
 
-    keys(pkg.devDependencies).forEach(dependency => {
+    keys(this.pkg.devDependencies).forEach(dependency => {
       this.addDevDependency((this.constructor as ProjectConstructor).fromJSON(nodeModules, dependency));
     });
-
   }
 
   addDependency(name: string | Project, version?: string, cb?: (project: Project) => void) {
