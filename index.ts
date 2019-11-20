@@ -136,7 +136,7 @@ module.exports = {};`
   }
 
   readSync(root = this.root) {
-    let files = fixturify.readSync(root)[this.name];
+    let files = unwrapPackageName(fixturify.readSync(root), this.name);
 
     this.pkg = JSON.parse(files['package.json']);
     let nodeModules = files['node_modules'];
@@ -227,20 +227,18 @@ module.exports = {};`
   toJSON(key: string): DirJSON | string
   toJSON(key?: string) {
     if (key) {
-      return (this.toJSON()[this.name] as DirJSON)[key];
+      return (unwrapPackageName(this.toJSON(), this.name) as DirJSON)[key];
     } else {
-      return {
-        [this.name]: Object.assign({}, this.files, {
-          'node_modules': depsAsObject([
-            ...this.devDependencies(),
-            ...this.dependencies()
-          ]),
-          'package.json': JSON.stringify(Object.assign(this.pkg, {
-            dependencies: depsToObject(this.dependencies()),
-            devDependencies: depsToObject(this.devDependencies()),
-          }), null, 2),
-        }),
-      };
+      return wrapPackageName(this.name, Object.assign({}, this.files, {
+        'node_modules': depsAsObject([
+          ...this.devDependencies(),
+          ...this.dependencies()
+        ]),
+        'package.json': JSON.stringify(Object.assign(this.pkg, {
+          dependencies: depsToObject(this.dependencies()),
+          devDependencies: depsToObject(this.devDependencies()),
+        }), null, 2),
+      }));
     }
   }
 
@@ -256,7 +254,7 @@ module.exports = {};`
 }
 
 function parseScoped(name: string) {
-  let matched = name.match(/@([^@\/]+)\/(.*)/);
+  let matched = name.match(/(@[^@\/]+)\/(.*)/);
   if (matched) {
     return {
       scope: matched[1],
@@ -269,13 +267,7 @@ function parseScoped(name: string) {
 function depsAsObject(modules: Project[]) {
   let obj: { [name: string]: string | DirJSON } = {};
   modules.forEach(dep => {
-    let scoped = parseScoped(dep.name);
-    if (scoped) {
-      let root = obj['@' + scoped.scope] = obj['@' + scoped.scope] || {};
-      (root as DirJSON)[scoped.name] = dep.toJSON()[dep.name];
-    } else {
-      obj[dep.name] = dep.toJSON()[dep.name];
-    }
+    Object.assign(obj, dep.toJSON());
   });
   return obj;
 }
@@ -284,6 +276,26 @@ function depsToObject(deps: Project[]) {
   let obj: { [name: string]: string } = {};
   deps.forEach(dep => obj[dep.name] = dep.version);
   return obj;
+}
+
+function unwrapPackageName(obj: any, packageName: string) {
+  let scoped = parseScoped(packageName);
+  if (scoped) {
+    return obj[scoped.scope][scoped.name];
+  }
+  return obj[packageName];
+}
+
+function wrapPackageName(packageName: string, value: any) {
+  let scoped = parseScoped(packageName);
+  if (scoped) {
+    return { [scoped.scope]: { [scoped.name]: value } };
+  } else {
+    return {
+      [packageName]: value
+    };
+  }
+
 }
 
 export = Project;
