@@ -323,4 +323,12 @@ describe('Project', function() {
     project.dispose();
     expect(fs.existsSync(project.root)).to.eql(false);
   });
+
+  it('supports namespaced packages', function() {
+    let project = new Project('@ember/foo');
+    expect(project.name, '@ember/foo');
+    project.writeSync();
+    expect(fs.readdirSync(project.root)).to.eql(["@ember"]);
+    expect(fs.readdirSync(path.join(project.root, '@ember'))).to.eql(["foo"]);
+  });
 });
