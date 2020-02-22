@@ -20,7 +20,6 @@ describe('Project', function() {
 
   it('has the basic', function() {
     let project = new Project('rsvp', '3.1.4');
-
     project.files['index.js'] = `module.exports = "Hello, World!";`;
     let rsvp = project.addDependency('ember-cli', '3.1.1', cli => cli.addDependency('console-ui', '3.3.3')).addDependency('rsvp', '3.1.4');
     let source = project.addDevDependency('ember-source', '3.1.1');
@@ -119,8 +118,8 @@ describe('Project', function() {
 
   it('requires name and version', function() {
     let P = Project as any;
-    expect(() => new P('rsvp', null)).to.throw(/rsvp is missing a version/);
-    expect(() => new P(null, null)).to.throw(/Missing name/);
+    expect(() => new P('rsvp', null)).to.throw(/rsvp's package.json is missing a version/);
+    expect(() => new P(null, null)).to.throw(/missing a name/);
   });
 
   it('it supports construction of a project via JSON', function() {

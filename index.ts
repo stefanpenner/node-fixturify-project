@@ -2,8 +2,12 @@ import fixturify = require('fixturify');
 import tmp = require('tmp');
 import fs = require('fs');
 import path = require('path');
-
+import { PackageJson } from 'type-fest';
 tmp.setGracefulCleanup();
+
+function deserializePackageJson(serialized: string) : PackageJson {
+  return JSON.parse(serialized);
+}
 
 function keys(object: any) {
   if (object !== null && (typeof object === 'object' || Array.isArray(object))) {
@@ -13,6 +17,85 @@ function keys(object: any) {
   }
 }
 
+function getString<Obj extends Object, KeyOfObj extends keyof Obj>(obj: Obj, properyName: KeyOfObj, errorMessage?: string) : string {
+  const value = obj[properyName];
+  if (typeof value === 'string') {
+    return value;
+  } else {
+    throw new TypeError(errorMessage || `expected 'string' but got '${typeof value}'`);
+  }
+}
+
+function cloneDirJSON(serialized: DirJSON) :  DirJSON {
+  return JSON.parse(JSON.stringify(serialized));
+}
+
+/**
+ A utility method access a file from a DirJSON that is typesafe and runtime safe.
+
+```ts
+getFile(folder, 'package.json') // the files content, or it will throw
+```
+ */
+function getFile<Dir extends DirJSON, FileName extends keyof Dir>(dir: Dir, fileName: FileName) : string {
+  const value = dir[fileName];
+  if (typeof value === 'string') {
+    return value;
+  } else if (typeof value === 'object' && value !== null) {
+    throw new TypeError(`Expected a file for name '${fileName}' but got a 'Folder'`);
+  } else {
+    throw new TypeError(`Expected a file for name '${fileName}' but got '${typeof value}'`);
+  }
+}
+
+
+/**
+ A utility method access a file from a DirJSON that is typesafe and runtime safe
+
+```ts
+getFolder(folder, 'node_modules') // => the DirJSON of folder['node_module'] or it will throw
+```
+ */
+function getFolder<Dir extends DirJSON, FileName extends keyof Dir>(dir: Dir, fileName: FileName) : DirJSON {
+  const value = dir[fileName];
+
+  if (isDirJSON(value)) {
+    return value;
+  } else if (typeof value === 'string') {
+    throw new TypeError(`Expected a file for name '${fileName}' but got 'File'`);
+  } else {
+    throw new TypeError(`Expected a folder for name '${fileName}' but got '${typeof value}'`);
+  }
+}
+
+function isDirJSON(value: any): value is DirJSON {
+  return typeof value === 'object' && value !== null;
+}
+
+function getPackageName(pkg: PackageJson) : string{
+  return getString(pkg, 'name', `package.json is missing a name.`);
+}
+
+function getPackageVersion(pkg: PackageJson) : string{
+  return getString(pkg, 'version', `${getPackageName(pkg)}'s package.json is missing a version.`);
+}
+/**
+   A recursive JSON representation of a directory. This representation includes
+   both files, their contents and directories which can contain both files and
+   directories.
+
+   ```ts
+    const files : DirJSON = {
+      'index.js': 'content',
+      'foo.txt': 'content',
+      'folder': {
+        'index.js': 'content',
+        'apple.js': 'content',
+        'other-folder': { }
+      },
+    }
+    ```
+ */
 interface DirJSON {
   [filename: string]: DirJSON | string;
 }
@@ -24,7 +107,7 @@ interface ProjectConstructor {
 }
 
 class Project {
-  pkg: any;
+  pkg: PackageJson;
   files: DirJSON = {
     'index.js': `
 'use strict';
@@ -67,7 +150,7 @@ module.exports = {};`
   }
 
   get name(): string {
-    return this.pkg.name;
+    return getPackageName(this.pkg);
   }
 
   set name(value: string) {
@@ -75,7 +158,7 @@ module.exports = {};`
   }
 
   get version(): string {
-    return this.pkg.version;
+    return getPackageVersion(this.pkg);
   }
 
   set version(value: string) {
@@ -83,19 +166,16 @@ module.exports = {};`
   }
 
   static fromJSON(json: DirJSON, name: string) {
-    if (json[name] === undefined) {
-      throw new Error(`${name} was expected, but not found`);
-    }
-
-    let files = JSON.parse(JSON.stringify(json[name]));
-    let pkg = JSON.parse(files['package.json']);
-    let nodeModules = files['node_modules'];
+    const folder = getFolder(json, name)
+    let files = cloneDirJSON(folder);
+    let pkg = deserializePackageJson(getFile(files, 'package.json'));
+    let nodeModules = getFolder(files, 'node_modules');
 
     // drop "special files"
     delete files['node_modules'];
     delete files['package.json'];
 
-    let project = new this(pkg.name, pkg.version);
+    let project = new this(getPackageName(pkg), pkg.version);
 
     keys(pkg.dependencies).forEach(dependency => {
       project.addDependency(this.fromJSON(nodeModules, dependency));
@@ -116,8 +196,8 @@ module.exports = {};`
 
   static fromDir(root: string, name?: string) {
     if (arguments.length === 1) {
-      const pkg = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'UTF8'));
-      let project = new this(pkg.name, pkg.version, undefined, path.dirname(root));
+      const pkg = deserializePackageJson(fs.readFileSync(path.join(root, 'package.json'), 'UTF8'));
+      const project = new this(getPackageName(pkg), pkg.version, undefined, path.dirname(root));
       project.readSync();
       return project;
     } else if (name !== undefined){
@@ -136,10 +216,10 @@ module.exports = {};`
   }
 
   readSync(root = this.root) {
-    let files = unwrapPackageName(fixturify.readSync(root), this.name);
+    const files = unwrapPackageName(fixturify.readSync(root), this.name);
 
-    this.pkg = JSON.parse(files['package.json']);
-    let nodeModules = files['node_modules'];
+    this.pkg = deserializePackageJson(getFile(files, 'package.json'));
+    const nodeModules = getFolder(files, 'node_modules');
 
     // drop "special files"
     delete files['node_modules'];
@@ -212,7 +292,7 @@ module.exports = {};`
 
   validate() {
     if (typeof this.name !== 'string') {
-      throw new TypeError('Missing name');
+      throw new TypeError('missing name');
     }
 
     if (typeof this.version !== 'string') {
@@ -278,12 +358,12 @@ function depsToObject(deps: Project[]) {
   return obj;
 }
 
-function unwrapPackageName(obj: any, packageName: string) {
+function unwrapPackageName(obj: any, packageName: string) : DirJSON {
   let scoped = parseScoped(packageName);
   if (scoped) {
-    return obj[scoped.scope][scoped.name];
+    return getFolder(getFolder(obj, scoped.scope), scoped.name);
   }
-  return obj[packageName];
+  return getFolder(obj, packageName);
 }
 
 function wrapPackageName(packageName: string, value: any) {
