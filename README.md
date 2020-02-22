@@ -1,4 +1,5 @@
-# node-fixturify-project
+# node-fixturify-project 
+![CI](https://github.com/stefanpenner/node-fixturify-project/workflows/CI/badge.svg)
 
 A complementary project to [fixturify](https://github.com/joliss/node-fixturify)
 
@@ -24,6 +25,7 @@ const project = new Project('rsvp', '3.1.4');
 project.addDependency('mocha', '5.2.0');
 project.addDependency('chai', '5.2.0');
 
+project.pkg // => the contents of package.json for the given project
 project.files['index.js'] = 'module.exports = "Hello, World!"';
 
 project.writeSync('some/root/');
@@ -87,6 +89,7 @@ some/root/rsvp/node_modules/b/node_modules/c/node_modules/e/package.json
 * `Project.fromDir(pathToProject)` consume a given project from disk, infer name and version from the existing package.json`
 * `Project.fromDir(root, name)` consume a given project from disk, assuming it has been written to by `Project.prototype.writeSync(root)`;
 * `Project.prototype.root` the path that `Project.prototype.writeSync` will write to by default, if not specified as constructor argument will default to a temp directory
+* `Project.prototype.pkg` the projects `package.json` represented as an in-memory POJO.
 * `Project.prototype.files` a POJO (in the format of `fixturify`) representing the files within the project root
 * `Project.prototype.clone()` deep clone a given project
 * `Project.prototype.readSync(root)` assumes the state of the given root (symmetrical to `Project.prototype.writeSync(root)`)
