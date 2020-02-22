@@ -30,5 +30,8 @@
     "test:debug": "mocha debug test",
     "prepare": "tsc",
     "clean": "git clean -x -f"
+  },
+  "engines": {
+    "node": "10.* || >= 12.*"
   }
 }

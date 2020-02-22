@@ -1,6 +1,4 @@
 # node-fixturify-project
-[![Build Status](https://travis-ci.org/stefanpenner/node-fixturify-project.svg?branch=master)](https://travis-ci.org/stefanpenner/node-fixturify-project)
-[![Build status](https://ci.appveyor.com/api/projects/status/li9y4rjfjt7fmvpc/branch/master?svg=true)](https://ci.appveyor.com/project/embercli/node-fixturify-project/branch/master)
 
 A complementary project to [fixturify](https://github.com/joliss/node-fixturify)
 
