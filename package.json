@@ -19,6 +19,7 @@
     "chai": "^4.1.2",
     "fs-extra": "^7.0.0",
     "mocha": "^5.2.0",
+    "source-map-support": "^0.5.16",
     "typescript": "^3.3.3333"
   },
   "files": [
@@ -27,8 +28,8 @@
     "index.js.map"
   ],
   "scripts": {
-    "test": "mocha test",
-    "test:debug": "mocha debug test",
+    "test": "mocha test -r source-map-support/register",
+    "test:debug": "mocha debug test -r source-map-support/register",
     "prepare": "tsc",
     "clean": "git clean -x -f"
   },
