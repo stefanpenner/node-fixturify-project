@@ -6,7 +6,7 @@
   "author": "Stefan Penner <stefan.penner@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "fixturify": "^2.0.0",
+    "fixturify": "^2.1.0",
     "tmp": "^0.0.33",
     "type-fest": "^0.11.0"
   },
