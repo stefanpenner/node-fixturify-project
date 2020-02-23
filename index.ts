@@ -18,8 +18,8 @@ function keys(object: any) {
   }
 }
 
-function getString<Obj extends Object, KeyOfObj extends keyof Obj>(obj: Obj, properyName: KeyOfObj, errorMessage?: string) : string {
-  const value = obj[properyName];
+function getString<Obj extends Object, KeyOfObj extends keyof Obj>(obj: Obj, propertyName: KeyOfObj, errorMessage?: string) : string {
+  const value = obj[propertyName];
   if (typeof value === 'string') {
     return value;
   } else {
@@ -32,7 +32,7 @@ function cloneDirJSON(serialized: fixturify.DirJSON) :  fixturify.DirJSON {
 }
 
 /**
- A utility method access a file from a DirJSON that is typesafe and runtime safe.
+ A utility method access a file from a DirJSON that is type-safe and runtime safe.
 
 ```ts
 getFile(folder, 'package.json') // the files content, or it will throw
@@ -51,7 +51,7 @@ function getFile<Dir extends fixturify.DirJSON, FileName extends keyof Dir>(dir:
 
 
 /**
- A utility method access a file from a DirJSON that is typesafe and runtime safe
+ A utility method access a file from a DirJSON that is type-safe and runtime safe
 
 ```ts
 getFolder(folder, 'node_modules') // => the DirJSON of folder['node_module'] or it will throw

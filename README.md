@@ -1,10 +1,10 @@
-# node-fixturify-project 
+# node-fixturify-project
 ![CI](https://github.com/stefanpenner/node-fixturify-project/workflows/CI/badge.svg)
 
 A complementary project to [fixturify](https://github.com/joliss/node-fixturify)
 
 When implementing JS build tooling it is common to have complete projects as
-fixture data. Unfortunately fixtures commited to disk can be somewhat to
+fixture data. Unfortunately fixtures committed to disk can be somewhat to
 maintain and augment.
 
 The fixturify library is a great way to co-locate tests and their file
@@ -58,13 +58,13 @@ const Project = require('fixturify-project');
 const project = new Project('rsvp', '3.1.4');
 
 // version 1
-project.addDependecy('a', '1.2.3', a => a.addDependency('d', '3.2.1'));
+project.addDependency('a', '1.2.3', a => a.addDependency('d', '3.2.1'));
 
 // version 2
-let b = project.addDependecy('b', '3.2.3');
+let b = project.addDependency('b', '3.2.3');
 let c = b.addDependency('c', '4.4.4');
 
-// and this works recurisively:
+// and this works recursively:
 let e = c.addDependency('e', '5.4.4');
 
 project.writeSync('some/root/');

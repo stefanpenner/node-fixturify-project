@@ -185,9 +185,9 @@ describe('Project', function() {
     expect(output.name).to.eql('foo');
     expect(input.name).to.eql('bar');
 
-    input.addDependency('asdf', '22');
-    expect(input.dependencies().map(x => x.name)).to.contain('asdf');
-    expect(output.dependencies().map(x => x.name)).to.not.contain('asdf');
+    input.addDependency('-no-such-package-', '22');
+    expect(input.dependencies().map(x => x.name)).to.contain('-no-such-package-');
+    expect(output.dependencies().map(x => x.name)).to.not.contain('-no-such-package-');
   });
 
   it('supports readSync', function() {
@@ -234,7 +234,7 @@ describe('Project', function() {
     expect(output.toJSON()).to.eql(input.toJSON());
   });
 
-  it('supports infering package#name if Project.fromDir is invoked without a second argument', function() {
+  it('supports inferring package#name if Project.fromDir is invoked without a second argument', function() {
     const input = new Project('foo', '3.1.2');
 
     input.addDependency('rsvp', '4.4.4', rsvp => rsvp.addDependency('mkdirp', '4.4.4'));
