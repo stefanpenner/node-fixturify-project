@@ -1,8 +1,9 @@
-import fixturify = require('fixturify');
+import fixturify from 'fixturify';
 import tmp = require('tmp');
 import fs = require('fs');
 import path = require('path');
 import { PackageJson } from 'type-fest';
+
 tmp.setGracefulCleanup();
 
 function deserializePackageJson(serialized: string) : PackageJson {
@@ -26,7 +27,7 @@ function getString<Obj extends Object, KeyOfObj extends keyof Obj>(obj: Obj, pro
   }
 }
 
-function cloneDirJSON(serialized: DirJSON) :  DirJSON {
+function cloneDirJSON(serialized: fixturify.DirJSON) :  fixturify.DirJSON {
   return JSON.parse(JSON.stringify(serialized));
 }
 
@@ -37,7 +38,7 @@ function cloneDirJSON(serialized: DirJSON) :  DirJSON {
 getFile(folder, 'package.json') // the files content, or it will throw
 ```
  */
-function getFile<Dir extends DirJSON, FileName extends keyof Dir>(dir: Dir, fileName: FileName) : string {
+function getFile<Dir extends fixturify.DirJSON, FileName extends keyof Dir>(dir: Dir, fileName: FileName) : string {
   const value = dir[fileName];
   if (typeof value === 'string') {
     return value;
@@ -56,7 +57,7 @@ function getFile<Dir extends DirJSON, FileName extends keyof Dir>(dir: Dir, file
 getFolder(folder, 'node_modules') // => the DirJSON of folder['node_module'] or it will throw
 ```
  */
-function getFolder<Dir extends DirJSON, FileName extends keyof Dir>(dir: Dir, fileName: FileName) : DirJSON {
+function getFolder<Dir extends fixturify.DirJSON, FileName extends keyof Dir>(dir: Dir, fileName: FileName) : fixturify.DirJSON {
   const value = dir[fileName];
 
   if (isDirJSON(value)) {
@@ -68,7 +69,7 @@ function getFolder<Dir extends DirJSON, FileName extends keyof Dir>(dir: Dir, fi
   }
 }
 
-function isDirJSON(value: any): value is DirJSON {
+function isDirJSON(value: any): value is fixturify.DirJSON {
   return typeof value === 'object' && value !== null;
 }
 
@@ -79,36 +80,16 @@ function getPackageName(pkg: PackageJson) : string{
 function getPackageVersion(pkg: PackageJson) : string{
   return getString(pkg, 'version', `${getPackageName(pkg)}'s package.json is missing a version.`);
 }
-/**
-   A recursive JSON representation of a directory. This representation includes
-   both files, their contents and directories which can contain both files and
-   directories.
-
-   ```ts
-    const files : DirJSON = {
-      'index.js': 'content',
-      'foo.txt': 'content',
-      'folder': {
-        'index.js': 'content',
-        'apple.js': 'content',
-        'other-folder': { }
-      },
-    }
-    ```
- */
-interface DirJSON {
-  [filename: string]: DirJSON | string;
-}
 
 interface ProjectConstructor {
   new(name: string, version?: string, cb?: (project: Project) => void, root?: string): Project;
-  fromJSON(json: DirJSON, name: string): Project;
+  fromJSON(json: fixturify.DirJSON, name: string): Project;
   fromDir(root: string, name: string): Project;
 }
 
 class Project {
   pkg: PackageJson;
-  files: DirJSON = {
+  files: fixturify.DirJSON = {
     'index.js': `
 'use strict';
 module.exports = {};`
@@ -165,7 +146,7 @@ module.exports = {};`
     this.pkg.version = value;
   }
 
-  static fromJSON(json: DirJSON, name: string) {
+  static fromJSON(json: fixturify.DirJSON, name: string) {
     const folder = getFolder(json, name)
     let files = cloneDirJSON(folder);
     let pkg = deserializePackageJson(getFile(files, 'package.json'));
@@ -303,11 +284,11 @@ module.exports = {};`
     this.devDependencies().forEach(dep => dep.validate());
   }
 
-  toJSON(): DirJSON
-  toJSON(key: string): DirJSON | string
+  toJSON(): fixturify.DirJSON
+  toJSON(key: string): fixturify.DirJSON | string
   toJSON(key?: string) {
     if (key) {
-      return (unwrapPackageName(this.toJSON(), this.name) as DirJSON)[key];
+      return unwrapPackageName(this.toJSON(), this.name)[key];
     } else {
       return wrapPackageName(this.name, Object.assign({}, this.files, {
         'node_modules': depsAsObject([
@@ -345,7 +326,7 @@ function parseScoped(name: string) {
 }
 
 function depsAsObject(modules: Project[]) {
-  let obj: { [name: string]: string | DirJSON } = {};
+  let obj: { [name: string]: string | fixturify.DirJSON } = {};
   modules.forEach(dep => {
     Object.assign(obj, dep.toJSON());
   });
@@ -358,7 +339,7 @@ function depsToObject(deps: Project[]) {
   return obj;
 }
 
-function unwrapPackageName(obj: any, packageName: string) : DirJSON {
+function unwrapPackageName(obj: any, packageName: string) : fixturify.DirJSON {
   let scoped = parseScoped(packageName);
   if (scoped) {
     return getFolder(getFolder(obj, scoped.scope), scoped.name);
