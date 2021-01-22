@@ -328,7 +328,19 @@ function parseScoped(name: string) {
 function depsAsObject(modules: Project[]) {
   let obj: { [name: string]: string | fixturify.DirJSON } = {};
   modules.forEach(dep => {
-    Object.assign(obj, dep.toJSON());
+    let depJSON =  dep.toJSON();
+    if (dep.name.charAt(0) === '@') {
+      let [scope] = dep.name.split('/');
+      if (obj[scope] === undefined) {
+        Object.assign(obj, depJSON);
+      } else {
+        Object.assign(obj[scope], depJSON[scope]);
+      }
+
+    } else {
+      Object.assign(obj, depJSON);
+    }
+
   });
   return obj;
 }

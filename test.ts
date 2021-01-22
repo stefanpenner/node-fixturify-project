@@ -2,6 +2,7 @@ import chai = require('chai');
 import Project = require('./index');
 import fs = require('fs-extra');
 import path = require('path');
+import { DirJSON } from 'fixturify';
 
 const expect = chai.expect;
 
@@ -311,6 +312,28 @@ describe('Project', function() {
         q: '1.2.4'
       },
     });
+  });
+
+  it('handles scoped deps', function() {
+    let project = new Project('foo', '123');
+    project.addDependency('@test/foo', '1.0.0');
+    project.addDependency('@test/bar', '1.0.0');
+    project.writeSync();
+    let foo = project.toJSON().foo as DirJSON;
+    let node_modules = foo && foo.node_modules as DirJSON;
+    let scope = node_modules && node_modules['@test'] as DirJSON;
+    expect(Object.keys(scope)).to.deep.equal(['foo', 'bar'])
+  });
+
+  it('handles scoped devDeps', function() {
+    let project = new Project('foo', '123');
+    project.addDevDependency('@test/foo', '1.0.0');
+    project.addDevDependency('@test/bar', '1.0.0');
+    project.writeSync();
+    let foo = project.toJSON().foo as DirJSON;
+    let node_modules = foo && foo.node_modules as DirJSON;
+    let scope = node_modules && node_modules['@test'] as DirJSON;
+    expect(Object.keys(scope)).to.deep.equal(['foo', 'bar'])
   });
 
   it('has a working dispose to allow early cleanup', function() {
