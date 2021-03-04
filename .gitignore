@@ -2,3 +2,4 @@
 *.js
 *.js.map
 *.d.ts
+!.prettierrc.js
