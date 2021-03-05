@@ -1,7 +1,8 @@
 import fixturify from 'fixturify';
 import tmp = require('tmp');
-import fs = require('fs');
+import fs = require('fs-extra');
 import path = require('path');
+import resolvePackagePath = require('resolve-package-path');
 import { PackageJson } from 'type-fest';
 
 tmp.setGracefulCleanup();
@@ -93,6 +94,10 @@ interface ProjectConstructor {
   fromDir(root: string, name: string): Project;
 }
 
+interface ReadDirOpts {
+  linkDeps?: boolean;
+}
+
 class Project {
   pkg: PackageJson;
   files: fixturify.DirJSON = {
@@ -106,6 +111,9 @@ module.exports = {};`,
   private _devDependencies: { [name: string]: Project } = {};
   private _root: string;
   private _tmp: tmp.SynchrounousResult | undefined;
+
+  private dependencyLinks: Map<string, string> = new Map();
+  private linkIsDevDependency: Set<string> = new Set();
 
   constructor(name: string, version = '0.0.0', cb?: (project: Project) => void, root?: string) {
     this.pkg = {
@@ -181,48 +189,97 @@ module.exports = {};`,
     return project;
   }
 
-  static fromDir(root: string, name?: string) {
+  static fromDir(root: string, opts: ReadDirOpts): Project;
+  static fromDir(root: string, name?: string): Project;
+  static fromDir(root: string, nameOrOpts?: string | ReadDirOpts): Project {
+    let opts: ReadDirOpts;
+    let name: string | undefined;
     if (arguments.length === 1) {
-      const pkg = deserializePackageJson(fs.readFileSync(path.join(root, 'package.json'), 'UTF8'));
-      const project = new this(getPackageName(pkg), pkg.version, undefined, path.dirname(root));
-      project.readSync();
-      return project;
-    } else if (name !== undefined) {
+      opts = {};
+      name = undefined;
+    } else if (typeof nameOrOpts === 'string') {
+      opts = {};
+      name = nameOrOpts;
+    } else if (!nameOrOpts) {
+      throw new TypeError(`fromDir's second optional argument, when provided, must not be undefined.`);
+    } else {
+      opts = nameOrOpts;
+      name = undefined;
+    }
+
+    if (name) {
       // TODO: consider deprecating this branch
       let project = new this(name, 'x.x.x');
-
       project.readSync(root);
       return project;
-    } else {
-      throw new TypeError(`fromDir's second optional argument, when provided, must not be undefined.`);
     }
+
+    const pkg = deserializePackageJson(fs.readFileSync(path.join(root, 'package.json'), 'UTF8'));
+    const project = new this(getPackageName(pkg), pkg.version, undefined, path.dirname(root));
+    project.readSync(project.root, opts);
+    return project;
   }
 
   writeSync(root = this.root) {
     fixturify.writeSync(root, this.toJSON());
+    let stack: { project: Project; root: string }[] = [{ project: this, root: root || this.root }];
+    while (stack.length > 0) {
+      let { project, root } = stack.shift()!;
+      for (let [name, target] of project.dependencyLinks) {
+        fs.ensureSymlinkSync(target, path.join(root, project.name, 'node_modules', name), 'dir');
+      }
+      for (let dep of project.dependencies()) {
+        stack.push({
+          project: dep as Project,
+          root: path.join(root, project.name, 'node_modules'),
+        });
+      }
+      for (let dep of project.devDependencies()) {
+        stack.push({
+          project: dep as Project,
+          root: path.join(root, project.name, 'node_modules'),
+        });
+      }
+    }
   }
 
-  readSync(root = this.root) {
-    const files = unwrapPackageName(fixturify.readSync(root), this.name);
+  readSync(root = this.root, opts?: ReadDirOpts) {
+    const files = unwrapPackageName(
+      fixturify.readSync(root, {
+        // when linking deps, we don't need to crawl all of node_modules
+        ignore: opts?.linkDeps ? ['node_modules'] : [],
+      }),
+      this.name
+    );
 
     this.pkg = deserializePackageJson(getFile(files, 'package.json'));
-    const nodeModules = getFolder(files, 'node_modules');
-
-    // drop "special files"
-    delete files['node_modules'];
     delete files['package.json'];
 
     this._dependencies = {};
     this._devDependencies = {};
     this.files = files;
 
-    keys(this.pkg.dependencies).forEach(dependency => {
-      this.addDependency((this.constructor as ProjectConstructor).fromJSON(nodeModules, dependency));
-    });
-
-    keys(this.pkg.devDependencies).forEach(dependency => {
-      this.addDevDependency((this.constructor as ProjectConstructor).fromJSON(nodeModules, dependency));
-    });
+    if (opts?.linkDeps) {
+      if (this.pkg.dependencies) {
+        for (let dep of Object.keys(this.pkg.dependencies)) {
+          this.linkDependency(dep, { baseDir: path.join(root, this.name) });
+        }
+      }
+      if (this.pkg.devDependencies) {
+        for (let dep of Object.keys(this.pkg.devDependencies)) {
+          this.linkDevDependency(dep, { baseDir: path.join(root, this.name) });
+        }
+      }
+    } else {
+      const nodeModules = getFolder(files, 'node_modules');
+      delete files['node_modules'];
+      keys(this.pkg.dependencies).forEach(dependency => {
+        this.addDependency((this.constructor as ProjectConstructor).fromJSON(nodeModules, dependency));
+      });
+      keys(this.pkg.devDependencies).forEach(dependency => {
+        this.addDevDependency((this.constructor as ProjectConstructor).fromJSON(nodeModules, dependency));
+      });
+    }
   }
 
   addDependency(name: string | Project, version?: string, cb?: (project: Project) => void) {
@@ -235,8 +292,10 @@ module.exports = {};`,
         undefined,
         path.join(this.root, this.name, 'node_modules')
       );
+      this.dependencyLinks.delete(name);
     } else if (name.isDependency) {
       dep = this._dependencies[name.name] = name;
+      this.dependencyLinks.delete(name.name);
     } else {
       throw new TypeError('WTF');
     }
@@ -266,8 +325,10 @@ module.exports = {};`,
         undefined,
         path.join(this.root, this.name, 'node_modules')
       );
+      this.dependencyLinks.delete(name);
     } else if (name.isDependency) {
       dep = this._devDependencies[name.name] = name;
+      this.dependencyLinks.delete(name.name);
     } else {
       throw new TypeError('WTF');
     }
@@ -277,6 +338,25 @@ module.exports = {};`,
     }
 
     return dep;
+  }
+
+  linkDependency(name: string, opts: { baseDir: string; resolveName?: string } | { target: string }) {
+    this.removeDependency(name);
+    this.removeDevDependency(name);
+    if ('baseDir' in opts) {
+      let pkgJSONPath = resolvePackagePath(opts.resolveName || name, opts.baseDir);
+      if (!pkgJSONPath) {
+        throw new Error(`failed to locate ${opts.resolveName || name} in ${opts.baseDir}`);
+      }
+      this.dependencyLinks.set(name, path.dirname(pkgJSONPath));
+    } else {
+      this.dependencyLinks.set(name, opts.target);
+    }
+  }
+
+  linkDevDependency(name: string, opts: { baseDir: string; resolveName?: string } | { target: string }) {
+    this.linkDependency(name, opts);
+    this.linkIsDevDependency.add(name);
   }
 
   dependencies() {
@@ -306,14 +386,24 @@ module.exports = {};`,
     if (key) {
       return unwrapPackageName(this.toJSON(), this.name)[key];
     } else {
+      let dependencies = depsToObject(this.dependencies());
+      let devDependencies = depsToObject(this.devDependencies());
+      for (let [name, target] of this.dependencyLinks.entries()) {
+        let version = require(path.join(target, 'package.json')).version;
+        if (this.linkIsDevDependency.has(name)) {
+          devDependencies[name] = version;
+        } else {
+          dependencies[name] = version;
+        }
+      }
       return wrapPackageName(
         this.name,
         Object.assign({}, this.files, {
           node_modules: depsAsObject([...this.devDependencies(), ...this.dependencies()]),
           'package.json': JSON.stringify(
             Object.assign(this.pkg, {
-              dependencies: depsToObject(this.dependencies()),
-              devDependencies: depsToObject(this.devDependencies()),
+              dependencies,
+              devDependencies,
             }),
             null,
             2

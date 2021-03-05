@@ -353,4 +353,155 @@ describe('Project', function () {
     expect(fs.readdirSync(project.root)).to.eql(['@ember']);
     expect(fs.readdirSync(path.join(project.root, '@ember'))).to.eql(['foo']);
   });
+
+  it('supports linking to existing dependency via baseDir', function () {
+    let baseProject = new Project('base');
+    baseProject.addDependency('moment');
+    baseProject.writeSync();
+
+    let project = new Project('my-app');
+    project.linkDependency('moment', { baseDir: baseProject.baseDir });
+    project.writeSync();
+    expect(fs.readlinkSync(path.join(project.baseDir, 'node_modules', 'moment'))).to.eql(
+      path.join(baseProject.baseDir, 'node_modules', 'moment')
+    );
+  });
+
+  it('supports linking to existing dependency via baseDir and resolveName', function () {
+    let baseProject = new Project('base');
+    baseProject.addDependency('moment-x');
+    baseProject.writeSync();
+
+    let project = new Project('my-app');
+    project.linkDependency('moment', { baseDir: baseProject.baseDir, resolveName: 'moment-x' });
+    project.writeSync();
+    expect(fs.readlinkSync(path.join(project.baseDir, 'node_modules', 'moment'))).to.eql(
+      path.join(baseProject.baseDir, 'node_modules', 'moment-x')
+    );
+  });
+
+  it('supports linking to existing dependency via target', function () {
+    let baseProject = new Project('base');
+    baseProject.writeSync();
+
+    let project = new Project('my-app');
+    project.linkDependency('moment', { target: baseProject.baseDir });
+    project.writeSync();
+    expect(fs.readlinkSync(path.join(project.baseDir, 'node_modules', 'moment'))).to.eql(baseProject.baseDir);
+  });
+
+  it('supports linking to existing dependency from within nested project', function () {
+    let baseProject = new Project('base');
+    baseProject.addDependency('moment');
+    baseProject.writeSync();
+    let project = new Project('my-app');
+    let inner = project.addDependency('inner');
+    inner.linkDependency('moment', { baseDir: baseProject.baseDir });
+    project.writeSync();
+    expect(fs.readlinkSync(path.join(project.baseDir, 'node_modules', 'inner', 'node_modules', 'moment'))).to.eql(
+      path.join(baseProject.baseDir, 'node_modules', 'moment')
+    );
+  });
+
+  it('adds linked dependencies to package.json', function () {
+    let baseProject = new Project('base');
+    baseProject.addDependency('moment', '1.2.3');
+    baseProject.writeSync();
+
+    let project = new Project('my-app');
+    project.linkDependency('moment', { baseDir: baseProject.baseDir });
+    project.writeSync();
+    expect(fs.readJSONSync(path.join(project.baseDir, 'package.json')).dependencies.moment).to.eql('1.2.3');
+  });
+
+  it('adds linked devDependencies to package.json', function () {
+    let baseProject = new Project('base');
+    baseProject.addDependency('moment', '1.2.3');
+    baseProject.writeSync();
+
+    let project = new Project('my-app');
+    project.linkDevDependency('moment', { baseDir: baseProject.baseDir });
+    project.writeSync();
+    expect(fs.readJSONSync(path.join(project.baseDir, 'package.json')).devDependencies.moment).to.eql('1.2.3');
+  });
+
+  it('supports linking to existing devDependencies', function () {
+    let baseProject = new Project('base');
+    baseProject.addDependency('moment', '1.2.3');
+    baseProject.writeSync();
+
+    let project = new Project('my-app');
+    project.linkDevDependency('moment', { baseDir: baseProject.baseDir });
+    project.writeSync();
+    expect(fs.readlinkSync(path.join(project.baseDir, 'node_modules', 'moment'))).to.eql(
+      path.join(baseProject.baseDir, 'node_modules', 'moment')
+    );
+  });
+
+  it('can read a project with linked dependencies', function () {
+    // start with a template addon
+    let addonTemplate = new Project('stock-addon');
+    addonTemplate.addDependency('helper-lib', '1.2.3');
+    addonTemplate.files['hello.js'] = '// it works';
+    addonTemplate.writeSync();
+
+    // build a new addon from the template
+    let myAddon = Project.fromDir(addonTemplate.baseDir, { linkDeps: true });
+    myAddon.name = 'custom-addon';
+    myAddon.files['layered-extra.js'] = '// extra stuff';
+
+    // use the new addon in an app
+    let myApp = new Project('my-app');
+    myApp.addDependency(myAddon);
+    myApp.writeSync();
+
+    expect(
+      fs.readlinkSync(path.join(myApp.baseDir, 'node_modules', 'custom-addon', 'node_modules', 'helper-lib'))
+    ).to.eql(path.join(addonTemplate.baseDir, 'node_modules', 'helper-lib'));
+    expect(fs.existsSync(path.join(myApp.baseDir, 'node_modules', 'custom-addon', 'hello.js'))).to.eql(true);
+    expect(fs.existsSync(path.join(myApp.baseDir, 'node_modules', 'custom-addon', 'layered-extra.js'))).to.eql(true);
+  });
+
+  it('can override a linked dependency with a new Project dependency', function () {
+    let baseProject = new Project('base');
+    baseProject.addDependency('moment', '1.2.3');
+    baseProject.writeSync();
+
+    let project = Project.fromDir(baseProject.baseDir, { linkDeps: true });
+    project.addDependency('moment', '4.5.6');
+    project.writeSync();
+    expect(fs.lstatSync(path.join(project.baseDir, 'node_modules', 'moment')).isSymbolicLink()).to.eql(false);
+    expect(fs.readJSONSync(path.join(project.baseDir, 'node_modules', 'moment', 'package.json')).version).to.eql(
+      '4.5.6'
+    );
+  });
+
+  it('can override a Project dependency with a linked dependency', function () {
+    let dep = new Project('dep', '1.2.3');
+    dep.files['first.js'] = '';
+    dep.writeSync();
+
+    let project = new Project('app');
+    let dep2 = project.addDependency('dep', '4.5.6');
+    dep2.files['second.js'] = '';
+    project.linkDependency('dep', { target: dep.baseDir });
+    project.writeSync();
+    expect(fs.lstatSync(path.join(project.baseDir, 'node_modules', 'dep')).isSymbolicLink(), 'is symlink').is.true;
+    expect(
+      fs.readJSONSync(path.join(project.baseDir, 'node_modules', 'dep', 'package.json')).version,
+      'version'
+    ).to.eql('1.2.3');
+    expect(fs.existsSync(path.join(project.baseDir, 'node_modules', 'dep', 'first.js')), 'first.js').is.true;
+    expect(fs.existsSync(path.join(project.baseDir, 'node_modules', 'dep', 'second.js')), 'second.js').is.false;
+  });
+
+  it.skip('preserves linking behaviors through clone', function () {
+    let baseProject = new Project('base');
+    baseProject.writeSync();
+
+    let project = new Project('my-app');
+    project.linkDependency('moment', { target: baseProject.baseDir });
+    project.clone().writeSync();
+    expect(fs.readlinkSync(path.join(project.baseDir, 'node_modules', 'moment'))).to.eql(baseProject.baseDir);
+  });
 });
