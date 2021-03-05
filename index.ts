@@ -309,10 +309,12 @@ module.exports = {};`,
 
   removeDependency(name: string) {
     delete this._dependencies[name];
+    this.dependencyLinks.delete(name);
   }
 
   removeDevDependency(name: string) {
     delete this._devDependencies[name];
+    this.dependencyLinks.delete(name);
   }
 
   addDevDependency(name: string | Project, version?: string, cb?: (project: Project) => void) {
@@ -414,7 +416,18 @@ module.exports = {};`,
   }
 
   clone() {
-    return (this.constructor as ProjectConstructor).fromJSON(this.toJSON(), this.name);
+    let cloned = new (this.constructor as ProjectConstructor)(this.name);
+    cloned.pkg = JSON.parse(JSON.stringify(this.pkg));
+    cloned.files = JSON.parse(JSON.stringify(this.files));
+    for (let [name, depProject] of Object.entries(this._dependencies)) {
+      cloned._dependencies[name] = depProject.clone();
+    }
+    for (let [name, depProject] of Object.entries(this._devDependencies)) {
+      cloned._devDependencies[name] = depProject.clone();
+    }
+    cloned.dependencyLinks = new Map(this.dependencyLinks);
+    cloned.linkIsDevDependency = new Set(this.linkIsDevDependency);
+    return cloned;
   }
 
   dispose() {
