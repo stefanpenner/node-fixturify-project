@@ -9,7 +9,7 @@ on:
       - '*'
   pull_request: {}
   schedule:
-  - cron:  '0 6 * * 0' # weekly, on sundays
+    - cron: '0 6 * * 0' # weekly, on sundays
 
 jobs:
   test:
@@ -22,11 +22,13 @@ jobs:
         os: [ubuntu-latest, macOS-latest, windows-latest]
 
     steps:
-    - uses: actions/checkout@v1
-    - uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node }}
-    - name: install dependencies
-      run: yarn
-    - name: test
-      run: yarn test
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+      - name: install dependencies
+        run: yarn
+      - name: list
+        run: yarn lint
+      - name: test
+        run: yarn test

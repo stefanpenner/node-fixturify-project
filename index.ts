@@ -6,7 +6,7 @@ import { PackageJson } from 'type-fest';
 
 tmp.setGracefulCleanup();
 
-function deserializePackageJson(serialized: string) : PackageJson {
+function deserializePackageJson(serialized: string): PackageJson {
   return JSON.parse(serialized);
 }
 
@@ -18,7 +18,11 @@ function keys(object: any) {
   }
 }
 
-function getString<Obj extends Object, KeyOfObj extends keyof Obj>(obj: Obj, propertyName: KeyOfObj, errorMessage?: string) : string {
+function getString<Obj extends Object, KeyOfObj extends keyof Obj>(
+  obj: Obj,
+  propertyName: KeyOfObj,
+  errorMessage?: string
+): string {
   const value = obj[propertyName];
   if (typeof value === 'string') {
     return value;
@@ -27,7 +31,7 @@ function getString<Obj extends Object, KeyOfObj extends keyof Obj>(obj: Obj, pro
   }
 }
 
-function cloneDirJSON(serialized: fixturify.DirJSON) :  fixturify.DirJSON {
+function cloneDirJSON(serialized: fixturify.DirJSON): fixturify.DirJSON {
   return JSON.parse(JSON.stringify(serialized));
 }
 
@@ -38,7 +42,7 @@ function cloneDirJSON(serialized: fixturify.DirJSON) :  fixturify.DirJSON {
 getFile(folder, 'package.json') // the files content, or it will throw
 ```
  */
-function getFile<Dir extends fixturify.DirJSON, FileName extends keyof Dir>(dir: Dir, fileName: FileName) : string {
+function getFile<Dir extends fixturify.DirJSON, FileName extends keyof Dir>(dir: Dir, fileName: FileName): string {
   const value = dir[fileName];
   if (typeof value === 'string') {
     return value;
@@ -49,7 +53,6 @@ function getFile<Dir extends fixturify.DirJSON, FileName extends keyof Dir>(dir:
   }
 }
 
-
 /**
  A utility method access a file from a DirJSON that is type-safe and runtime safe
 
@@ -57,7 +60,10 @@ function getFile<Dir extends fixturify.DirJSON, FileName extends keyof Dir>(dir:
 getFolder(folder, 'node_modules') // => the DirJSON of folder['node_module'] or it will throw
 ```
  */
-function getFolder<Dir extends fixturify.DirJSON, FileName extends keyof Dir>(dir: Dir, fileName: FileName) : fixturify.DirJSON {
+function getFolder<Dir extends fixturify.DirJSON, FileName extends keyof Dir>(
+  dir: Dir,
+  fileName: FileName
+): fixturify.DirJSON {
   const value = dir[fileName];
 
   if (isDirJSON(value)) {
@@ -73,16 +79,16 @@ function isDirJSON(value: any): value is fixturify.DirJSON {
   return typeof value === 'object' && value !== null;
 }
 
-function getPackageName(pkg: PackageJson) : string{
+function getPackageName(pkg: PackageJson): string {
   return getString(pkg, 'name', `package.json is missing a name.`);
 }
 
-function getPackageVersion(pkg: PackageJson) : string{
+function getPackageVersion(pkg: PackageJson): string {
   return getString(pkg, 'version', `${getPackageName(pkg)}'s package.json is missing a version.`);
 }
 
 interface ProjectConstructor {
-  new(name: string, version?: string, cb?: (project: Project) => void, root?: string): Project;
+  new (name: string, version?: string, cb?: (project: Project) => void, root?: string): Project;
   fromJSON(json: fixturify.DirJSON, name: string): Project;
   fromDir(root: string, name: string): Project;
 }
@@ -92,7 +98,7 @@ class Project {
   files: fixturify.DirJSON = {
     'index.js': `
 'use strict';
-module.exports = {};`
+module.exports = {};`,
   };
   readonly isDependency = true;
 
@@ -105,7 +111,7 @@ module.exports = {};`
     this.pkg = {
       name,
       version,
-      keywords: []
+      keywords: [],
     };
 
     this.validate();
@@ -147,7 +153,7 @@ module.exports = {};`
   }
 
   static fromJSON(json: fixturify.DirJSON, name: string) {
-    const folder = getFolder(json, name)
+    const folder = getFolder(json, name);
     let files = cloneDirJSON(folder);
     let pkg = deserializePackageJson(getFile(files, 'package.json'));
     let nodeModules = getFolder(files, 'node_modules');
@@ -181,7 +187,7 @@ module.exports = {};`
       const project = new this(getPackageName(pkg), pkg.version, undefined, path.dirname(root));
       project.readSync();
       return project;
-    } else if (name !== undefined){
+    } else if (name !== undefined) {
       // TODO: consider deprecating this branch
       let project = new this(name, 'x.x.x');
 
@@ -223,7 +229,12 @@ module.exports = {};`
     let dep;
 
     if (typeof name === 'string') {
-      dep = this._dependencies[name] = new (this.constructor as ProjectConstructor)(name, version, undefined, path.join(this.root, this.name, 'node_modules'));
+      dep = this._dependencies[name] = new (this.constructor as ProjectConstructor)(
+        name,
+        version,
+        undefined,
+        path.join(this.root, this.name, 'node_modules')
+      );
     } else if (name.isDependency) {
       dep = this._dependencies[name.name] = name;
     } else {
@@ -248,8 +259,13 @@ module.exports = {};`
   addDevDependency(name: string | Project, version?: string, cb?: (project: Project) => void) {
     let dep;
 
-    if (typeof name === 'string')  {
-      dep = this._devDependencies[name] = new (this.constructor as ProjectConstructor)(name, version, undefined, path.join(this.root, this.name, 'node_modules'));
+    if (typeof name === 'string') {
+      dep = this._devDependencies[name] = new (this.constructor as ProjectConstructor)(
+        name,
+        version,
+        undefined,
+        path.join(this.root, this.name, 'node_modules')
+      );
     } else if (name.isDependency) {
       dep = this._devDependencies[name.name] = name;
     } else {
@@ -284,22 +300,26 @@ module.exports = {};`
     this.devDependencies().forEach(dep => dep.validate());
   }
 
-  toJSON(): fixturify.DirJSON
-  toJSON(key: string): fixturify.DirJSON | string
+  toJSON(): fixturify.DirJSON;
+  toJSON(key: string): fixturify.DirJSON | string;
   toJSON(key?: string) {
     if (key) {
       return unwrapPackageName(this.toJSON(), this.name)[key];
     } else {
-      return wrapPackageName(this.name, Object.assign({}, this.files, {
-        'node_modules': depsAsObject([
-          ...this.devDependencies(),
-          ...this.dependencies()
-        ]),
-        'package.json': JSON.stringify(Object.assign(this.pkg, {
-          dependencies: depsToObject(this.dependencies()),
-          devDependencies: depsToObject(this.devDependencies()),
-        }), null, 2),
-      }));
+      return wrapPackageName(
+        this.name,
+        Object.assign({}, this.files, {
+          node_modules: depsAsObject([...this.devDependencies(), ...this.dependencies()]),
+          'package.json': JSON.stringify(
+            Object.assign(this.pkg, {
+              dependencies: depsToObject(this.dependencies()),
+              devDependencies: depsToObject(this.devDependencies()),
+            }),
+            null,
+            2
+          ),
+        })
+      );
     }
   }
 
@@ -328,7 +348,7 @@ function parseScoped(name: string) {
 function depsAsObject(modules: Project[]) {
   let obj: { [name: string]: string | fixturify.DirJSON } = {};
   modules.forEach(dep => {
-    let depJSON =  dep.toJSON();
+    let depJSON = dep.toJSON();
     if (dep.name.charAt(0) === '@') {
       let [scope] = dep.name.split('/');
       if (obj[scope] === undefined) {
@@ -336,22 +356,20 @@ function depsAsObject(modules: Project[]) {
       } else {
         Object.assign(obj[scope], depJSON[scope]);
       }
-
     } else {
       Object.assign(obj, depJSON);
     }
-
   });
   return obj;
 }
 
 function depsToObject(deps: Project[]) {
   let obj: { [name: string]: string } = {};
-  deps.forEach(dep => obj[dep.name] = dep.version);
+  deps.forEach(dep => (obj[dep.name] = dep.version));
   return obj;
 }
 
-function unwrapPackageName(obj: any, packageName: string) : fixturify.DirJSON {
+function unwrapPackageName(obj: any, packageName: string): fixturify.DirJSON {
   let scoped = parseScoped(packageName);
   if (scoped) {
     return getFolder(getFolder(obj, scoped.scope), scoped.name);
@@ -365,10 +383,9 @@ function wrapPackageName(packageName: string, value: any) {
     return { [scoped.scope]: { [scoped.name]: value } };
   } else {
     return {
-      [packageName]: value
+      [packageName]: value,
     };
   }
-
 }
 
 export = Project;

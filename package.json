@@ -19,6 +19,7 @@
     "chai": "^4.2.0",
     "fs-extra": "^8.1.0",
     "mocha": "^7.0.1",
+    "prettier": "^2.2.1",
     "source-map-support": "^0.5.16",
     "typescript": "^3.8.2"
   },
@@ -30,6 +31,7 @@
   "scripts": {
     "test": "mocha test -r source-map-support/register",
     "test:debug": "mocha debug test -r source-map-support/register",
+    "lint": "yarn prettier --check *.ts",
     "prepare": "tsc",
     "clean": "git clean -x -f"
   },
