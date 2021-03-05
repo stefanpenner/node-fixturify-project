@@ -495,13 +495,27 @@ describe('Project', function () {
     expect(fs.existsSync(path.join(project.baseDir, 'node_modules', 'dep', 'second.js')), 'second.js').is.false;
   });
 
-  it.skip('preserves linking behaviors through clone', function () {
+  it('can remove a linked dependency', function () {
+    let dep = new Project('dep', '1.2.3');
+    dep.files['first.js'] = '';
+    dep.writeSync();
+
+    let project = new Project('app');
+    project.linkDependency('dep', { target: dep.baseDir });
+    project.removeDependency('dep');
+    project.writeSync();
+    expect(fs.readJSONSync(path.join(project.baseDir, 'package.json')).dependencies?.dep).to.be.undefined;
+    expect(fs.existsSync(path.join(project.baseDir, 'node_modules', 'dep'))).is.false;
+  });
+
+  it('preserves linking behaviors through clone', function () {
     let baseProject = new Project('base');
     baseProject.writeSync();
 
     let project = new Project('my-app');
     project.linkDependency('moment', { target: baseProject.baseDir });
-    project.clone().writeSync();
-    expect(fs.readlinkSync(path.join(project.baseDir, 'node_modules', 'moment'))).to.eql(baseProject.baseDir);
+    let cloned = project.clone();
+    cloned.writeSync();
+    expect(fs.readlinkSync(path.join(cloned.baseDir, 'node_modules', 'moment'))).to.eql(baseProject.baseDir);
   });
 });
