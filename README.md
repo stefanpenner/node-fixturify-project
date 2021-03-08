@@ -1,18 +1,12 @@
 # node-fixturify-project
-![CI](https://github.com/stefanpenner/node-fixturify-project/workflows/CI/badge.svg)
 
-A complementary project to [fixturify](https://github.com/joliss/node-fixturify)
+![CI](https://github.com/stefanpenner/node-fixturify-project/workflows/CI/badge.svg)
 
 When implementing JS build tooling it is common to have complete projects as
 fixture data. Unfortunately fixtures committed to disk can be somewhat to
 maintain and augment.
 
-The fixturify library is a great way to co-locate tests and their file
-system fixture information. This project embraces fixturify, but aims to
-reduce the verbosity when building graphs of node modules and dependencies.
-
-
-## Usage
+## Basic Usage
 
 ```sh
 yarn add fixturify-project
@@ -20,80 +14,106 @@ yarn add fixturify-project
 
 ```js
 const Project = require('fixturify-project');
-const project = new Project('rsvp', '3.1.4');
+const project = new Project('rsvp', '3.1.4', {
+  files: {
+    'index.js': 'module.exports = "Hello, World!"',
+  },
+});
 
 project.addDependency('mocha', '5.2.0');
 project.addDependency('chai', '5.2.0');
 
-project.pkg // => the contents of package.json for the given project
-project.files['index.js'] = 'module.exports = "Hello, World!"';
+project.pkg; // => the contents of package.json for the given project
+project.files; // => read or write the set of files further
 
-project.writeSync('some/root/');
+// if you don't set this, a new temp dir will be made for you when you writeSync()
+project.baseDir = 'some/root/';
+
+project.writeSync();
+
+// after writeSync(), you can read project.baseDir even if you didn't set it
+expect(fs.existsSync(join(project.baseDir, 'index.js'))).to.eql(true);
 ```
 
-Which the following files (and most importantly the appropriate file contents:
+The above example produces the following files (and most importantly the
+appropriate file contents:
 
 ```sh
-some/root/rsvp/package.json
-some/root/rsvp/index.js
-some/root/rsvp/node_modules/mocha/package.json
-some/root/rsvp/node_modules/chai/package.json
+some/root/package.json
+some/root/index.js
+some/root/node_modules/mocha/package.json
+some/root/node_modules/chai/package.json
 ```
 
-One can also produce JSON, which can be used directly by fixturify:
+### Nesting Dependencies
 
-```js
-// continued from above
-const fixturify = require('fixturify');
-
-fixturify.writeSync('some/other/root', project.toJSON());
-```
-
-### Advanced
-
-Obviously nested dependencies are common, and are not only supported but somewhat ergonomic:
+`addDependency` returns another `Project` instance, so you can nest arbitrarily deep:
 
 ```js
 const Project = require('fixturify-project');
-const project = new Project('rsvp', '3.1.4');
 
-// version 1
-project.addDependency('a', '1.2.3', a => a.addDependency('d', '3.2.1'));
+let project = new Project('rsvp');
+let a = project.addDependency('a');
+let b = a.addDependency('b');
+let c = b.addDependency('c');
 
-// version 2
-let b = project.addDependency('b', '3.2.3');
-let c = b.addDependency('c', '4.4.4');
-
-// and this works recursively:
-let e = c.addDependency('e', '5.4.4');
-
-project.writeSync('some/root/');
+project.writeSync();
 ```
 
 Which produces:
 
 ```sh
-some/root/rsvp/package.json
-some/root/rsvp/index.js
-some/root/rsvp/node_modules/a/package.json
-some/root/rsvp/node_modules/a/node_modules/d/package.json
-some/root/rsvp/node_modules/b/package.json
-some/root/rsvp/node_modules/b/node_modules/c/package.json
-some/root/rsvp/node_modules/b/node_modules/c/node_modules/e/package.json
+$TMPDIR/xxx/package.json
+$TMPDIR/xxx/index.js
+$TMPDIR/xxx/node_modules/a/package.json
+$TMPDIR/xxx/node_modules/a/node_modules/b/package.json
+$TMPDIR/xxx/node_modules/b/node_modules/b/node_modules/c/package.json
 ```
 
+### Linking to real dependencies
 
-### Other API
+Instead of creating all packages from scratch, you can link to real preexisting
+packages. This lets you take a real working package and modify it and its
+dependencies and watch how it behaves.
 
-* `Project.fromJSON(json, name)` consume a given project from JSON
-* `Project.fromDir(pathToProject)` consume a given project from disk, infer name and version from the existing package.json`
-* `Project.fromDir(root, name)` consume a given project from disk, assuming it has been written to by `Project.prototype.writeSync(root)`;
-* `Project.prototype.root` the path that `Project.prototype.writeSync` will write to by default, if not specified as constructor argument will default to a temp directory
-* `Project.prototype.pkg` the projects `package.json` represented as an in-memory POJO.
-* `Project.prototype.files` a POJO (in the format of `fixturify`) representing the files within the project root
-* `Project.prototype.clone()` deep clone a given project
-* `Project.prototype.readSync(root)` assumes the state of the given root (symmetrical to `Project.prototype.writeSync(root)`)
-* `Project.prototype.writeSync(root)` writes the project to disk at `root`
-* `Project.prototype.addDependency(name, version)` add a dependency to the given project
-* `Project.prototype.addDevDependency(name, version)` add a devDependency to the given project
-* `Project.prototype.dispose()` immediately delete the given projects tmp directories. If left not invoked, these files will be deleted when the process exists.
+```js
+const Project = require('fixturify-project');
+
+let project = new Project();
+let a = project.addDependency('a');
+
+// explicit target
+project.linkDependency('b', { target: '/example/b' });
+
+// this will follow node resolution rules to lookup "c" from "../elsewhere"
+project.linkDependency('c', { baseDir: '/example' });
+
+// this will follow node resolution rules to lookup "my-aliased-name" from "../elsewhere"
+project.linkDependency('d', { baseDir: '/example', resolveName: 'my-aliased-name' });
+
+project.writeSync();
+```
+
+Produces:
+
+```sh
+$TMPDIR/xxx/package.json
+$TMPDIR/xxx/index.js
+$TMPDIR/xxx/node_modules/a/package.json
+$TMPDIR/xxx/node_modules/a/node_modules/b -> /example/b
+$TMPDIR/xxx/node_modules/b/node_modules/c -> /example/node_modules/c
+$TMPDIR/xxx/node_modules/b/node_modules/d -> /example/node_modules/my-aliased-name
+```
+
+When constructing a whole Project from a directory, you can choose to link all
+dependencies instead of copying them in as Projects:
+
+```js
+let project = Project.fromDir("./sample-project", { linkDeps: true });
+project.files['extra.js'] = '// stuff';
+project.write();
+```
+
+This will generate a new copy of sample-project, with symlinks to all its
+original dependencies, but with "extra.js" added.
+
