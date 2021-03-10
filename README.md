@@ -51,7 +51,7 @@ fixturify.writeSync('some/other/root', project.toJSON());
 
 ### Advanced
 
-Obviously nested dependencies are common, and are not only supported but somewhat ergonomics:
+Obviously nested dependencies are common, and are not only supported but somewhat ergonomic:
 
 ```js
 const Project = require('fixturify-project');
