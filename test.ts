@@ -423,4 +423,21 @@ describe('Project', function () {
     cloned.writeSync();
     expect(fs.readlinkSync(path.join(cloned.baseDir, 'node_modules', 'moment'))).to.eql(baseProject.baseDir);
   });
+
+  it('can choose the requested semver range of a dependency', function () {
+    let proj = new Project();
+    proj.addDependency('mylib', { version: '1.2.3', requestedRange: '^1' });
+    proj.writeSync();
+    expect(fs.readJSONSync(path.join(proj.baseDir, 'package.json')).dependencies.mylib).to.eql('^1');
+  });
+
+  it('can choose the requested semver range of a linked dependency', function () {
+    let baseProject = new Project('moment', '1.2.3');
+    baseProject.writeSync();
+
+    let project = new Project('my-app');
+    project.linkDependency('moment', { target: baseProject.baseDir, requestedRange: '^1' });
+    project.writeSync();
+    expect(fs.readJSONSync(path.join(project.baseDir, 'package.json')).dependencies.moment).to.eql('^1');
+  });
 });

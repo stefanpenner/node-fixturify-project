@@ -101,6 +101,7 @@ export interface ProjectArgs {
   name?: string;
   version?: string;
   files?: fixturify.DirJSON;
+  requestedRange?: string;
 }
 
 export class Project {
@@ -113,7 +114,11 @@ export class Project {
   private _baseDir: string | undefined;
   private _tmp: tmp.SynchrounousResult | undefined;
 
-  private dependencyLinks: Map<string, string> = new Map();
+  // when used as a dependency in another Project, this is the semver range it
+  // will appear as within the parent's package.json
+  private requestedRange: string;
+
+  private dependencyLinks: Map<string, { dir: string; requestedRange: string }> = new Map();
   private linkIsDevDependency: Set<string> = new Set();
 
   constructor(name?: string, version?: string, args?: Omit<ProjectArgs, 'name' | 'version'>);
@@ -127,6 +132,7 @@ export class Project {
     let name: string | undefined;
     let version: string | undefined;
     let files: fixturify.DirJSON | undefined;
+    let requestedRange: string | undefined;
 
     if (first == null) {
       // all optional args stay undefined
@@ -135,15 +141,15 @@ export class Project {
       if (typeof second === 'string') {
         version = second;
         if (third) {
-          ({ files } = third);
+          ({ files, requestedRange } = third);
         }
       } else {
         if (second) {
-          ({ version, files } = second);
+          ({ version, files, requestedRange } = second);
         }
       }
     } else {
-      ({ name, version, files } = first);
+      ({ name, version, files, requestedRange } = first);
     }
 
     let pkg: PackageJson = {};
@@ -164,6 +170,7 @@ export class Project {
     } else {
       this.files = defaultFiles;
     }
+    this.requestedRange = requestedRange || this.pkg.version!;
   }
 
   set baseDir(dir: string) {
@@ -211,7 +218,7 @@ export class Project {
     fixturify.writeSync(this.baseDir, this.files);
     fs.outputJSONSync(path.join(this.baseDir, 'package.json'), this.pkgJSONWithDeps(), { spaces: 2 });
 
-    for (let [name, target] of this.dependencyLinks) {
+    for (let [name, { dir: target }] of this.dependencyLinks) {
       fs.ensureSymlinkSync(target, path.join(this.baseDir, 'node_modules', name), 'dir');
     }
     for (let dep of this.dependencyProjects()) {
@@ -332,18 +339,26 @@ export class Project {
     return this.addDep(first, second, third, '_devDependencies');
   }
 
-  linkDependency(name: string, opts: { baseDir: string; resolveName?: string } | { target: string }) {
+  linkDependency(
+    name: string,
+    opts:
+      | { baseDir: string; resolveName?: string; requestedRange?: string }
+      | { target: string; requestedRange?: string }
+  ) {
     this.removeDependency(name);
     this.removeDevDependency(name);
+    let dir: string;
     if ('baseDir' in opts) {
       let pkgJSONPath = resolvePackagePath(opts.resolveName || name, opts.baseDir);
       if (!pkgJSONPath) {
         throw new Error(`failed to locate ${opts.resolveName || name} in ${opts.baseDir}`);
       }
-      this.dependencyLinks.set(name, path.dirname(pkgJSONPath));
+      dir = path.dirname(pkgJSONPath);
     } else {
-      this.dependencyLinks.set(name, opts.target);
+      dir = opts.target;
     }
+    let requestedRange = opts?.requestedRange ?? fs.readJsonSync(path.join(dir, 'package.json')).version;
+    this.dependencyLinks.set(name, { dir, requestedRange });
   }
 
   linkDevDependency(name: string, opts: { baseDir: string; resolveName?: string } | { target: string }) {
@@ -360,14 +375,13 @@ export class Project {
   }
 
   private pkgJSONWithDeps(): PackageJson {
-    let dependencies = depsToObject(this.dependencyProjects());
-    let devDependencies = depsToObject(this.devDependencyProjects());
-    for (let [name, target] of this.dependencyLinks.entries()) {
-      let version = require(path.join(target, 'package.json')).version;
+    let dependencies = this.depsToObject(this.dependencyProjects());
+    let devDependencies = this.depsToObject(this.devDependencyProjects());
+    for (let [name, { requestedRange }] of this.dependencyLinks.entries()) {
       if (this.linkIsDevDependency.has(name)) {
-        devDependencies[name] = version;
+        devDependencies[name] = requestedRange;
       } else {
-        dependencies[name] = version;
+        dependencies[name] = requestedRange;
       }
     }
     return Object.assign(this.pkg, {
@@ -388,6 +402,7 @@ export class Project {
     }
     cloned.dependencyLinks = new Map(this.dependencyLinks);
     cloned.linkIsDevDependency = new Set(this.linkIsDevDependency);
+    cloned.requestedRange = this.requestedRange;
     return cloned;
   }
 
@@ -395,6 +410,12 @@ export class Project {
     if (this._tmp) {
       this._tmp.removeCallback();
     }
+  }
+
+  private depsToObject(deps: Project[]) {
+    let obj: { [name: string]: string } = {};
+    deps.forEach(dep => (obj[dep.name] = dep.requestedRange));
+    return obj;
   }
 }
 
@@ -407,12 +428,6 @@ function parseScoped(name: string) {
     };
   }
   return null;
-}
-
-function depsToObject(deps: Project[]) {
-  let obj: { [name: string]: string } = {};
-  deps.forEach(dep => (obj[dep.name] = dep.version));
-  return obj;
 }
 
 function unwrapPackageName(obj: any, packageName: string): fixturify.DirJSON {
