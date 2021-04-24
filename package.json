@@ -1,8 +1,8 @@
 {
-  "name": "fixturify-project",
-  "version": "2.1.1",
+  "name": "@ef4/fixturify-project",
+  "version": "3.0.0",
   "main": "index.js",
-  "repository": "git@github.com:stefanpenner/node-fixturify-project",
+  "repository": "git@github.com:ef4/node-fixturify-project",
   "author": "Stefan Penner <stefan.penner@gmail.com>",
   "license": "MIT",
   "dependencies": {
