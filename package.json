@@ -7,6 +7,7 @@
   "license": "MIT",
   "dependencies": {
     "fixturify": "^2.1.0",
+    "resolve-package-path": "^3.1.0",
     "tmp": "^0.0.33",
     "type-fest": "^0.11.0"
   },
@@ -35,10 +36,10 @@
     "clean": "git clean -x -f"
   },
   "engines": {
-    "node": "10.* || >= 12.*"
+    "node": "12.* || >= 14.*"
   },
   "volta": {
-    "node": "10.21.0",
+    "node": "16.1.0",
     "yarn": "1.22.4"
   }
 }

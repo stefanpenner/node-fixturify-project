@@ -1,7 +1,8 @@
 import fixturify from 'fixturify';
 import tmp = require('tmp');
-import fs = require('fs');
+import fs = require('fs-extra');
 import path = require('path');
+import resolvePackagePath = require('resolve-package-path');
 import { PackageJson } from 'type-fest';
 
 tmp.setGracefulCleanup();
@@ -29,10 +30,6 @@ function getString<Obj extends Object, KeyOfObj extends keyof Obj>(
   } else {
     throw new TypeError(errorMessage || `expected 'string' but got '${typeof value}'`);
   }
-}
-
-function cloneDirJSON(serialized: fixturify.DirJSON): fixturify.DirJSON {
-  return JSON.parse(JSON.stringify(serialized));
 }
 
 /**
@@ -87,53 +84,117 @@ function getPackageVersion(pkg: PackageJson): string {
   return getString(pkg, 'version', `${getPackageName(pkg)}'s package.json is missing a version.`);
 }
 
-interface ProjectConstructor {
-  new (name: string, version?: string, cb?: (project: Project) => void, root?: string): Project;
-  fromJSON(json: fixturify.DirJSON, name: string): Project;
-  fromDir(root: string, name: string): Project;
+interface ReadDirOpts {
+  linkDeps?: boolean;
 }
 
-class Project {
+// This only shallow-merges with any user-provided files, which is OK right now
+// because this is only one level deep. If we ever make it deeper, we'll need to
+// switch to a proper deep merge.
+const defaultFiles = {
+  'index.js': `
+    'use strict';
+     module.exports = {};`,
+};
+
+export interface ProjectArgs {
+  name?: string;
+  version?: string;
+  files?: fixturify.DirJSON;
+  requestedRange?: string;
+}
+
+export class Project {
   pkg: PackageJson;
-  files: fixturify.DirJSON = {
-    'index.js': `
-'use strict';
-module.exports = {};`,
-  };
+  files: fixturify.DirJSON;
   readonly isDependency = true;
 
   private _dependencies: { [name: string]: Project } = {};
   private _devDependencies: { [name: string]: Project } = {};
-  private _root: string;
+  private _baseDir: string | undefined;
   private _tmp: tmp.SynchrounousResult | undefined;
 
-  constructor(name: string, version = '0.0.0', cb?: (project: Project) => void, root?: string) {
-    this.pkg = {
-      name,
-      version,
-      keywords: [],
-    };
+  // when used as a dependency in another Project, this is the semver range it
+  // will appear as within the parent's package.json
+  private requestedRange: string;
 
-    this.validate();
+  private dependencyLinks: Map<string, { dir: string; requestedRange: string }> = new Map();
+  private linkIsDevDependency: Set<string> = new Set();
 
-    if (root) {
-      this._root = root;
+  constructor(name?: string, version?: string, args?: Omit<ProjectArgs, 'name' | 'version'>);
+  constructor(name?: string, args?: Omit<ProjectArgs, 'name'>);
+  constructor(args?: ProjectArgs);
+  constructor(
+    first?: string | ProjectArgs,
+    second?: string | Omit<ProjectArgs, 'name'>,
+    third?: Omit<ProjectArgs, 'name' | 'version'>
+  ) {
+    let name: string | undefined;
+    let version: string | undefined;
+    let files: fixturify.DirJSON | undefined;
+    let requestedRange: string | undefined;
+
+    if (first == null) {
+      // all optional args stay undefined
+    } else if (typeof first === 'string') {
+      name = first;
+      if (typeof second === 'string') {
+        version = second;
+        if (third) {
+          ({ files, requestedRange } = third);
+        }
+      } else {
+        if (second) {
+          ({ version, files, requestedRange } = second);
+        }
+      }
     } else {
-      this._tmp = tmp.dirSync({ unsafeCleanup: true });
-      this._root = fs.realpathSync(this._tmp.name);
+      ({ name, version, files, requestedRange } = first);
     }
 
-    if (typeof cb === 'function') {
-      cb(this);
+    let pkg: PackageJson = {};
+
+    if (files && typeof files?.['package.json'] === 'string') {
+      pkg = JSON.parse(files['package.json']);
+      files = Object.assign({}, files);
+      delete files['package.json'];
     }
+
+    this.pkg = Object.assign({}, pkg, {
+      name: name || pkg.name || 'a-fixturified-project',
+      version: version || pkg.version || '0.0.0',
+      keywords: pkg.keywords || [],
+    });
+    if (files) {
+      this.files = { ...defaultFiles, ...files };
+    } else {
+      this.files = defaultFiles;
+    }
+    this.requestedRange = requestedRange || this.pkg.version!;
   }
 
-  get root() {
-    return this._root;
+  set baseDir(dir: string) {
+    if (this._baseDir) {
+      throw new Error(`this Project already has a baseDir`);
+    }
+    this._baseDir = dir;
   }
 
   get baseDir() {
-    return path.join(this._root, this.name);
+    if (!this._baseDir) {
+      throw new Error(
+        `this project has no baseDir yet. Either set one manually or call writeSync to have one chosen for you`
+      );
+    }
+    return this._baseDir;
+  }
+
+  private autoBaseDir(): string {
+    if (!this._baseDir) {
+      this._tmp = tmp.dirSync({ unsafeCleanup: true });
+      this._baseDir = fs.realpathSync(this._tmp.name);
+    }
+    return this._baseDir;
   }
 
   get name(): string {
@@ -152,185 +213,209 @@ module.exports = {};`,
     this.pkg.version = value;
   }
 
-  static fromJSON(json: fixturify.DirJSON, name: string) {
-    const folder = getFolder(json, name);
-    let files = cloneDirJSON(folder);
-    let pkg = deserializePackageJson(getFile(files, 'package.json'));
-    let nodeModules = getFolder(files, 'node_modules');
+  writeSync() {
+    this.autoBaseDir();
+    fixturify.writeSync(this.baseDir, this.files);
+    fs.outputJSONSync(path.join(this.baseDir, 'package.json'), this.pkgJSONWithDeps(), { spaces: 2 });
 
-    // drop "special files"
-    delete files['node_modules'];
-    delete files['package.json'];
+    for (let [name, { dir: target }] of this.dependencyLinks) {
+      fs.ensureSymlinkSync(target, path.join(this.baseDir, 'node_modules', name), 'dir');
+    }
+    for (let dep of this.dependencyProjects()) {
+      dep.baseDir = path.join(this.baseDir, 'node_modules', dep.name);
+      dep.writeSync();
+    }
+    for (let dep of this.devDependencyProjects()) {
+      dep.baseDir = path.join(this.baseDir, 'node_modules', dep.name);
+      dep.writeSync();
+    }
+  }
 
-    let project = new this(getPackageName(pkg), pkg.version);
-
-    keys(pkg.dependencies).forEach(dependency => {
-      project.addDependency(this.fromJSON(nodeModules, dependency));
-    });
-
-    keys(pkg.devDependencies).forEach(dependency => {
-      project.addDevDependency(this.fromJSON(nodeModules, dependency));
-    });
-
-    delete pkg.dependencies;
-    delete pkg.devDependencies;
-
-    project.pkg = pkg;
-    project.files = files;
-
+  static fromDir(root: string, opts?: ReadDirOpts): Project {
+    let project = new Project();
+    project.readSync(root, opts);
     return project;
   }
 
-  static fromDir(root: string, name?: string) {
-    if (arguments.length === 1) {
-      const pkg = deserializePackageJson(fs.readFileSync(path.join(root, 'package.json'), 'UTF8'));
-      const project = new this(getPackageName(pkg), pkg.version, undefined, path.dirname(root));
-      project.readSync();
-      return project;
-    } else if (name !== undefined) {
-      // TODO: consider deprecating this branch
-      let project = new this(name, 'x.x.x');
-
-      project.readSync(root);
-      return project;
-    } else {
-      throw new TypeError(`fromDir's second optional argument, when provided, must not be undefined.`);
-    }
-  }
-
-  writeSync(root = this.root) {
-    fixturify.writeSync(root, this.toJSON());
-  }
-
-  readSync(root = this.root) {
-    const files = unwrapPackageName(fixturify.readSync(root), this.name);
+  private readSync(root: string, opts?: ReadDirOpts): void {
+    const files = fixturify.readSync(root, {
+      // when linking deps, we don't need to crawl all of node_modules
+      ignore: opts?.linkDeps ? ['node_modules'] : [],
+    });
 
     this.pkg = deserializePackageJson(getFile(files, 'package.json'));
-    const nodeModules = getFolder(files, 'node_modules');
-
-    // drop "special files"
-    delete files['node_modules'];
     delete files['package.json'];
-
-    this._dependencies = {};
-    this._devDependencies = {};
     this.files = files;
 
-    keys(this.pkg.dependencies).forEach(dependency => {
-      this.addDependency((this.constructor as ProjectConstructor).fromJSON(nodeModules, dependency));
-    });
-
-    keys(this.pkg.devDependencies).forEach(dependency => {
-      this.addDevDependency((this.constructor as ProjectConstructor).fromJSON(nodeModules, dependency));
-    });
+    if (opts?.linkDeps) {
+      if (this.pkg.dependencies) {
+        for (let dep of Object.keys(this.pkg.dependencies)) {
+          this.linkDependency(dep, { baseDir: path.join(root, this.name) });
+        }
+      }
+      if (this.pkg.devDependencies) {
+        for (let dep of Object.keys(this.pkg.devDependencies)) {
+          this.linkDevDependency(dep, { baseDir: path.join(root, this.name) });
+        }
+      }
+    } else {
+      const nodeModules = getFolder(files, 'node_modules');
+      delete files['node_modules'];
+      keys(this.pkg.dependencies).forEach(dependency => {
+        this.addDependency(
+          new (this.constructor as typeof Project)({ files: unwrapPackageName(nodeModules, dependency) })
+        );
+      });
+      keys(this.pkg.devDependencies).forEach(dependency => {
+        this.addDevDependency(
+          new (this.constructor as typeof Project)({ files: unwrapPackageName(nodeModules, dependency) })
+        );
+      });
+    }
   }
 
-  addDependency(name: string | Project, version?: string, cb?: (project: Project) => void) {
+  addDependency(name?: string, version?: string, args?: Omit<ProjectArgs, 'name' | 'version'>): Project;
+  addDependency(name?: string, args?: Omit<ProjectArgs, 'name'>): Project;
+  addDependency(args?: ProjectArgs): Project;
+  addDependency(args?: Project): Project;
+  addDependency(
+    first?: string | ProjectArgs | Project,
+    second?: string | Omit<ProjectArgs, 'name'>,
+    third?: Omit<ProjectArgs, 'name' | 'version'>
+  ): Project {
+    return this.addDep(first, second, third, '_dependencies');
+  }
+
+  private addDep(
+    first: string | ProjectArgs | Project | undefined,
+    second: string | Omit<ProjectArgs, 'name'> | undefined,
+    third: Omit<ProjectArgs, 'name' | 'version'> | undefined,
+    target: '_dependencies' | '_devDependencies'
+  ): Project {
     let dep;
-
-    if (typeof name === 'string') {
-      dep = this._dependencies[name] = new (this.constructor as ProjectConstructor)(
-        name,
-        version,
-        undefined,
-        path.join(this.root, this.name, 'node_modules')
-      );
-    } else if (name.isDependency) {
-      dep = this._dependencies[name.name] = name;
+    if (first == null) {
+      dep = new Project();
+    } else if (typeof first === 'string') {
+      let name = first;
+      if (typeof second === 'string') {
+        let version = second;
+        dep = new Project(name, version, third);
+      } else {
+        dep = new Project(name, second);
+      }
+    } else if ('isDependency' in first) {
+      dep = first;
     } else {
-      throw new TypeError('WTF');
+      dep = new Project(first);
     }
 
-    if (typeof cb === 'function') {
-      cb(dep);
-    }
-
+    this[target][dep.name] = dep;
+    this.dependencyLinks.delete(dep.name);
+    this.linkIsDevDependency.delete(dep.name);
     return dep;
   }
 
   removeDependency(name: string) {
     delete this._dependencies[name];
+    this.dependencyLinks.delete(name);
+    this.linkIsDevDependency.delete(name);
   }
 
   removeDevDependency(name: string) {
     delete this._devDependencies[name];
+    this.dependencyLinks.delete(name);
+    this.linkIsDevDependency.delete(name);
   }
 
-  addDevDependency(name: string | Project, version?: string, cb?: (project: Project) => void) {
-    let dep;
+  addDevDependency(name?: string, version?: string, args?: Omit<ProjectArgs, 'name' | 'version'>): Project;
+  addDevDependency(name?: string, args?: Omit<ProjectArgs, 'name'>): Project;
+  addDevDependency(args?: ProjectArgs): Project;
+  addDevDependency(args?: Project): Project;
+  addDevDependency(
+    first?: string | ProjectArgs | Project,
+    second?: string | Omit<ProjectArgs, 'name'>,
+    third?: Omit<ProjectArgs, 'name' | 'version'>
+  ): Project {
+    return this.addDep(first, second, third, '_devDependencies');
+  }
 
-    if (typeof name === 'string') {
-      dep = this._devDependencies[name] = new (this.constructor as ProjectConstructor)(
-        name,
-        version,
-        undefined,
-        path.join(this.root, this.name, 'node_modules')
-      );
-    } else if (name.isDependency) {
-      dep = this._devDependencies[name.name] = name;
+  linkDependency(
+    name: string,
+    opts:
+      | { baseDir: string; resolveName?: string; requestedRange?: string }
+      | { target: string; requestedRange?: string }
+  ) {
+    this.removeDependency(name);
+    this.removeDevDependency(name);
+    let dir: string;
+    if ('baseDir' in opts) {
+      let pkgJSONPath = resolvePackagePath(opts.resolveName || name, opts.baseDir);
+      if (!pkgJSONPath) {
+        throw new Error(`failed to locate ${opts.resolveName || name} in ${opts.baseDir}`);
+      }
+      dir = path.dirname(pkgJSONPath);
     } else {
-      throw new TypeError('WTF');
+      dir = opts.target;
     }
-
-    if (typeof cb === 'function') {
-      cb(dep);
-    }
-
-    return dep;
+    let requestedRange = opts?.requestedRange ?? fs.readJsonSync(path.join(dir, 'package.json')).version;
+    this.dependencyLinks.set(name, { dir, requestedRange });
   }
 
-  dependencies() {
+  linkDevDependency(name: string, opts: { baseDir: string; resolveName?: string } | { target: string }) {
+    this.linkDependency(name, opts);
+    this.linkIsDevDependency.add(name);
+  }
+
+  dependencyProjects() {
     return Object.keys(this._dependencies).map(dependency => this._dependencies[dependency]);
   }
 
-  devDependencies() {
+  devDependencyProjects() {
     return Object.keys(this._devDependencies).map(dependency => this._devDependencies[dependency]);
   }
 
-  validate() {
-    if (typeof this.name !== 'string') {
-      throw new TypeError('missing name');
+  private pkgJSONWithDeps(): PackageJson {
+    let dependencies = this.depsToObject(this.dependencyProjects());
+    let devDependencies = this.depsToObject(this.devDependencyProjects());
+    for (let [name, { requestedRange }] of this.dependencyLinks.entries()) {
+      if (this.linkIsDevDependency.has(name)) {
+        devDependencies[name] = requestedRange;
+      } else {
+        dependencies[name] = requestedRange;
+      }
     }
-
-    if (typeof this.version !== 'string') {
-      throw new TypeError(`${this.name} is missing a version`);
-    }
-
-    this.dependencies().forEach(dep => dep.validate());
-    this.devDependencies().forEach(dep => dep.validate());
+    return Object.assign(this.pkg, {
+      dependencies,
+      devDependencies,
+    });
   }
 
-  toJSON(): fixturify.DirJSON;
-  toJSON(key: string): fixturify.DirJSON | string;
-  toJSON(key?: string) {
-    if (key) {
-      return unwrapPackageName(this.toJSON(), this.name)[key];
-    } else {
-      return wrapPackageName(
-        this.name,
-        Object.assign({}, this.files, {
-          node_modules: depsAsObject([...this.devDependencies(), ...this.dependencies()]),
-          'package.json': JSON.stringify(
-            Object.assign(this.pkg, {
-              dependencies: depsToObject(this.dependencies()),
-              devDependencies: depsToObject(this.devDependencies()),
-            }),
-            null,
-            2
-          ),
-        })
-      );
+  clone(): Project {
+    let cloned: Project = new (this.constructor as typeof Project)();
+    cloned.pkg = JSON.parse(JSON.stringify(this.pkg));
+    cloned.files = JSON.parse(JSON.stringify(this.files));
+    for (let [name, depProject] of Object.entries(this._dependencies)) {
+      cloned._dependencies[name] = depProject.clone();
     }
-  }
-
-  clone() {
-    return (this.constructor as ProjectConstructor).fromJSON(this.toJSON(), this.name);
+    for (let [name, depProject] of Object.entries(this._devDependencies)) {
+      cloned._devDependencies[name] = depProject.clone();
+    }
+    cloned.dependencyLinks = new Map(this.dependencyLinks);
+    cloned.linkIsDevDependency = new Set(this.linkIsDevDependency);
+    cloned.requestedRange = this.requestedRange;
+    return cloned;
   }
 
   dispose() {
     if (this._tmp) {
       this._tmp.removeCallback();
     }
+  }
+
+  private depsToObject(deps: Project[]) {
+    let obj: { [name: string]: string } = {};
+    deps.forEach(dep => (obj[dep.name] = dep.requestedRange));
+    return obj;
   }
 }
 
@@ -345,30 +430,6 @@ function parseScoped(name: string) {
   return null;
 }
 
-function depsAsObject(modules: Project[]) {
-  let obj: { [name: string]: string | fixturify.DirJSON } = {};
-  modules.forEach(dep => {
-    let depJSON = dep.toJSON();
-    if (dep.name.charAt(0) === '@') {
-      let [scope] = dep.name.split('/');
-      if (obj[scope] === undefined) {
-        Object.assign(obj, depJSON);
-      } else {
-        Object.assign(obj[scope], depJSON[scope]);
-      }
-    } else {
-      Object.assign(obj, depJSON);
-    }
-  });
-  return obj;
-}
-
-function depsToObject(deps: Project[]) {
-  let obj: { [name: string]: string } = {};
-  deps.forEach(dep => (obj[dep.name] = dep.version));
-  return obj;
-}
-
 function unwrapPackageName(obj: any, packageName: string): fixturify.DirJSON {
   let scoped = parseScoped(packageName);
   if (scoped) {
@@ -376,16 +437,3 @@ function unwrapPackageName(obj: any, packageName: string): fixturify.DirJSON {
   }
   return getFolder(obj, packageName);
 }
-
-function wrapPackageName(packageName: string, value: any) {
-  let scoped = parseScoped(packageName);
-  if (scoped) {
-    return { [scoped.scope]: { [scoped.name]: value } };
-  } else {
-    return {
-      [packageName]: value,
-    };
-  }
-}
-
-export = Project;
