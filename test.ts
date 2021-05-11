@@ -8,11 +8,11 @@ const expect = chai.expect;
 
 describe('Project', function () {
   function readJSON(file: string) {
-    return JSON.parse(fs.readFileSync(file, 'UTF8'));
+    return JSON.parse(fs.readFileSync(file, 'utf-8'));
   }
 
   function read(file: string) {
-    return fs.readFileSync(file, 'UTF8');
+    return fs.readFileSync(file, 'utf-8');
   }
 
   function readDir(path: string) {

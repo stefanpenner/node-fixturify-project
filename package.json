@@ -6,23 +6,23 @@
   "author": "Stefan Penner <stefan.penner@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "fixturify": "^2.1.0",
+    "fixturify": "^2.1.1",
     "resolve-package-path": "^3.1.0",
     "tmp": "^0.0.33",
     "type-fest": "^0.11.0"
   },
   "devDependencies": {
-    "@types/chai": "^4.2.9",
-    "@types/fs-extra": "^8.1.0",
-    "@types/mocha": "^7.0.1",
-    "@types/node": "^13.7.4",
+    "@types/chai": "^4.2.18",
+    "@types/fs-extra": "^9.0.11",
+    "@types/mocha": "^8.2.2",
+    "@types/node": "^15.0.2",
     "@types/tmp": "^0.0.34",
-    "chai": "^4.2.0",
-    "fs-extra": "^8.1.0",
-    "mocha": "^7.0.1",
-    "prettier": "^2.2.1",
-    "source-map-support": "^0.5.16",
-    "typescript": "^3.8.2"
+    "chai": "^4.3.4",
+    "fs-extra": "^10.0.0",
+    "mocha": "^8.4.0",
+    "prettier": "^2.3.0",
+    "source-map-support": "^0.5.19",
+    "typescript": "^4.2.4"
   },
   "files": [
     "index.js",
