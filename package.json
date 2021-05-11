@@ -1,6 +1,6 @@
 {
   "name": "fixturify-project",
-  "version": "2.1.1",
+  "version": "3.0.0",
   "main": "index.js",
   "repository": "git@github.com:stefanpenner/node-fixturify-project",
   "author": "Stefan Penner <stefan.penner@gmail.com>",
