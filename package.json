@@ -30,7 +30,7 @@
   ],
   "scripts": {
     "test": "mocha test -r source-map-support/register",
-    "test:debug": "mocha debug test -r source-map-support/register",
+    "test:inspect": "mocha inspect test -r source-map-support/register",
     "lint": "yarn prettier --check *.ts",
     "prepare": "tsc",
     "clean": "git clean -x -f"

@@ -19,6 +19,10 @@ function keys(object: any) {
   }
 }
 
+function isProjectCallback(maybe: ProjectCallback | any): maybe is ProjectCallback {
+  return typeof maybe === 'function';
+}
+
 function getString<Obj extends Object, KeyOfObj extends keyof Obj>(
   obj: Obj,
   propertyName: KeyOfObj,
@@ -104,6 +108,7 @@ export interface ProjectArgs {
   requestedRange?: string;
 }
 
+type ProjectCallback = (project: Project) => void;
 export class Project {
   pkg: PackageJson;
   files: fixturify.DirJSON;
@@ -121,19 +126,26 @@ export class Project {
   private dependencyLinks: Map<string, { dir: string; requestedRange: string }> = new Map();
   private linkIsDevDependency: Set<string> = new Set();
 
+  constructor(
+    name?: string,
+    version?: string,
+    args?: Omit<ProjectArgs, 'name' | 'version'>,
+    projectCallback?: ProjectCallback
+  );
   constructor(name?: string, version?: string, args?: Omit<ProjectArgs, 'name' | 'version'>);
-  constructor(name?: string, args?: Omit<ProjectArgs, 'name'>);
-  constructor(args?: ProjectArgs);
+  constructor(name?: string, version?: string, projectCallback?: ProjectCallback);
+  constructor(name?: string, args?: Omit<ProjectArgs, 'name'>, projectCallback?: ProjectCallback);
+  constructor(args?: ProjectArgs, projectCallback?: ProjectCallback);
   constructor(
     first?: string | ProjectArgs,
-    second?: string | Omit<ProjectArgs, 'name'>,
-    third?: Omit<ProjectArgs, 'name' | 'version'>
+    second?: string | Omit<ProjectArgs, 'name'> | ProjectCallback,
+    third?: Omit<ProjectArgs, 'name' | 'version'> | ProjectCallback,
+    fourth?: ProjectCallback
   ) {
     let name: string | undefined;
     let version: string | undefined;
     let files: fixturify.DirJSON | undefined;
     let requestedRange: string | undefined;
-
     if (first == null) {
       // all optional args stay undefined
     } else if (typeof first === 'string') {
@@ -141,11 +153,15 @@ export class Project {
       if (typeof second === 'string') {
         version = second;
         if (third) {
-          ({ files, requestedRange } = third);
+          if (!isProjectCallback(third)) {
+            ({ files, requestedRange } = third);
+          }
         }
       } else {
         if (second) {
-          ({ version, files, requestedRange } = second);
+          if (!isProjectCallback(second)) {
+            ({ version, files, requestedRange } = second);
+          }
         }
       }
     } else {
@@ -171,6 +187,19 @@ export class Project {
       this.files = defaultFiles;
     }
     this.requestedRange = requestedRange || this.pkg.version!;
+
+    const arity = arguments.length;
+    if (arity > 1) {
+      fourth;
+      const projectCallback = arguments[arity - 1];
+      if (isProjectCallback(projectCallback)) {
+        projectCallback(this);
+      }
+    }
+  }
+
+  get root() {
+    throw new Error('.root has been removed, please review the readme but you likely actually want .baseDir now');
   }
 
   set baseDir(dir: string) {
@@ -274,23 +303,49 @@ export class Project {
     }
   }
 
-  addDependency(name?: string, version?: string, args?: Omit<ProjectArgs, 'name' | 'version'>): Project;
-  addDependency(name?: string, args?: Omit<ProjectArgs, 'name'>): Project;
-  addDependency(args?: ProjectArgs): Project;
-  addDependency(args?: Project): Project;
+  addDependency(
+    name?: string,
+    version?: string,
+    args?: Omit<ProjectArgs, 'name' | 'version'>,
+    projectCallback?: ProjectCallback
+  ): Project;
+  addDependency(name?: string, version?: string, projectCallback?: ProjectCallback): Project;
+  addDependency(name?: string, args?: Omit<ProjectArgs, 'name'>, projectCallback?: ProjectCallback): Project;
+  addDependency(args?: ProjectArgs, projectCallback?: ProjectCallback): Project;
+  addDependency(args?: Project, projectCallback?: ProjectCallback): Project;
   addDependency(
     first?: string | ProjectArgs | Project,
-    second?: string | Omit<ProjectArgs, 'name'>,
-    third?: Omit<ProjectArgs, 'name' | 'version'>
+    second?: string | Omit<ProjectArgs, 'name'> | ProjectCallback,
+    third?: Omit<ProjectArgs, 'name' | 'version'> | ProjectCallback,
+    fourth?: ProjectCallback
   ): Project {
-    return this.addDep(first, second, third, '_dependencies');
+    let projectCallback;
+
+    const arity = arguments.length;
+    if (arity > 1) {
+      fourth;
+      const maybeProjectCallback = arguments[arity - 1];
+      if (isProjectCallback(maybeProjectCallback)) {
+        projectCallback = maybeProjectCallback;
+      }
+    }
+
+    if (isProjectCallback(second)) {
+      second = undefined;
+    }
+    if (isProjectCallback(third)) {
+      third = undefined;
+    }
+
+    return this.addDep(first, second, third, '_dependencies', projectCallback);
   }
 
   private addDep(
     first: string | ProjectArgs | Project | undefined,
     second: string | Omit<ProjectArgs, 'name'> | undefined,
     third: Omit<ProjectArgs, 'name' | 'version'> | undefined,
-    target: '_dependencies' | '_devDependencies'
+    target: '_dependencies' | '_devDependencies',
+    projectCallback?: ProjectCallback
   ): Project {
     let dep;
     if (first == null) {
@@ -299,19 +354,23 @@ export class Project {
       let name = first;
       if (typeof second === 'string') {
         let version = second;
-        dep = new Project(name, version, third);
+        dep = new Project(name, version, third, projectCallback);
       } else {
-        dep = new Project(name, second);
+        dep = new Project(name, second, projectCallback);
       }
     } else if ('isDependency' in first) {
       dep = first;
     } else {
-      dep = new Project(first);
+      dep = new Project(first, projectCallback);
     }
 
     this[target][dep.name] = dep;
     this.dependencyLinks.delete(dep.name);
     this.linkIsDevDependency.delete(dep.name);
+
+    if (isProjectCallback(projectCallback)) {
+      projectCallback(this);
+    }
     return dep;
   }
 
@@ -327,16 +386,41 @@ export class Project {
     this.linkIsDevDependency.delete(name);
   }
 
-  addDevDependency(name?: string, version?: string, args?: Omit<ProjectArgs, 'name' | 'version'>): Project;
-  addDevDependency(name?: string, args?: Omit<ProjectArgs, 'name'>): Project;
-  addDevDependency(args?: ProjectArgs): Project;
-  addDevDependency(args?: Project): Project;
+  addDevDependency(
+    name?: string,
+    version?: string,
+    args?: Omit<ProjectArgs, 'name' | 'version'>,
+    projectCallback?: ProjectCallback
+  ): Project;
+  addDevDependency(name?: string, version?: string, projectCallback?: ProjectCallback): Project;
+  addDevDependency(name?: string, args?: Omit<ProjectArgs, 'name'>, projectCallback?: ProjectCallback): Project;
+  addDevDependency(args?: ProjectArgs, projectCallback?: ProjectCallback): Project;
+  addDevDependency(args?: Project, projectCallback?: ProjectCallback): Project;
   addDevDependency(
     first?: string | ProjectArgs | Project,
-    second?: string | Omit<ProjectArgs, 'name'>,
-    third?: Omit<ProjectArgs, 'name' | 'version'>
+    second?: string | Omit<ProjectArgs, 'name'> | ProjectCallback,
+    third?: Omit<ProjectArgs, 'name' | 'version'> | ProjectCallback,
+    fourth?: ProjectCallback
   ): Project {
-    return this.addDep(first, second, third, '_devDependencies');
+    let projectCallback;
+
+    const arity = arguments.length;
+    if (arity > 1) {
+      fourth;
+      const maybeProjectCallback = arguments[arity - 1];
+      if (isProjectCallback(maybeProjectCallback)) {
+        projectCallback = maybeProjectCallback;
+      }
+    }
+
+    if (isProjectCallback(second)) {
+      second = undefined;
+    }
+    if (isProjectCallback(third)) {
+      third = undefined;
+    }
+
+    return this.addDep(first, second, third, '_devDependencies', projectCallback);
   }
 
   linkDependency(
