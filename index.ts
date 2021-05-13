@@ -19,6 +19,10 @@ function keys(object: any) {
   }
 }
 
+function isProjectCallback(maybe: ProjectCallback | any): maybe is ProjectCallback {
+  return typeof maybe === 'function';
+}
+
 function getString<Obj extends Object, KeyOfObj extends keyof Obj>(
   obj: Obj,
   propertyName: KeyOfObj,
@@ -104,6 +108,7 @@ export interface ProjectArgs {
   requestedRange?: string;
 }
 
+type ProjectCallback = (project: Project) => void;
 export class Project {
   pkg: PackageJson;
   files: fixturify.DirJSON;
@@ -121,19 +126,26 @@ export class Project {
   private dependencyLinks: Map<string, { dir: string; requestedRange: string }> = new Map();
   private linkIsDevDependency: Set<string> = new Set();
 
+  constructor(
+    name?: string,
+    version?: string,
+    args?: Omit<ProjectArgs, 'name' | 'version'>,
+    projectCallback?: ProjectCallback
+  );
   constructor(name?: string, version?: string, args?: Omit<ProjectArgs, 'name' | 'version'>);
-  constructor(name?: string, args?: Omit<ProjectArgs, 'name'>);
-  constructor(args?: ProjectArgs);
+  constructor(name?: string, version?: string, projectCallback?: ProjectCallback);
+  constructor(name?: string, args?: Omit<ProjectArgs, 'name'>, projectCallback?: ProjectCallback);
+  constructor(args?: ProjectArgs, projectCallback?: ProjectCallback);
   constructor(
     first?: string | ProjectArgs,
-    second?: string | Omit<ProjectArgs, 'name'>,
-    third?: Omit<ProjectArgs, 'name' | 'version'>
+    second?: string | Omit<ProjectArgs, 'name'> | ProjectCallback,
+    third?: Omit<ProjectArgs, 'name' | 'version'> | ProjectCallback,
+    fourth?: ProjectCallback
   ) {
     let name: string | undefined;
     let version: string | undefined;
     let files: fixturify.DirJSON | undefined;
     let requestedRange: string | undefined;
-
     if (first == null) {
       // all optional args stay undefined
     } else if (typeof first === 'string') {
@@ -141,11 +153,15 @@ export class Project {
       if (typeof second === 'string') {
         version = second;
         if (third) {
-          ({ files, requestedRange } = third);
+          if (!isProjectCallback(third)) {
+            ({ files, requestedRange } = third);
+          }
         }
       } else {
         if (second) {
-          ({ version, files, requestedRange } = second);
+          if (!isProjectCallback(second)) {
+            ({ version, files, requestedRange } = second);
+          }
         }
       }
     } else {
@@ -171,6 +187,19 @@ export class Project {
       this.files = defaultFiles;
     }
     this.requestedRange = requestedRange || this.pkg.version!;
+
+    const arity = arguments.length;
+    if (arity > 1) {
+      fourth;
+      const projectCallback = arguments[arity - 1];
+      if (isProjectCallback(projectCallback)) {
+        projectCallback(this);
+      }
+    }
+  }
+
+  get root() {
+    throw new Error('.root has been removed, please review the readme but you likely actually want .baseDir now');
   }
 
   set baseDir(dir: string) {
@@ -419,6 +448,7 @@ export class Project {
   }
 }
 
+export default Project;
 function parseScoped(name: string) {
   let matched = name.match(/(@[^@\/]+)\/(.*)/);
   if (matched) {

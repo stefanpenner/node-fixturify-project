@@ -100,6 +100,24 @@ describe('Project', function () {
     expect(index).to.eql('module.exports = "Hello, World!";');
   });
 
+  describe('project constructor with callback DSL', function () {
+    it('name, version, cb', function () {
+      new Project('my-project', '0.0.0', _ => {});
+    });
+
+    it('ProjectArgs, cb', function () {
+      new Project({ name: 'my-project', version: '0.0.0' }, _ => {});
+    });
+
+    it('name, projectArgs - name, cb', function () {
+      new Project({ name: 'my-project', version: '0.0.0' }, _ => {});
+    });
+
+    it('name, version, projectArgs - name - version, cb', function () {
+      new Project('my-project', '0.0.0', { files: {} }, _ => {});
+    });
+  });
+
   it('supports default version', function () {
     const input = new Project();
     expect(input.version).to.eql('0.0.0');
