@@ -13,7 +13,7 @@ yarn add fixturify-project
 ```
 
 ```js
-const Project = require('fixturify-project');
+const { Project } = require('fixturify-project');
 const project = new Project('rsvp', '3.1.4', {
   files: {
     'index.js': 'module.exports = "Hello, World!"',
@@ -50,7 +50,7 @@ some/root/node_modules/chai/package.json
 `addDependency` returns another `Project` instance, so you can nest arbitrarily deep:
 
 ```js
-const Project = require('fixturify-project');
+const { Project } = require('fixturify-project');
 
 let project = new Project('rsvp');
 let a = project.addDependency('a');
@@ -77,7 +77,7 @@ packages. This lets you take a real working package and modify it and its
 dependencies and watch how it behaves.
 
 ```js
-const Project = require('fixturify-project');
+const { Project } = require('fixturify-project');
 
 let project = new Project();
 let a = project.addDependency('a');
