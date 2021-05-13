@@ -102,19 +102,59 @@ describe('Project', function () {
 
   describe('project constructor with callback DSL', function () {
     it('name, version, cb', function () {
-      new Project('my-project', '0.0.0', _ => {});
+      const projects: { [key: string]: Project } = {};
+      const project = new Project('my-project', '0.0.1', project => {
+        projects.default = project;
+        projects.a = project.addDependency('a', '0.0.2', a => {
+          projects.b = a.addDependency('b', '0.0.3');
+        });
+
+        projects.c = project.addDevDependency({ name: 'c', version: '0.0.4' }, a => {
+          projects.d = a.addDevDependency('d', { version: '0.0.5' }, d => {
+            projects.e = d.addDependency('e', { version: '0.0.6' });
+          });
+        });
+      });
+
+      expect(projects.default).to.equal(project);
+      expect(projects.a).to.exist;
+      expect(projects.b).to.exist;
+      expect(projects.c).to.exist;
+      expect(projects.d).to.exist;
+
+      expect(project.version).to.eql('0.0.1');
+      expect(projects.a.version).to.eql('0.0.2');
+      expect(projects.b.version).to.eql('0.0.3');
+      expect(projects.c.version).to.eql('0.0.4');
+      expect(projects.d.version).to.eql('0.0.5');
+      expect(projects.e.version).to.eql('0.0.6');
     });
 
     it('ProjectArgs, cb', function () {
-      new Project({ name: 'my-project', version: '0.0.0' }, _ => {});
+      const projects: { [key: string]: Project } = {};
+      const project = new Project({ name: 'my-project', version: '0.0.0' }, project => {
+        projects.default = project;
+      });
+
+      expect(project).to.eql(projects.default);
     });
 
     it('name, projectArgs - name, cb', function () {
-      new Project({ name: 'my-project', version: '0.0.0' }, _ => {});
+      const projects: { [key: string]: Project } = {};
+      const project = new Project({ name: 'my-project', version: '0.0.0' }, project => {
+        projects.default = project;
+      });
+
+      expect(project).to.eql(projects.default);
     });
 
     it('name, version, projectArgs - name - version, cb', function () {
-      new Project('my-project', '0.0.0', { files: {} }, _ => {});
+      const projects: { [key: string]: Project } = {};
+      const project = new Project('my-project', '0.0.0', { files: {} }, project => {
+        projects.default = project;
+      });
+
+      expect(project).to.eql(projects.default);
     });
   });
 
