@@ -158,6 +158,122 @@ describe('Project', function () {
     });
   });
 
+  describe('.pkg', function () {
+    it('flattened usage', function () {
+      const app = new Project('app', '3.1.1');
+      const rsvp = app.addDependency('rsvp', '3.2.2');
+      const a = rsvp.addDependency('a', '1.1.1');
+
+      expect(app.pkg).to.eql({
+        name: 'app',
+        version: '3.1.1',
+        keywords: [],
+      });
+
+      expect(rsvp.pkg).to.eql({
+        name: 'rsvp',
+        version: '3.2.2',
+        keywords: [],
+      });
+
+      expect(a.pkg).to.eql({
+        name: 'a',
+        version: '1.1.1',
+        keywords: [],
+      });
+
+      app.writeSync();
+
+      expect(app.pkg).to.eql({
+        name: 'app',
+        version: '3.1.1',
+        keywords: [],
+        dependencies: {
+          rsvp: '3.2.2',
+        },
+        devDependencies: {},
+      });
+
+      expect(rsvp.pkg).to.eql({
+        name: 'rsvp',
+        version: '3.2.2',
+        keywords: [],
+        dependencies: {
+          a: '1.1.1',
+        },
+        devDependencies: {},
+      });
+
+      expect(a.pkg).to.eql({
+        name: 'a',
+        version: '1.1.1',
+        keywords: [],
+        dependencies: {},
+        devDependencies: {},
+      });
+    });
+
+    it('callback usage', function () {
+      let rsvp!: Project, a!: Project;
+
+      const app = new Project('app', '3.1.1', app => {
+        rsvp = app.addDependency('rsvp', '3.2.2', rsvp => {
+          debugger;
+          app;
+          a = rsvp.addDependency('a', '1.1.1');
+        });
+      });
+
+      expect(app.pkg).to.eql({
+        name: 'app',
+        version: '3.1.1',
+        keywords: [],
+      });
+
+      expect(rsvp.pkg).to.eql({
+        name: 'rsvp',
+        version: '3.2.2',
+        keywords: [],
+      });
+
+      expect(a.pkg).to.eql({
+        name: 'a',
+        version: '1.1.1',
+        keywords: [],
+      });
+
+      app.writeSync();
+
+      expect(app.pkg).to.eql({
+        name: 'app',
+        version: '3.1.1',
+        keywords: [],
+        dependencies: {
+          rsvp: '3.2.2',
+        },
+        devDependencies: {},
+      });
+
+      expect(rsvp.pkg).to.eql({
+        name: 'rsvp',
+        version: '3.2.2',
+        keywords: [],
+        dependencies: {
+          a: '1.1.1',
+        },
+        devDependencies: {},
+      });
+
+      expect(a.pkg).to.eql({
+        name: 'a',
+        version: '1.1.1',
+        keywords: [],
+        dependencies: {},
+        devDependencies: {},
+      });
+    });
+  });
+
   it('supports default version', function () {
     const input = new Project();
     expect(input.version).to.eql('0.0.0');
