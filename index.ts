@@ -369,7 +369,7 @@ export class Project {
     this.linkIsDevDependency.delete(dep.name);
 
     if (isProjectCallback(projectCallback)) {
-      projectCallback(this);
+      projectCallback(dep);
     }
     return dep;
   }
