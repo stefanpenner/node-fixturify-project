@@ -218,8 +218,6 @@ describe('Project', function () {
 
       const app = new Project('app', '3.1.1', app => {
         rsvp = app.addDependency('rsvp', '3.2.2', rsvp => {
-          debugger;
-          app;
           a = rsvp.addDependency('a', '1.1.1');
         });
       });
