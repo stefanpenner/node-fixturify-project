@@ -489,6 +489,13 @@ describe('Project', function () {
             return require('beta/package.json').version;
           }
         `,
+        deeper: {
+          'index.js': `
+            module.exports = function() {
+              return 'inner' + require('beta/package.json').version;
+            }
+          `,
+        },
       },
     });
     alpha.pkg.peerDependencies = { beta: '^1.0.0' };
@@ -505,6 +512,9 @@ describe('Project', function () {
 
     // in our linked project, alpha sees its beta peerDep as beta@1.2.0
     expect(require(require.resolve('alpha', { paths: [project.baseDir] }))()).to.eql('1.2.0');
+
+    // deeper modules in our package also work correctly
+    expect(require(require.resolve('alpha/deeper', { paths: [project.baseDir] }))()).to.eql('inner1.2.0');
   });
 
   it('supports undeclaredPeerDeps', function () {
@@ -521,7 +531,8 @@ describe('Project', function () {
     baseProject.addDependency('beta', { version: '1.1.0' });
     baseProject.writeSync();
 
-    // precondition: in the baseProject, alpha sees its beta peerDep as beta@1.1.0
+    // precondition: in the baseProject, alpha sees its undeclared beta peerDep
+    // as beta@1.1.0
     expect(require(require.resolve('alpha', { paths: [baseProject.baseDir] }))()).to.eql('1.1.0');
 
     let project = new Project('my-app');
@@ -529,7 +540,7 @@ describe('Project', function () {
     project.addDependency('beta', { version: '1.2.0' });
     project.writeSync();
 
-    // in our linked project, alpha sees its beta peerDep as beta@1.2.0
+    // in our linked project, alpha sees its undeclared beta peerDep as beta@1.2.0
     expect(require(require.resolve('alpha', { paths: [project.baseDir] }))()).to.eql('1.2.0');
   });
 
