@@ -91,11 +91,6 @@ project.linkDependency('c', { baseDir: '/example' });
 // this will follow node resolution rules to lookup "my-aliased-name" from "../elsewhere"
 project.linkDependency('d', { baseDir: '/example', resolveName: 'my-aliased-name' });
 
-// if the package you're linking to is misbehaved and depends on your other dependencies
-// without declaring them as peerDependencies, you can provide a hint so we will still
-// link everything up correctly.
-project.linkDependency('e', { baseDir: '/example', undeclaredPeerDeps: ['some-dep'] });
-
 project.writeSync();
 ```
 
@@ -121,3 +116,7 @@ project.write();
 
 This will generate a new copy of sample-project, with symlinks to all its
 original dependencies, but with "extra.js" added.
+
+By default, `linkDeps` will only link up `dependencies` (which is appropriate
+for libraries). If you want to also include `devDependencies` (which is
+appropriate for apps) you can use `linkDevDeps` instead.

@@ -526,33 +526,6 @@ describe('Project', function () {
     );
   });
 
-  it('supports undeclaredPeerDeps', function () {
-    let baseProject = new Project('base');
-    baseProject.addDependency('alpha', {
-      files: {
-        'index.js': `
-          module.exports = function() {
-            return require('beta/package.json').version;
-          }
-        `,
-      },
-    });
-    baseProject.addDependency('beta', { version: '1.1.0' });
-    baseProject.writeSync();
-
-    // precondition: in the baseProject, alpha sees its undeclared beta peerDep
-    // as beta@1.1.0
-    expect(require(require.resolve('alpha', { paths: [baseProject.baseDir] }))()).to.eql('1.1.0');
-
-    let project = new Project('my-app');
-    project.linkDependency('alpha', { baseDir: baseProject.baseDir, undeclaredPeerDeps: ['beta'] });
-    project.addDependency('beta', { version: '1.2.0' });
-    project.writeSync();
-
-    // in our linked project, alpha sees its undeclared beta peerDep as beta@1.2.0
-    expect(require(require.resolve('alpha', { paths: [project.baseDir] }))()).to.eql('1.2.0');
-  });
-
   it('adds linked dependencies to package.json', function () {
     let baseProject = new Project('base');
     baseProject.addDependency('moment', '1.2.3');
@@ -592,6 +565,7 @@ describe('Project', function () {
     // start with a template addon
     let addonTemplate = new Project('stock-addon');
     addonTemplate.addDependency('helper-lib', '1.2.3');
+    addonTemplate.addDevDependency('test-lib');
     addonTemplate.files['hello.js'] = '// it works';
     addonTemplate.writeSync();
 
@@ -608,8 +582,40 @@ describe('Project', function () {
     expect(
       fs.readlinkSync(path.join(myApp.baseDir, 'node_modules', 'custom-addon', 'node_modules', 'helper-lib'))
     ).to.eql(path.join(addonTemplate.baseDir, 'node_modules', 'helper-lib'));
+
+    // dev dependencies not included by default
+    expect(fs.existsSync(path.join(myApp.baseDir, 'node_modules', 'custom-addon', 'node_modules', 'test-lib'))).to.eql(
+      false
+    );
+
     expect(fs.existsSync(path.join(myApp.baseDir, 'node_modules', 'custom-addon', 'hello.js'))).to.eql(true);
     expect(fs.existsSync(path.join(myApp.baseDir, 'node_modules', 'custom-addon', 'layered-extra.js'))).to.eql(true);
+  });
+
+  it('can read a project with linked dev dependencies', function () {
+    // start with a template app
+    let appTemplate = new Project('stock-app');
+    appTemplate.addDependency('helper-lib', '1.2.3');
+    appTemplate.addDevDependency('test-lib');
+    appTemplate.files['hello.js'] = '// it works';
+    appTemplate.writeSync();
+
+    // build a new addon from the template
+    let myApp = Project.fromDir(appTemplate.baseDir, { linkDevDeps: true });
+    myApp.name = 'custom-addon';
+    myApp.files['layered-extra.js'] = '// extra stuff';
+    myApp.writeSync();
+
+    expect(fs.readlinkSync(path.join(myApp.baseDir, 'node_modules', 'helper-lib'))).to.eql(
+      path.join(appTemplate.baseDir, 'node_modules', 'helper-lib')
+    );
+
+    expect(fs.readlinkSync(path.join(myApp.baseDir, 'node_modules', 'test-lib'))).to.eql(
+      path.join(appTemplate.baseDir, 'node_modules', 'test-lib')
+    );
+
+    expect(fs.existsSync(path.join(myApp.baseDir, 'hello.js'))).to.eql(true);
+    expect(fs.existsSync(path.join(myApp.baseDir, 'layered-extra.js'))).to.eql(true);
   });
 
   it('can override a linked dependency with a new Project dependency', function () {

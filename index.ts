@@ -91,6 +91,7 @@ function getPackageVersion(pkg: PackageJson): string {
 
 interface ReadDirOpts {
   linkDeps?: boolean;
+  linkDevDeps?: boolean;
 }
 
 // This only shallow-merges with any user-provided files, which is OK right now
@@ -124,8 +125,7 @@ export class Project {
   // will appear as within the parent's package.json
   private requestedRange: string;
 
-  private dependencyLinks: Map<string, { dir: string; requestedRange: string; undeclaredPeerDeps: string[] }> =
-    new Map();
+  private dependencyLinks: Map<string, { dir: string; requestedRange: string }> = new Map();
   private linkIsDevDependency: Set<string> = new Set();
 
   constructor(
@@ -256,25 +256,17 @@ export class Project {
       dep.baseDir = path.join(this.baseDir, 'node_modules', dep.name);
       dep.writeSync();
     }
-    for (let [name, { dir: target, undeclaredPeerDeps }] of this.dependencyLinks) {
-      this.writeLinkedPackage(name, target, undeclaredPeerDeps);
+    for (let [name, { dir: target }] of this.dependencyLinks) {
+      this.writeLinkedPackage(name, target);
     }
   }
 
-  private writeLinkedPackage(name: string, target: string, undeclaredPeerDeps: string[]) {
+  private writeLinkedPackage(name: string, target: string) {
     let targetPkg = require(path.join(target, 'package.json'));
-    let overriddenPeers = new Map();
-    for (let peerName of [...undeclaredPeerDeps, ...Object.keys(targetPkg.peerDependencies ?? {})]) {
-      let theirTarget = resolvePackagePath(peerName, target);
-      let ourTarget = resolvePackagePath(peerName, this.baseDir);
-      if (theirTarget !== ourTarget) {
-        overriddenPeers.set(peerName, ourTarget);
-      }
-    }
-
+    let peers = new Set(Object.keys(targetPkg.peerDependencies ?? {}));
     let destination = path.join(this.baseDir, 'node_modules', name);
 
-    if (overriddenPeers.size === 0) {
+    if (peers.size === 0) {
       // no peerDeps, so we can just symlink the whole package
       fs.ensureSymlinkSync(target, destination, 'dir');
       return;
@@ -286,10 +278,10 @@ export class Project {
     for (let section of ['dependencies', 'peerDependencies']) {
       if (targetPkg[section]) {
         for (let depName of Object.keys(targetPkg[section])) {
-          let depTarget = overriddenPeers.get(depName);
-          if (!depTarget) {
-            depTarget = resolvePackagePath(depName, target);
+          if (peers.has(depName)) {
+            continue;
           }
+          let depTarget = resolvePackagePath(depName, target);
           if (!depTarget) {
             throw new Error(`package ${name} in ${target} depends on ${depName} but we could not resolve it`);
           }
@@ -325,20 +317,21 @@ export class Project {
   private readSync(root: string, opts?: ReadDirOpts): void {
     const files = fixturify.readSync(root, {
       // when linking deps, we don't need to crawl all of node_modules
-      ignore: opts?.linkDeps ? ['node_modules'] : [],
+      ignore: opts?.linkDeps || opts?.linkDevDeps ? ['node_modules'] : [],
     });
 
     this.pkg = deserializePackageJson(getFile(files, 'package.json'));
+    this.requestedRange = this.version;
     delete files['package.json'];
     this.files = files;
 
-    if (opts?.linkDeps) {
+    if (opts?.linkDeps || opts?.linkDevDeps) {
       if (this.pkg.dependencies) {
         for (let dep of Object.keys(this.pkg.dependencies)) {
           this.linkDependency(dep, { baseDir: path.join(root, this.name) });
         }
       }
-      if (this.pkg.devDependencies) {
+      if (this.pkg.devDependencies && opts.linkDevDeps) {
         for (let dep of Object.keys(this.pkg.devDependencies)) {
           this.linkDevDependency(dep, { baseDir: path.join(root, this.name) });
         }
@@ -482,8 +475,8 @@ export class Project {
   linkDependency(
     name: string,
     opts:
-      | { baseDir: string; resolveName?: string; requestedRange?: string; undeclaredPeerDeps?: string[] }
-      | { target: string; requestedRange?: string; undeclaredPeerDeps?: string[] }
+      | { baseDir: string; resolveName?: string; requestedRange?: string }
+      | { target: string; requestedRange?: string }
   ) {
     this.removeDependency(name);
     this.removeDevDependency(name);
@@ -498,7 +491,7 @@ export class Project {
       dir = opts.target;
     }
     let requestedRange = opts?.requestedRange ?? fs.readJsonSync(path.join(dir, 'package.json')).version;
-    this.dependencyLinks.set(name, { dir, requestedRange, undeclaredPeerDeps: opts?.undeclaredPeerDeps || [] });
+    this.dependencyLinks.set(name, { dir, requestedRange });
   }
 
   linkDevDependency(name: string, opts: { baseDir: string; resolveName?: string } | { target: string }) {
