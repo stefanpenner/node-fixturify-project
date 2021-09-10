@@ -507,6 +507,32 @@ describe('Project', function () {
     expect(require(require.resolve('alpha', { paths: [project.baseDir] }))()).to.eql('1.2.0');
   });
 
+  it('supports undeclaredPeerDeps', function () {
+    let baseProject = new Project('base');
+    baseProject.addDependency('alpha', {
+      files: {
+        'index.js': `
+          module.exports = function() {
+            return require('beta/package.json').version;
+          }
+        `,
+      },
+    });
+    baseProject.addDependency('beta', { version: '1.1.0' });
+    baseProject.writeSync();
+
+    // precondition: in the baseProject, alpha sees its beta peerDep as beta@1.1.0
+    expect(require(require.resolve('alpha', { paths: [baseProject.baseDir] }))()).to.eql('1.1.0');
+
+    let project = new Project('my-app');
+    project.linkDependency('alpha', { baseDir: baseProject.baseDir, undeclaredPeerDeps: ['beta'] });
+    project.addDependency('beta', { version: '1.2.0' });
+    project.writeSync();
+
+    // in our linked project, alpha sees its beta peerDep as beta@1.2.0
+    expect(require(require.resolve('alpha', { paths: [project.baseDir] }))()).to.eql('1.2.0');
+  });
+
   it('adds linked dependencies to package.json', function () {
     let baseProject = new Project('base');
     baseProject.addDependency('moment', '1.2.3');

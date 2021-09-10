@@ -124,7 +124,8 @@ export class Project {
   // will appear as within the parent's package.json
   private requestedRange: string;
 
-  private dependencyLinks: Map<string, { dir: string; requestedRange: string }> = new Map();
+  private dependencyLinks: Map<string, { dir: string; requestedRange: string; undeclaredPeerDeps: string[] }> =
+    new Map();
   private linkIsDevDependency: Set<string> = new Set();
 
   constructor(
@@ -255,22 +256,19 @@ export class Project {
       dep.baseDir = path.join(this.baseDir, 'node_modules', dep.name);
       dep.writeSync();
     }
-    for (let [name, { dir: target }] of this.dependencyLinks) {
-      this.writeLinkedPackage(name, target);
+    for (let [name, { dir: target, undeclaredPeerDeps }] of this.dependencyLinks) {
+      this.writeLinkedPackage(name, target, undeclaredPeerDeps);
     }
   }
 
-  private writeLinkedPackage(name: string, target: string) {
+  private writeLinkedPackage(name: string, target: string, undeclaredPeerDeps: string[]) {
     let targetPkg = require(path.join(target, 'package.json'));
-    let { peerDependencies } = targetPkg;
     let overriddenPeers = new Map();
-    if (peerDependencies) {
-      for (let peerName of Object.keys(peerDependencies)) {
-        let theirTarget = resolvePackagePath(peerName, target);
-        let ourTarget = resolvePackagePath(peerName, this.baseDir);
-        if (theirTarget !== ourTarget) {
-          overriddenPeers.set(peerName, ourTarget);
-        }
+    for (let peerName of [...undeclaredPeerDeps, ...Object.keys(targetPkg.peerDependencies ?? {})]) {
+      let theirTarget = resolvePackagePath(peerName, target);
+      let ourTarget = resolvePackagePath(peerName, this.baseDir);
+      if (theirTarget !== ourTarget) {
+        overriddenPeers.set(peerName, ourTarget);
       }
     }
 
@@ -484,8 +482,8 @@ export class Project {
   linkDependency(
     name: string,
     opts:
-      | { baseDir: string; resolveName?: string; requestedRange?: string }
-      | { target: string; requestedRange?: string }
+      | { baseDir: string; resolveName?: string; requestedRange?: string; undeclaredPeerDeps?: string[] }
+      | { target: string; requestedRange?: string; undeclaredPeerDeps?: string[] }
   ) {
     this.removeDependency(name);
     this.removeDevDependency(name);
@@ -500,7 +498,7 @@ export class Project {
       dir = opts.target;
     }
     let requestedRange = opts?.requestedRange ?? fs.readJsonSync(path.join(dir, 'package.json')).version;
-    this.dependencyLinks.set(name, { dir, requestedRange });
+    this.dependencyLinks.set(name, { dir, requestedRange, undeclaredPeerDeps: opts?.undeclaredPeerDeps || [] });
   }
 
   linkDevDependency(name: string, opts: { baseDir: string; resolveName?: string } | { target: string }) {

@@ -91,6 +91,11 @@ project.linkDependency('c', { baseDir: '/example' });
 // this will follow node resolution rules to lookup "my-aliased-name" from "../elsewhere"
 project.linkDependency('d', { baseDir: '/example', resolveName: 'my-aliased-name' });
 
+// if the package you're linking to is misbehaved and depends on your other dependencies
+// without declaring them as peerDependencies, you can provide a hint so we will still
+// link everything up correctly.
+project.linkDependency('e', { baseDir: '/example', undeclaredPeerDeps: ['some-dep'] });
+
 project.writeSync();
 ```
 
@@ -109,11 +114,10 @@ When constructing a whole Project from a directory, you can choose to link all
 dependencies instead of copying them in as Projects:
 
 ```js
-let project = Project.fromDir("./sample-project", { linkDeps: true });
+let project = Project.fromDir('./sample-project', { linkDeps: true });
 project.files['extra.js'] = '// stuff';
 project.write();
 ```
 
 This will generate a new copy of sample-project, with symlinks to all its
 original dependencies, but with "extra.js" added.
-
