@@ -485,13 +485,16 @@ describe('Project', function () {
     let alpha = baseProject.addDependency('alpha', {
       files: {
         'index.js': `
-          module.exports = function() {
+          exports.betaVersion = function() {
             return require('beta/package.json').version;
+          }
+          exports.gammaLocation = function() {
+            return require.resolve('gamma/package.json');
           }
         `,
         deeper: {
           'index.js': `
-            module.exports = function() {
+            exports.betaVersion = function() {
               return 'inner' + require('beta/package.json').version;
             }
           `,
@@ -499,11 +502,12 @@ describe('Project', function () {
       },
     });
     alpha.pkg.peerDependencies = { beta: '^1.0.0' };
+    alpha.addDependency('gamma');
     baseProject.addDependency('beta', { version: '1.1.0' });
     baseProject.writeSync();
 
     // precondition: in the baseProject, alpha sees its beta peerDep as beta@1.1.0
-    expect(require(require.resolve('alpha', { paths: [baseProject.baseDir] }))()).to.eql('1.1.0');
+    expect(require(require.resolve('alpha', { paths: [baseProject.baseDir] })).betaVersion()).to.eql('1.1.0');
 
     let project = new Project('my-app');
     project.linkDependency('alpha', { baseDir: baseProject.baseDir });
@@ -511,10 +515,15 @@ describe('Project', function () {
     project.writeSync();
 
     // in our linked project, alpha sees its beta peerDep as beta@1.2.0
-    expect(require(require.resolve('alpha', { paths: [project.baseDir] }))()).to.eql('1.2.0');
+    expect(require(require.resolve('alpha', { paths: [project.baseDir] })).betaVersion()).to.eql('1.2.0');
 
     // deeper modules in our package also work correctly
-    expect(require(require.resolve('alpha/deeper', { paths: [project.baseDir] }))()).to.eql('inner1.2.0');
+    expect(require(require.resolve('alpha/deeper', { paths: [project.baseDir] })).betaVersion()).to.eql('inner1.2.0');
+
+    // unrelated dependencies are still shared
+    expect(require(require.resolve('alpha', { paths: [project.baseDir] })).gammaLocation()).to.eql(
+      require(require.resolve('alpha', { paths: [baseProject.baseDir] })).gammaLocation()
+    );
   });
 
   it('supports undeclaredPeerDeps', function () {
