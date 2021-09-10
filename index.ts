@@ -4,6 +4,7 @@ import fs = require('fs-extra');
 import path = require('path');
 import resolvePackagePath = require('resolve-package-path');
 import { PackageJson } from 'type-fest';
+import { readdirSync, statSync } from 'fs';
 
 tmp.setGracefulCleanup();
 
@@ -246,10 +247,6 @@ export class Project {
     this.autoBaseDir();
     fixturify.writeSync(this.baseDir, this.files);
     fs.outputJSONSync(path.join(this.baseDir, 'package.json'), this.pkgJSONWithDeps(), { spaces: 2 });
-
-    for (let [name, { dir: target }] of this.dependencyLinks) {
-      fs.ensureSymlinkSync(target, path.join(this.baseDir, 'node_modules', name), 'dir');
-    }
     for (let dep of this.dependencyProjects()) {
       dep.baseDir = path.join(this.baseDir, 'node_modules', dep.name);
       dep.writeSync();
@@ -257,6 +254,67 @@ export class Project {
     for (let dep of this.devDependencyProjects()) {
       dep.baseDir = path.join(this.baseDir, 'node_modules', dep.name);
       dep.writeSync();
+    }
+    for (let [name, { dir: target }] of this.dependencyLinks) {
+      this.writeLinkedPackage(name, target);
+    }
+  }
+
+  private writeLinkedPackage(name: string, target: string) {
+    let targetPkg = require(path.join(target, 'package.json'));
+    let { peerDependencies } = targetPkg;
+    let overriddenPeers = new Map();
+    if (peerDependencies) {
+      for (let peerName of Object.keys(peerDependencies)) {
+        let theirTarget = resolvePackagePath(peerName, target);
+        let ourTarget = resolvePackagePath(peerName, this.baseDir);
+        if (theirTarget !== ourTarget) {
+          overriddenPeers.set(peerName, ourTarget);
+        }
+      }
+    }
+
+    let destination = path.join(this.baseDir, 'node_modules', name);
+
+    if (overriddenPeers.size === 0) {
+      // no peerDeps, so we can just symlink the whole package
+      fs.ensureSymlinkSync(target, destination, 'dir');
+      return;
+    }
+
+    // need to reproduce the package structure in our own location
+    this.hardLinkContents(target, destination);
+
+    for (let section of ['dependencies', 'peerDependencies']) {
+      if (targetPkg[section]) {
+        for (let depName of Object.keys(targetPkg[section])) {
+          let depTarget = overriddenPeers.get(depName);
+          if (!depTarget) {
+            depTarget = resolvePackagePath(depName, target);
+          }
+          if (!depTarget) {
+            throw new Error(`package ${name} in ${target} depends on ${depName} but we could not resolve it`);
+          }
+          fs.ensureSymlinkSync(
+            depTarget.slice(0, -1 * '/package.json'.length),
+            path.join(destination, 'node_modules', depName)
+          );
+        }
+      }
+    }
+  }
+
+  private hardLinkContents(target: string, destination: string, exclude = 'node_modules') {
+    for (let name of readdirSync(target)) {
+      if (name === exclude) {
+        continue;
+      }
+      let stat = statSync(path.join(target, name));
+      if (stat.isDirectory()) {
+        this.hardLinkContents(path.join(target, name), path.join(destination, name));
+      } else {
+        fs.ensureLinkSync(path.join(target, name), path.join(destination, name));
+      }
     }
   }
 
