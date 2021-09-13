@@ -374,7 +374,7 @@ describe('Project', function () {
   it('supports custom PKG properties', function () {
     let project = new Project('foo', '123');
     project.pkg['ember-addon'] = {
-      name: 'foo',
+      version: 1,
     };
 
     project.writeSync();
@@ -382,7 +382,7 @@ describe('Project', function () {
       dependencies: {},
       devDependencies: {},
       'ember-addon': {
-        name: 'foo',
+        version: 1,
       },
       keywords: [],
       name: 'foo',
