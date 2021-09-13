@@ -127,6 +127,7 @@ export class Project {
 
   private dependencyLinks: Map<string, { dir: string; requestedRange: string }> = new Map();
   private linkIsDevDependency: Set<string> = new Set();
+  private usingHardLinks = true;
 
   constructor(
     name?: string,
@@ -303,9 +304,24 @@ export class Project {
       if (stat.isDirectory()) {
         this.hardLinkContents(path.join(target, name), path.join(destination, name));
       } else {
-        fs.ensureLinkSync(path.join(target, name), path.join(destination, name));
+        this.hardLinkFile(path.join(target, name), path.join(destination, name));
       }
     }
+  }
+
+  private hardLinkFile(source: string, destination: string) {
+    if (this.usingHardLinks) {
+      try {
+        fs.ensureLinkSync(source, destination);
+        return;
+      } catch (err: any) {
+        if (err.code !== 'EXDEV') {
+          throw err;
+        }
+        this.usingHardLinks = false;
+      }
+    }
+    fs.copySync(source, destination);
   }
 
   static fromDir(root: string, opts?: ReadDirOpts): Project {
