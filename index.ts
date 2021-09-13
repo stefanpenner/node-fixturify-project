@@ -4,8 +4,12 @@ import fs = require('fs-extra');
 import path = require('path');
 import resolvePackagePath = require('resolve-package-path');
 import CacheGroup = require('resolve-package-path/lib/cache-group');
-import { PackageJson } from 'type-fest';
+import { PackageJson as BasePackageJson } from 'type-fest';
 import { entries } from 'walk-sync';
+
+type PackageJson = BasePackageJson &
+  // we also allow adding arbitrary key/value pairs to a PackageJson
+  { [name: string]: { }};
 
 tmp.setGracefulCleanup();
 
