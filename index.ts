@@ -3,6 +3,7 @@ import tmp = require('tmp');
 import fs = require('fs-extra');
 import path = require('path');
 import resolvePackagePath = require('resolve-package-path');
+import CacheGroup = require('resolve-package-path/lib/cache-group');
 import { PackageJson } from 'type-fest';
 import { readdirSync, statSync } from 'fs';
 
@@ -128,6 +129,11 @@ export class Project {
   private dependencyLinks: Map<string, { dir: string; requestedRange: string }> = new Map();
   private linkIsDevDependency: Set<string> = new Set();
   private usingHardLinks = true;
+
+  // we keep our own package resolution cache because the default global one
+  // could get polluted by us resolving test-specific things that will change on
+  // subsequent tests.
+  private resolutionCache = new CacheGroup();
 
   constructor(
     name?: string,
@@ -282,7 +288,7 @@ export class Project {
           if (peers.has(depName)) {
             continue;
           }
-          let depTarget = resolvePackagePath(depName, target);
+          let depTarget = resolvePackagePath(depName, target, this.resolutionCache);
           if (!depTarget) {
             throw new Error(`package ${name} in ${target} depends on ${depName} but we could not resolve it`);
           }
@@ -498,7 +504,7 @@ export class Project {
     this.removeDevDependency(name);
     let dir: string;
     if ('baseDir' in opts) {
-      let pkgJSONPath = resolvePackagePath(opts.resolveName || name, opts.baseDir);
+      let pkgJSONPath = resolvePackagePath(opts.resolveName || name, opts.baseDir, this.resolutionCache);
       if (!pkgJSONPath) {
         throw new Error(`failed to locate ${opts.resolveName || name} in ${opts.baseDir}`);
       }
