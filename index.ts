@@ -294,10 +294,7 @@ export class Project {
               `[FixturifyProject] package ${name} in ${target} depends on ${depName} but we could not resolve it`
             );
           }
-          fs.ensureSymlinkSync(
-            depTarget.slice(0, -1 * '/package.json'.length),
-            path.join(destination, 'node_modules', depName)
-          );
+          fs.ensureSymlinkSync(path.dirname(depTarget), path.join(destination, 'node_modules', depName));
         }
       }
     }
@@ -325,7 +322,7 @@ export class Project {
         this.usingHardLinks = false;
       }
     }
-    fs.copySync(source, destination);
+    fs.copyFileSync(source, destination, fs.constants.COPYFILE_FICLONE);
   }
 
   static fromDir(root: string, opts?: ReadDirOpts): Project {
