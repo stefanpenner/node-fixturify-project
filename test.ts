@@ -480,6 +480,52 @@ describe('Project', function () {
     );
   });
 
+  it('adjusts peerDependencies of linked dependencies', function () {
+    let baseProject = new Project('base');
+    let alpha = baseProject.addDependency('alpha', {
+      files: {
+        'index.js': `
+          exports.betaVersion = function() {
+            return require('beta/package.json').version;
+          }
+          exports.gammaLocation = function() {
+            return require.resolve('gamma/package.json');
+          }
+        `,
+        deeper: {
+          'index.js': `
+            exports.betaVersion = function() {
+              return 'inner' + require('beta/package.json').version;
+            }
+          `,
+        },
+      },
+    });
+    alpha.pkg.peerDependencies = { beta: '^1.0.0' };
+    alpha.addDependency('gamma');
+    baseProject.addDependency('beta', { version: '1.1.0' });
+    baseProject.writeSync();
+
+    // precondition: in the baseProject, alpha sees its beta peerDep as beta@1.1.0
+    expect(require(require.resolve('alpha', { paths: [baseProject.baseDir] })).betaVersion()).to.eql('1.1.0');
+
+    let project = new Project('my-app');
+    project.linkDependency('alpha', { baseDir: baseProject.baseDir });
+    project.addDependency('beta', { version: '1.2.0' });
+    project.writeSync();
+
+    // in our linked project, alpha sees its beta peerDep as beta@1.2.0
+    expect(require(require.resolve('alpha', { paths: [project.baseDir] })).betaVersion()).to.eql('1.2.0');
+
+    // deeper modules in our package also work correctly
+    expect(require(require.resolve('alpha/deeper', { paths: [project.baseDir] })).betaVersion()).to.eql('inner1.2.0');
+
+    // unrelated dependencies are still shared
+    expect(require(require.resolve('alpha', { paths: [project.baseDir] })).gammaLocation()).to.eql(
+      require(require.resolve('alpha', { paths: [baseProject.baseDir] })).gammaLocation()
+    );
+  });
+
   it('adds linked dependencies to package.json', function () {
     let baseProject = new Project('base');
     baseProject.addDependency('moment', '1.2.3');
@@ -519,6 +565,7 @@ describe('Project', function () {
     // start with a template addon
     let addonTemplate = new Project('stock-addon');
     addonTemplate.addDependency('helper-lib', '1.2.3');
+    addonTemplate.addDevDependency('test-lib');
     addonTemplate.files['hello.js'] = '// it works';
     addonTemplate.writeSync();
 
@@ -535,8 +582,40 @@ describe('Project', function () {
     expect(
       fs.readlinkSync(path.join(myApp.baseDir, 'node_modules', 'custom-addon', 'node_modules', 'helper-lib'))
     ).to.eql(path.join(addonTemplate.baseDir, 'node_modules', 'helper-lib'));
+
+    // dev dependencies not included by default
+    expect(fs.existsSync(path.join(myApp.baseDir, 'node_modules', 'custom-addon', 'node_modules', 'test-lib'))).to.eql(
+      false
+    );
+
     expect(fs.existsSync(path.join(myApp.baseDir, 'node_modules', 'custom-addon', 'hello.js'))).to.eql(true);
     expect(fs.existsSync(path.join(myApp.baseDir, 'node_modules', 'custom-addon', 'layered-extra.js'))).to.eql(true);
+  });
+
+  it('can read a project with linked dev dependencies', function () {
+    // start with a template app
+    let appTemplate = new Project('stock-app');
+    appTemplate.addDependency('helper-lib', '1.2.3');
+    appTemplate.addDevDependency('test-lib');
+    appTemplate.files['hello.js'] = '// it works';
+    appTemplate.writeSync();
+
+    // build a new addon from the template
+    let myApp = Project.fromDir(appTemplate.baseDir, { linkDevDeps: true });
+    myApp.name = 'custom-addon';
+    myApp.files['layered-extra.js'] = '// extra stuff';
+    myApp.writeSync();
+
+    expect(fs.readlinkSync(path.join(myApp.baseDir, 'node_modules', 'helper-lib'))).to.eql(
+      path.join(appTemplate.baseDir, 'node_modules', 'helper-lib')
+    );
+
+    expect(fs.readlinkSync(path.join(myApp.baseDir, 'node_modules', 'test-lib'))).to.eql(
+      path.join(appTemplate.baseDir, 'node_modules', 'test-lib')
+    );
+
+    expect(fs.existsSync(path.join(myApp.baseDir, 'hello.js'))).to.eql(true);
+    expect(fs.existsSync(path.join(myApp.baseDir, 'layered-extra.js'))).to.eql(true);
   });
 
   it('can override a linked dependency with a new Project dependency', function () {

@@ -109,7 +109,7 @@ When constructing a whole Project from a directory, you can choose to link all
 dependencies instead of copying them in as Projects:
 
 ```js
-let project = Project.fromDir("./sample-project", { linkDeps: true });
+let project = Project.fromDir('./sample-project', { linkDeps: true });
 project.files['extra.js'] = '// stuff';
 project.write();
 ```
@@ -117,3 +117,6 @@ project.write();
 This will generate a new copy of sample-project, with symlinks to all its
 original dependencies, but with "extra.js" added.
 
+By default, `linkDeps` will only link up `dependencies` (which is appropriate
+for libraries). If you want to also include `devDependencies` (which is
+appropriate for apps) you can use `linkDevDeps` instead.

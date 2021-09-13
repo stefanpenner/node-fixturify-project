@@ -3,7 +3,9 @@ import tmp = require('tmp');
 import fs = require('fs-extra');
 import path = require('path');
 import resolvePackagePath = require('resolve-package-path');
+import CacheGroup = require('resolve-package-path/lib/cache-group');
 import { PackageJson } from 'type-fest';
+import { entries } from 'walk-sync';
 
 tmp.setGracefulCleanup();
 
@@ -90,6 +92,7 @@ function getPackageVersion(pkg: PackageJson): string {
 
 interface ReadDirOpts {
   linkDeps?: boolean;
+  linkDevDeps?: boolean;
 }
 
 // This only shallow-merges with any user-provided files, which is OK right now
@@ -125,6 +128,12 @@ export class Project {
 
   private dependencyLinks: Map<string, { dir: string; requestedRange: string }> = new Map();
   private linkIsDevDependency: Set<string> = new Set();
+  private usingHardLinks = true;
+
+  // we keep our own package resolution cache because the default global one
+  // could get polluted by us resolving test-specific things that will change on
+  // subsequent tests.
+  private resolutionCache = new CacheGroup();
 
   constructor(
     name?: string,
@@ -246,10 +255,6 @@ export class Project {
     this.autoBaseDir();
     fixturify.writeSync(this.baseDir, this.files);
     fs.outputJSONSync(path.join(this.baseDir, 'package.json'), this.pkgJSONWithDeps(), { spaces: 2 });
-
-    for (let [name, { dir: target }] of this.dependencyLinks) {
-      fs.ensureSymlinkSync(target, path.join(this.baseDir, 'node_modules', name), 'dir');
-    }
     for (let dep of this.dependencyProjects()) {
       dep.baseDir = path.join(this.baseDir, 'node_modules', dep.name);
       dep.writeSync();
@@ -258,6 +263,66 @@ export class Project {
       dep.baseDir = path.join(this.baseDir, 'node_modules', dep.name);
       dep.writeSync();
     }
+    for (let [name, { dir: target }] of this.dependencyLinks) {
+      this.writeLinkedPackage(name, target);
+    }
+  }
+
+  private writeLinkedPackage(name: string, target: string) {
+    let targetPkg = fs.readJsonSync(`${target}/package.json`);
+    let peers = new Set(Object.keys(targetPkg.peerDependencies ?? {}));
+    let destination = path.join(this.baseDir, 'node_modules', name);
+
+    if (peers.size === 0) {
+      // no peerDeps, so we can just symlink the whole package
+      fs.ensureSymlinkSync(target, destination, 'dir');
+      return;
+    }
+
+    // need to reproduce the package structure in our own location
+    this.hardLinkContents(target, destination);
+
+    for (let section of ['dependencies', 'peerDependencies']) {
+      if (targetPkg[section]) {
+        for (let depName of Object.keys(targetPkg[section])) {
+          if (peers.has(depName)) {
+            continue;
+          }
+          let depTarget = resolvePackagePath(depName, target, this.resolutionCache);
+          if (!depTarget) {
+            throw new Error(
+              `[FixturifyProject] package ${name} in ${target} depends on ${depName} but we could not resolve it`
+            );
+          }
+          fs.ensureSymlinkSync(path.dirname(depTarget), path.join(destination, 'node_modules', depName));
+        }
+      }
+    }
+  }
+
+  private hardLinkContents(target: string, destination: string) {
+    for (let entry of entries(target, { ignore: ['node_modules'] })) {
+      if (entry.isDirectory()) {
+        this.hardLinkContents(entry.fullPath, path.join(destination, entry.relativePath));
+      } else {
+        this.hardLinkFile(entry.fullPath, path.join(destination, entry.relativePath));
+      }
+    }
+  }
+
+  private hardLinkFile(source: string, destination: string) {
+    if (this.usingHardLinks) {
+      try {
+        fs.ensureLinkSync(source, destination);
+        return;
+      } catch (err: any) {
+        if (err.code !== 'EXDEV') {
+          throw err;
+        }
+        this.usingHardLinks = false;
+      }
+    }
+    fs.copyFileSync(source, destination, fs.constants.COPYFILE_FICLONE | fs.constants.COPYFILE_EXCL);
   }
 
   static fromDir(root: string, opts?: ReadDirOpts): Project {
@@ -269,20 +334,21 @@ export class Project {
   private readSync(root: string, opts?: ReadDirOpts): void {
     const files = fixturify.readSync(root, {
       // when linking deps, we don't need to crawl all of node_modules
-      ignore: opts?.linkDeps ? ['node_modules'] : [],
+      ignore: opts?.linkDeps || opts?.linkDevDeps ? ['node_modules'] : [],
     });
 
     this.pkg = deserializePackageJson(getFile(files, 'package.json'));
+    this.requestedRange = this.version;
     delete files['package.json'];
     this.files = files;
 
-    if (opts?.linkDeps) {
+    if (opts?.linkDeps || opts?.linkDevDeps) {
       if (this.pkg.dependencies) {
         for (let dep of Object.keys(this.pkg.dependencies)) {
           this.linkDependency(dep, { baseDir: path.join(root, this.name) });
         }
       }
-      if (this.pkg.devDependencies) {
+      if (this.pkg.devDependencies && opts.linkDevDeps) {
         for (let dep of Object.keys(this.pkg.devDependencies)) {
           this.linkDevDependency(dep, { baseDir: path.join(root, this.name) });
         }
@@ -433,7 +499,7 @@ export class Project {
     this.removeDevDependency(name);
     let dir: string;
     if ('baseDir' in opts) {
-      let pkgJSONPath = resolvePackagePath(opts.resolveName || name, opts.baseDir);
+      let pkgJSONPath = resolvePackagePath(opts.resolveName || name, opts.baseDir, this.resolutionCache);
       if (!pkgJSONPath) {
         throw new Error(`failed to locate ${opts.resolveName || name} in ${opts.baseDir}`);
       }
