@@ -263,7 +263,7 @@ export class Project {
   }
 
   private writeLinkedPackage(name: string, target: string) {
-    let targetPkg = require(path.join(target, 'package.json'));
+    let targetPkg = fs.readJsonSync(`${target}/package.json`);
     let peers = new Set(Object.keys(targetPkg.peerDependencies ?? {}));
     let destination = path.join(this.baseDir, 'node_modules', name);
 
