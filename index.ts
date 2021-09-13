@@ -290,7 +290,9 @@ export class Project {
           }
           let depTarget = resolvePackagePath(depName, target, this.resolutionCache);
           if (!depTarget) {
-            throw new Error(`package ${name} in ${target} depends on ${depName} but we could not resolve it`);
+            throw new Error(
+              `[FixturifyProject] package ${name} in ${target} depends on ${depName} but we could not resolve it`
+            );
           }
           fs.ensureSymlinkSync(
             depTarget.slice(0, -1 * '/package.json'.length),
