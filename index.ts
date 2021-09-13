@@ -5,7 +5,7 @@ import path = require('path');
 import resolvePackagePath = require('resolve-package-path');
 import CacheGroup = require('resolve-package-path/lib/cache-group');
 import { PackageJson } from 'type-fest';
-import { readdirSync, statSync } from 'fs';
+import { entries } from 'walk-sync';
 
 tmp.setGracefulCleanup();
 
@@ -301,16 +301,12 @@ export class Project {
     }
   }
 
-  private hardLinkContents(target: string, destination: string, exclude = 'node_modules') {
-    for (let name of readdirSync(target)) {
-      if (name === exclude) {
-        continue;
-      }
-      let stat = statSync(path.join(target, name));
-      if (stat.isDirectory()) {
-        this.hardLinkContents(path.join(target, name), path.join(destination, name));
+  private hardLinkContents(target: string, destination: string) {
+    for (let entry of entries(target, { ignore: ['node_modules'] })) {
+      if (entry.isDirectory()) {
+        this.hardLinkContents(entry.fullPath, path.join(destination, entry.relativePath));
       } else {
-        this.hardLinkFile(path.join(target, name), path.join(destination, name));
+        this.hardLinkFile(entry.fullPath, path.join(destination, entry.relativePath));
       }
     }
   }
