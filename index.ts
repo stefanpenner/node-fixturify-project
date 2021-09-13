@@ -322,7 +322,7 @@ export class Project {
         this.usingHardLinks = false;
       }
     }
-    fs.copyFileSync(source, destination, fs.constants.COPYFILE_FICLONE);
+    fs.copyFileSync(source, destination, fs.constants.COPYFILE_FICLONE | fs.constants.COPYFILE_EXCL);
   }
 
   static fromDir(root: string, opts?: ReadDirOpts): Project {
