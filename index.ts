@@ -7,9 +7,7 @@ import CacheGroup = require('resolve-package-path/lib/cache-group');
 import { PackageJson as BasePackageJson } from 'type-fest';
 import { entries } from 'walk-sync';
 
-type PackageJson = BasePackageJson &
-  // we also allow adding arbitrary key/value pairs to a PackageJson
-  { [name: string]: { }};
+type PackageJson = BasePackageJson & { [name: string]: {} }; // we also allow adding arbitrary key/value pairs to a PackageJson
 
 tmp.setGracefulCleanup();
 
