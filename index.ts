@@ -303,9 +303,10 @@ export class Project {
   }
 
   private hardLinkContents(target: string, destination: string) {
+    fs.ensureDirSync(destination);
     for (let entry of entries(target, { ignore: ['node_modules'] })) {
       if (entry.isDirectory()) {
-        this.hardLinkContents(entry.fullPath, path.join(destination, entry.relativePath));
+        fs.ensureDirSync(path.join(destination, entry.relativePath));
       } else {
         this.hardLinkFile(entry.fullPath, path.join(destination, entry.relativePath));
       }
@@ -315,7 +316,7 @@ export class Project {
   private hardLinkFile(source: string, destination: string) {
     if (this.usingHardLinks) {
       try {
-        fs.ensureLinkSync(source, destination);
+        fs.linkSync(source, destination);
         return;
       } catch (err: any) {
         if (err.code !== 'EXDEV') {
