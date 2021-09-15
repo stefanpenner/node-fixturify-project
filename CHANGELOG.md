@@ -1,3 +1,7 @@
+
+# 4.0.2
+- [BUGFIX] Fix odd double project directory structure when resolving linked deps
+
 # 4.0.1
 
 - [BUGFIX] some cross-device scenarios were broken by last minute changes in the previous release, this fixes them.
