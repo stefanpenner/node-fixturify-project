@@ -348,12 +348,12 @@ export class Project {
     if (opts?.linkDeps || opts?.linkDevDeps) {
       if (this.pkg.dependencies) {
         for (let dep of Object.keys(this.pkg.dependencies)) {
-          this.linkDependency(dep, { baseDir: path.join(root, this.name) });
+          this.linkDependency(dep, { baseDir: root });
         }
       }
       if (this.pkg.devDependencies && opts.linkDevDeps) {
         for (let dep of Object.keys(this.pkg.devDependencies)) {
-          this.linkDevDependency(dep, { baseDir: path.join(root, this.name) });
+          this.linkDevDependency(dep, { baseDir: root });
         }
       }
     } else {
