@@ -4,6 +4,7 @@ import fs = require('fs-extra');
 import path = require('path');
 import resolvePackagePath = require('resolve-package-path');
 import CacheGroup = require('resolve-package-path/lib/cache-group');
+import binLinks = require('bin-links');
 import { PackageJson as BasePackageJson } from 'type-fest';
 import { entries } from 'walk-sync';
 
@@ -223,7 +224,7 @@ export class Project {
   get baseDir() {
     if (!this._baseDir) {
       throw new Error(
-        `this project has no baseDir yet. Either set one manually or call writeSync to have one chosen for you`
+        `this project has no baseDir yet. Either set one manually or call write to have one chosen for you`
       );
     }
     return this._baseDir;
@@ -253,20 +254,42 @@ export class Project {
     this.pkg.version = value;
   }
 
+  async write() {
+    this.writeProject();
+    await this.binLinks();
+  }
+
+  /**
+   * @deprecated please use `await project.write()` instead.
+   */
   writeSync() {
+    console.warn('this method is deprecated, please use write instead');
+    this.writeProject();
+  }
+
+  private writeProject() {
     this.autoBaseDir();
     fixturify.writeSync(this.baseDir, this.files);
     fs.outputJSONSync(path.join(this.baseDir, 'package.json'), this.pkgJSONWithDeps(), { spaces: 2 });
     for (let dep of this.dependencyProjects()) {
       dep.baseDir = path.join(this.baseDir, 'node_modules', dep.name);
-      dep.writeSync();
+      dep.writeProject();
     }
     for (let dep of this.devDependencyProjects()) {
       dep.baseDir = path.join(this.baseDir, 'node_modules', dep.name);
-      dep.writeSync();
+      dep.writeProject();
     }
     for (let [name, { dir: target }] of this.dependencyLinks) {
       this.writeLinkedPackage(name, target);
+    }
+  }
+
+  private async binLinks() {
+    for (let { pkg, baseDir: path } of this.dependencyProjects()) {
+      await binLinks({ pkg, path, top: false, global: false, force: true });
+    }
+    for (let { pkg, baseDir: path } of this.devDependencyProjects()) {
+      await binLinks({ pkg, path, top: false, global: false, force: true });
     }
   }
 

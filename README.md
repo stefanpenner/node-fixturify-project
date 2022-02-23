@@ -29,7 +29,7 @@ project.files; // => read or write the set of files further
 // if you don't set this, a new temp dir will be made for you when you writeSync()
 project.baseDir = 'some/root/';
 
-project.writeSync();
+await project.write();
 
 // after writeSync(), you can read project.baseDir even if you didn't set it
 expect(fs.existsSync(join(project.baseDir, 'index.js'))).to.eql(true);
@@ -57,7 +57,7 @@ let a = project.addDependency('a');
 let b = a.addDependency('b');
 let c = b.addDependency('c');
 
-project.writeSync();
+await project.write();
 ```
 
 Which produces:
@@ -91,7 +91,7 @@ project.linkDependency('c', { baseDir: '/example' });
 // this will follow node resolution rules to lookup "my-aliased-name" from "../elsewhere"
 project.linkDependency('d', { baseDir: '/example', resolveName: 'my-aliased-name' });
 
-project.writeSync();
+await project.write();
 ```
 
 Produces:
@@ -111,7 +111,7 @@ dependencies instead of copying them in as Projects:
 ```js
 let project = Project.fromDir('./sample-project', { linkDeps: true });
 project.files['extra.js'] = '// stuff';
-project.write();
+await project.write();
 ```
 
 This will generate a new copy of sample-project, with symlinks to all its
