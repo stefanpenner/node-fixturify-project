@@ -3,7 +3,6 @@
     "target": "es2018",
     "module": "commonjs",
     "declaration": true,
-    "typeRoots": ["node_modules/@types"],
     "esModuleInterop": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
@@ -11,5 +10,5 @@
     "allowUnreachableCode": false,
     "strict": true
   },
-  "exclude": ["node_modules"]
+  "files": ["global.d.ts", "test.ts"]
 }

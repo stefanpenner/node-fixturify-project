@@ -6,7 +6,7 @@ import { readSync } from 'fixturify';
 
 const expect = chai.expect;
 
-describe('Project', function () {
+describe('Project', async () => {
   function readJSON(file: string) {
     return JSON.parse(fs.readFileSync(file, 'utf-8'));
   }
@@ -19,7 +19,7 @@ describe('Project', function () {
     return fs.readdirSync(path);
   }
 
-  it('has the basic', function () {
+  it('has the basic', async () => {
     let project = new Project({
       name: 'rsvp',
       version: '3.1.4',
@@ -34,7 +34,7 @@ describe('Project', function () {
 
     let source = project.addDevDependency('ember-source', '3.1.1');
     project.addDevDependency('@ember/ordered-set', '3.1.1');
-    project.writeSync();
+    await project.write();
 
     let index = read(`${project.baseDir}/index.js`);
     let nodeModules = readDir(`${project.baseDir}/node_modules`);
@@ -101,7 +101,7 @@ describe('Project', function () {
   });
 
   describe('project constructor with callback DSL', function () {
-    it('name, version, cb', function () {
+    it('name, version, cb', async () => {
       const projects: { [key: string]: Project } = {};
       const project = new Project('my-project', '0.0.1', project => {
         projects.default = project;
@@ -130,7 +130,7 @@ describe('Project', function () {
       expect(projects.e.version).to.eql('0.0.6');
     });
 
-    it('ProjectArgs, cb', function () {
+    it('ProjectArgs, cb', async () => {
       const projects: { [key: string]: Project } = {};
       const project = new Project({ name: 'my-project', version: '0.0.0' }, project => {
         projects.default = project;
@@ -139,7 +139,7 @@ describe('Project', function () {
       expect(project).to.eql(projects.default);
     });
 
-    it('name, projectArgs - name, cb', function () {
+    it('name, projectArgs - name, cb', async () => {
       const projects: { [key: string]: Project } = {};
       const project = new Project({ name: 'my-project', version: '0.0.0' }, project => {
         projects.default = project;
@@ -148,7 +148,7 @@ describe('Project', function () {
       expect(project).to.eql(projects.default);
     });
 
-    it('name, version, projectArgs - name - version, cb', function () {
+    it('name, version, projectArgs - name - version, cb', async () => {
       const projects: { [key: string]: Project } = {};
       const project = new Project('my-project', '0.0.0', { files: {} }, project => {
         projects.default = project;
@@ -159,7 +159,7 @@ describe('Project', function () {
   });
 
   describe('.pkg', function () {
-    it('flattened usage', function () {
+    it('flattened usage', async () => {
       const app = new Project('app', '3.1.1');
       const rsvp = app.addDependency('rsvp', '3.2.2');
       const a = rsvp.addDependency('a', '1.1.1');
@@ -182,7 +182,7 @@ describe('Project', function () {
         keywords: [],
       });
 
-      app.writeSync();
+      await app.write();
 
       expect(app.pkg).to.eql({
         name: 'app',
@@ -213,7 +213,7 @@ describe('Project', function () {
       });
     });
 
-    it('callback usage', function () {
+    it('callback usage', async () => {
       let rsvp!: Project, a!: Project;
 
       const app = new Project('app', '3.1.1', app => {
@@ -240,7 +240,7 @@ describe('Project', function () {
         keywords: [],
       });
 
-      app.writeSync();
+      await app.write();
 
       expect(app.pkg).to.eql({
         name: 'app',
@@ -272,14 +272,14 @@ describe('Project', function () {
     });
   });
 
-  it('supports default version', function () {
+  it('supports default version', async () => {
     const input = new Project();
     expect(input.version).to.eql('0.0.0');
-    input.writeSync();
+    await input.write();
     expect(fs.readJSONSync(path.join(input.baseDir, 'package.json'))).to.have.property('version', '0.0.0');
   });
 
-  it('supports removing packages', function () {
+  it('supports removing packages', async () => {
     const input = new Project();
 
     input.addDependency('rsvp').addDependency();
@@ -295,7 +295,7 @@ describe('Project', function () {
     expect(input.devDependencyProjects().map(dep => dep.name)).to.eql([]);
   });
 
-  it('it supports deep cloning', function () {
+  it('it supports deep cloning', async () => {
     const input = new Project('foo', '3.1.2', {
       files: {
         'index.js': 'OMG',
@@ -312,8 +312,8 @@ describe('Project', function () {
 
     const output = input.clone();
 
-    output.writeSync();
-    input.writeSync();
+    await output.write();
+    await input.write();
 
     expect(readSync(output.baseDir)).deep.equals(readSync(input.baseDir));
 
@@ -327,7 +327,7 @@ describe('Project', function () {
     expect(output.dependencyProjects().map(x => x.name)).to.not.contain('-no-such-package-');
   });
 
-  it('supports fromDir', function () {
+  it('supports fromDir', async () => {
     const input = new Project({
       files: {
         'index.js': 'OMG',
@@ -340,7 +340,7 @@ describe('Project', function () {
     });
     input.addDependency('rsvp', '4.4.4').addDependency('mkdirp', '4.4.4');
     input.addDevDependency('omg', '4.4.4').addDependency('fs-extra', '5.5.5.');
-    input.writeSync();
+    await input.write();
 
     const output = Project.fromDir(input.baseDir);
 
@@ -348,7 +348,7 @@ describe('Project', function () {
     expect(output.dependencyProjects().map(p => p.name)).to.have.members(input.dependencyProjects().map(p => p.name));
   });
 
-  it('supports inferring package#name if Project.fromDir is invoked without a second argument', function () {
+  it('supports inferring package#name if Project.fromDir is invoked without a second argument', async () => {
     const input = new Project('foo', '3.1.2', {
       files: {
         'index.js': 'OMG',
@@ -361,7 +361,7 @@ describe('Project', function () {
     });
     input.addDependency('rsvp', '4.4.4').addDependency('mkdirp', '4.4.4');
     input.addDevDependency('omg', '4.4.4').addDependency('fs-extra', '5.5.5.');
-    input.writeSync();
+    await input.write();
 
     const output = Project.fromDir(input.baseDir);
 
@@ -371,13 +371,13 @@ describe('Project', function () {
     expect(output.pkg).to.eql(input.pkg);
   });
 
-  it('supports custom PKG properties', function () {
+  it('supports custom PKG properties', async () => {
     let project = new Project('foo', '123');
     project.pkg['ember-addon'] = {
       version: 1,
     };
 
-    project.writeSync();
+    await project.write();
     expect(readJSON(`${project.baseDir}/package.json`)).to.eql({
       dependencies: {},
       devDependencies: {},
@@ -405,82 +405,82 @@ describe('Project', function () {
     expect(project.pkg.version, '1');
   });
 
-  it('handles scoped deps', function () {
+  it('handles scoped deps', async () => {
     let project = new Project('foo', '123');
     project.addDependency('@test/foo', '1.0.0');
     project.addDependency('@test/bar', '1.0.0');
-    project.writeSync();
+    await project.write();
     expect(fs.readdirSync(path.join(project.baseDir, 'node_modules', '@test'))).to.have.members(['foo', 'bar']);
   });
 
-  it('handles scoped devDeps', function () {
+  it('handles scoped devDeps', async () => {
     let project = new Project('foo', '123');
     project.addDevDependency('@test/foo', '1.0.0');
     project.addDevDependency('@test/bar', '1.0.0');
-    project.writeSync();
+    await project.write();
     expect(fs.readdirSync(path.join(project.baseDir, 'node_modules', '@test'))).to.have.members(['foo', 'bar']);
   });
 
-  it('has a working dispose to allow early cleanup', function () {
+  it('has a working dispose to allow early cleanup', async () => {
     let project = new Project('foo', '123');
     project.addDependency('rsvp', '1.2.3');
     project.addDevDependency('q', '1.2.4');
-    project.writeSync();
+    await project.write();
     expect(fs.existsSync(project.baseDir)).to.eql(true);
     project.dispose();
     expect(fs.existsSync(project.baseDir)).to.eql(false);
   });
 
-  it('supports linking to existing dependency via baseDir', function () {
+  it('supports linking to existing dependency via baseDir', async () => {
     let baseProject = new Project('base');
     baseProject.addDependency('moment');
-    baseProject.writeSync();
+    await baseProject.write();
 
     let project = new Project('my-app');
     project.linkDependency('moment', { baseDir: baseProject.baseDir });
-    project.writeSync();
+    await project.write();
     expect(fs.readlinkSync(path.join(project.baseDir, 'node_modules', 'moment'))).to.eql(
       path.join(baseProject.baseDir, 'node_modules', 'moment')
     );
   });
 
-  it('supports linking to existing dependency via baseDir and resolveName', function () {
+  it('supports linking to existing dependency via baseDir and resolveName', async () => {
     let baseProject = new Project('base');
     baseProject.addDependency('moment-x');
-    baseProject.writeSync();
+    await baseProject.write();
 
     let project = new Project('my-app');
     project.linkDependency('moment', { baseDir: baseProject.baseDir, resolveName: 'moment-x' });
-    project.writeSync();
+    await project.write();
     expect(fs.readlinkSync(path.join(project.baseDir, 'node_modules', 'moment'))).to.eql(
       path.join(baseProject.baseDir, 'node_modules', 'moment-x')
     );
   });
 
-  it('supports linking to existing dependency via target', function () {
+  it('supports linking to existing dependency via target', async () => {
     let baseProject = new Project('base');
-    baseProject.writeSync();
+    await baseProject.write();
 
     let project = new Project('my-app');
     project.linkDependency('moment', { target: baseProject.baseDir });
-    project.writeSync();
+    await project.write();
     expect(fs.readlinkSync(path.join(project.baseDir, 'node_modules', 'moment'))).to.eql(baseProject.baseDir);
   });
 
-  it('supports linking to existing dependency from within nested project', function () {
+  it('supports linking to existing dependency from within nested project', async () => {
     let baseProject = new Project('base');
     baseProject.addDependency('moment');
-    baseProject.writeSync();
+    await baseProject.write();
     let project = new Project('my-app');
     let inner = project.addDependency('inner');
     inner.linkDependency('moment', { baseDir: baseProject.baseDir });
-    project.writeSync();
+    await project.write();
     expect(fs.readlinkSync(path.join(project.baseDir, 'node_modules', 'inner', 'node_modules', 'moment'))).to.eql(
       path.join(baseProject.baseDir, 'node_modules', 'moment')
     );
   });
 
-  it('adjusts peerDependencies of linked dependencies', function () {
+  it('adjusts peerDependencies of linked dependencies', async () => {
     let baseProject = new Project('base');
     let alpha = baseProject.addDependency('alpha', {
       files: {
@@ -504,7 +504,7 @@ describe('Project', function () {
     alpha.pkg.peerDependencies = { beta: '^1.0.0' };
     alpha.addDependency('gamma');
     baseProject.addDependency('beta', { version: '1.1.0' });
-    baseProject.writeSync();
+    await baseProject.write();
 
     // precondition: in the baseProject, alpha sees its beta peerDep as beta@1.1.0
     expect(require(require.resolve('alpha', { paths: [baseProject.baseDir] })).betaVersion()).to.eql('1.1.0');
@@ -512,7 +512,7 @@ describe('Project', function () {
     let project = new Project('my-app');
     project.linkDependency('alpha', { baseDir: baseProject.baseDir });
     project.addDependency('beta', { version: '1.2.0' });
-    project.writeSync();
+    await project.write();
 
     // in our linked project, alpha sees its beta peerDep as beta@1.2.0
     expect(require(require.resolve('alpha', { paths: [project.baseDir] })).betaVersion()).to.eql('1.2.0');
@@ -526,48 +526,48 @@ describe('Project', function () {
     );
   });
 
-  it('adds linked dependencies to package.json', function () {
+  it('adds linked dependencies to package.json', async () => {
     let baseProject = new Project('base');
     baseProject.addDependency('moment', '1.2.3');
-    baseProject.writeSync();
+    await baseProject.write();
 
     let project = new Project('my-app');
     project.linkDependency('moment', { baseDir: baseProject.baseDir });
-    project.writeSync();
+    await project.write();
     expect(fs.readJSONSync(path.join(project.baseDir, 'package.json')).dependencies.moment).to.eql('1.2.3');
   });
 
-  it('adds linked devDependencies to package.json', function () {
+  it('adds linked devDependencies to package.json', async () => {
     let baseProject = new Project('base');
     baseProject.addDependency('moment', '1.2.3');
-    baseProject.writeSync();
+    await baseProject.write();
 
     let project = new Project('my-app');
     project.linkDevDependency('moment', { baseDir: baseProject.baseDir });
-    project.writeSync();
+    await project.write();
     expect(fs.readJSONSync(path.join(project.baseDir, 'package.json')).devDependencies.moment).to.eql('1.2.3');
   });
 
-  it('supports linking to existing devDependencies', function () {
+  it('supports linking to existing devDependencies', async () => {
     let baseProject = new Project('base');
     baseProject.addDependency('moment', '1.2.3');
-    baseProject.writeSync();
+    await baseProject.write();
 
     let project = new Project('my-app');
     project.linkDevDependency('moment', { baseDir: baseProject.baseDir });
-    project.writeSync();
+    await project.write();
     expect(fs.readlinkSync(path.join(project.baseDir, 'node_modules', 'moment'))).to.eql(
       path.join(baseProject.baseDir, 'node_modules', 'moment')
     );
   });
 
-  it('can read a project with linked dependencies', function () {
+  it('can read a project with linked dependencies', async () => {
     // start with a template addon
     let addonTemplate = new Project('stock-addon');
     addonTemplate.addDependency('helper-lib', '1.2.3');
     addonTemplate.addDevDependency('test-lib');
     addonTemplate.files['hello.js'] = '// it works';
-    addonTemplate.writeSync();
+    await addonTemplate.write();
 
     // build a new addon from the template
     let myAddon = Project.fromDir(addonTemplate.baseDir, { linkDeps: true });
@@ -577,7 +577,7 @@ describe('Project', function () {
     // use the new addon in an app
     let myApp = new Project('my-app');
     myApp.addDependency(myAddon);
-    myApp.writeSync();
+    await myApp.write();
 
     expect(
       fs.readlinkSync(path.join(myApp.baseDir, 'node_modules', 'custom-addon', 'node_modules', 'helper-lib'))
@@ -592,19 +592,19 @@ describe('Project', function () {
     expect(fs.existsSync(path.join(myApp.baseDir, 'node_modules', 'custom-addon', 'layered-extra.js'))).to.eql(true);
   });
 
-  it('can read a project with linked dev dependencies', function () {
+  it('can read a project with linked dev dependencies', async () => {
     // start with a template app
     let appTemplate = new Project('stock-app');
     appTemplate.addDependency('helper-lib', '1.2.3');
     appTemplate.addDevDependency('test-lib');
     appTemplate.files['hello.js'] = '// it works';
-    appTemplate.writeSync();
+    await appTemplate.write();
 
     // build a new addon from the template
     let myApp = Project.fromDir(appTemplate.baseDir, { linkDevDeps: true });
     myApp.name = 'custom-addon';
     myApp.files['layered-extra.js'] = '// extra stuff';
-    myApp.writeSync();
+    await myApp.write();
 
     expect(fs.readlinkSync(path.join(myApp.baseDir, 'node_modules', 'helper-lib'))).to.eql(
       path.join(appTemplate.baseDir, 'node_modules', 'helper-lib')
@@ -618,30 +618,30 @@ describe('Project', function () {
     expect(fs.existsSync(path.join(myApp.baseDir, 'layered-extra.js'))).to.eql(true);
   });
 
-  it('can override a linked dependency with a new Project dependency', function () {
+  it('can override a linked dependency with a new Project dependency', async () => {
     let baseProject = new Project('base');
     baseProject.addDependency('moment', '1.2.3');
-    baseProject.writeSync();
+    await baseProject.write();
 
     let project = Project.fromDir(baseProject.baseDir, { linkDeps: true });
     project.addDependency('moment', '4.5.6');
-    project.writeSync();
+    await project.write();
     expect(fs.lstatSync(path.join(project.baseDir, 'node_modules', 'moment')).isSymbolicLink()).to.eql(false);
     expect(fs.readJSONSync(path.join(project.baseDir, 'node_modules', 'moment', 'package.json')).version).to.eql(
       '4.5.6'
     );
   });
 
-  it('can override a Project dependency with a linked dependency', function () {
+  it('can override a Project dependency with a linked dependency', async () => {
     let dep = new Project('dep', '1.2.3');
     dep.files['first.js'] = '';
-    dep.writeSync();
+    await dep.write();
 
     let project = new Project('app');
     let dep2 = project.addDependency('dep', '4.5.6');
     dep2.files['second.js'] = '';
     project.linkDependency('dep', { target: dep.baseDir });
-    project.writeSync();
+    await project.write();
     expect(fs.lstatSync(path.join(project.baseDir, 'node_modules', 'dep')).isSymbolicLink(), 'is symlink').is.true;
     expect(
       fs.readJSONSync(path.join(project.baseDir, 'node_modules', 'dep', 'package.json')).version,
@@ -651,44 +651,82 @@ describe('Project', function () {
     expect(fs.existsSync(path.join(project.baseDir, 'node_modules', 'dep', 'second.js')), 'second.js').is.false;
   });
 
-  it('can remove a linked dependency', function () {
+  it('can remove a linked dependency', async () => {
     let dep = new Project('dep', '1.2.3');
     dep.files['first.js'] = '';
-    dep.writeSync();
+    await dep.write();
 
     let project = new Project('app');
     project.linkDependency('dep', { target: dep.baseDir });
     project.removeDependency('dep');
-    project.writeSync();
+    await project.write();
     expect(fs.readJSONSync(path.join(project.baseDir, 'package.json')).dependencies?.dep).to.be.undefined;
     expect(fs.existsSync(path.join(project.baseDir, 'node_modules', 'dep'))).is.false;
   });
 
-  it('preserves linking behaviors through clone', function () {
+  it('preserves linking behaviors through clone', async () => {
     let baseProject = new Project('base');
-    baseProject.writeSync();
+    await baseProject.write();
 
     let project = new Project('my-app');
     project.linkDependency('moment', { target: baseProject.baseDir });
     let cloned = project.clone();
-    cloned.writeSync();
+    await cloned.write();
     expect(fs.readlinkSync(path.join(cloned.baseDir, 'node_modules', 'moment'))).to.eql(baseProject.baseDir);
   });
 
-  it('can choose the requested semver range of a dependency', function () {
+  it('can choose the requested semver range of a dependency', async () => {
     let proj = new Project();
     proj.addDependency('mylib', { version: '1.2.3', requestedRange: '^1' });
-    proj.writeSync();
+    await proj.write();
     expect(fs.readJSONSync(path.join(proj.baseDir, 'package.json')).dependencies.mylib).to.eql('^1');
   });
 
-  it('can choose the requested semver range of a linked dependency', function () {
+  it('can choose the requested semver range of a linked dependency', async () => {
     let baseProject = new Project('moment', '1.2.3');
-    baseProject.writeSync();
+    await baseProject.write();
 
     let project = new Project('my-app');
     project.linkDependency('moment', { target: baseProject.baseDir, requestedRange: '^1' });
-    project.writeSync();
+    await project.write();
     expect(fs.readJSONSync(path.join(project.baseDir, 'package.json')).dependencies.moment).to.eql('^1');
+  });
+
+  it('links bin entry in package', async () => {
+    let project = new Project('my-app', '1.0.0');
+    project.pkg['license'] = 'MIT';
+
+    project.addDependency({
+      files: {
+        'package.json': JSON.stringify({
+          name: 'my-cli',
+          version: '1.0.0',
+          bin: { hello: 'hello.js', goodbye: 'goodbye.js' },
+        }),
+        'hello.js': `#!/usr/bin/env node
+        require("./index.js")("hello")`,
+        'goodbye.js': `#!/usr/bin/env node
+        require("./index.js")("goodbye")`,
+        'index.js': `module.exports = (s) => console.log(s)`,
+      },
+    });
+
+    await project.write();
+
+    const { execFileSync } = require('child_process');
+
+    expect(
+      execFileSync('yarn', ['-s', 'run', 'hello'], {
+        cwd: project.baseDir,
+        encoding: 'utf8',
+      })
+    ).to.eql('hello\n');
+
+    const binPath = execFileSync('yarn', ['bin'], {
+      cwd: project.baseDir,
+      encoding: 'utf8',
+    }).trimEnd();
+
+    expect(execFileSync(path.join(binPath, 'goodbye'), { encoding: 'utf8' })).to.eql('goodbye\n');
   });
 });

@@ -6,11 +6,12 @@
   "author": "Stefan Penner <stefan.penner@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "bin-links": "^3.0.0",
     "fixturify": "^2.1.1",
     "resolve-package-path": "^3.1.0",
     "tmp": "^0.0.33",
-    "walk-sync": "^3.0.0",
-    "type-fest": "^2.3.2"
+    "type-fest": "^2.3.2",
+    "walk-sync": "^3.0.0"
   },
   "devDependencies": {
     "@types/chai": "^4.2.18",
