@@ -6,9 +6,11 @@ import resolvePackagePath = require('resolve-package-path');
 import CacheGroup = require('resolve-package-path/lib/cache-group');
 import binLinks = require('bin-links');
 import { PackageJson as BasePackageJson } from 'type-fest';
-import { entries } from 'walk-sync';
+import walkSync = require('walk-sync');
+import { deprecate } from 'util';
+const { entries } = walkSync;
 
-type PackageJson = BasePackageJson & { [name: string]: {} }; // we also allow adding arbitrary key/value pairs to a PackageJson
+type PackageJson = BasePackageJson & Record<string, any>; // we also allow adding arbitrary key/value pairs to a PackageJson
 
 tmp.setGracefulCleanup();
 
@@ -263,11 +265,10 @@ export class Project {
    * @deprecated please use `await project.write()` instead.
    */
   writeSync() {
-    console.warn('this method is deprecated, please use write instead');
     this.writeProject();
   }
 
-  private writeProject() {
+  protected writeProject() {
     this.autoBaseDir();
     fixturify.writeSync(this.baseDir, this.files);
     fs.outputJSONSync(path.join(this.baseDir, 'package.json'), this.pkgJSONWithDeps(), { spaces: 2 });
@@ -285,10 +286,8 @@ export class Project {
   }
 
   private async binLinks() {
-    for (let { pkg, baseDir: path } of this.dependencyProjects()) {
-      await binLinks({ pkg, path, top: false, global: false, force: true });
-    }
-    for (let { pkg, baseDir: path } of this.devDependencyProjects()) {
+    let nodeModules = path.join(this.baseDir, 'node_modules');
+    for (const { pkg, path } of readPackages(nodeModules)) {
       await binLinks({ pkg, path, top: false, global: false, force: true });
     }
   }
@@ -613,3 +612,66 @@ function unwrapPackageName(obj: any, packageName: string): fixturify.DirJSON {
   }
   return getFolder(obj, packageName);
 }
+
+function isErrnoException(e: unknown): e is NodeJS.ErrnoException {
+  return e instanceof Error && 'code' in e;
+}
+
+function readString(name: string): string | undefined {
+  try {
+    return fs.readFileSync(name, 'utf8');
+  } catch (e) {
+    if (isErrnoException(e)) {
+      if (e.code === 'ENOENT' || e.code === 'EISDIR') {
+        return;
+      }
+    }
+    throw e;
+  }
+}
+
+function readdir(name: string): string[] {
+  try {
+    return fs.readdirSync(name);
+  } catch (e) {
+    if (isErrnoException(e)) {
+      if (e.code === 'ENOENT' || e.code === 'ENOTDIR') {
+        return [];
+      }
+    }
+    throw e;
+  }
+}
+
+function readPackage(dir: string | undefined): { pkg: PackageJson; path: string } | undefined {
+  if (dir) {
+    const fileName = path.join(dir, 'package.json');
+    const content = readString(fileName);
+    if (content) {
+      return { pkg: deserializePackageJson(content), path: dir };
+    }
+  }
+  return;
+}
+
+function readPackages(modulesPath: string): { pkg: PackageJson; path: string }[] {
+  const pkgs: { pkg: PackageJson; path: string }[] = [];
+  for (const name of readdir(modulesPath)) {
+    if (name.startsWith('@')) {
+      const scopePath = path.join(modulesPath, name);
+      for (const name of readdir(scopePath)) {
+        const pkg = readPackage(path.join(scopePath, name));
+        if (pkg) pkgs.push(pkg);
+      }
+    } else {
+      const pkg = readPackage(path.join(modulesPath, name));
+      if (pkg) pkgs.push(pkg);
+    }
+  }
+  return pkgs;
+}
+
+Project.prototype.writeSync = deprecate(
+  Project.prototype.writeSync,
+  'project.writeSync() is deprecated. Use await project.write() instead'
+);
