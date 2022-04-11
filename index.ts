@@ -613,8 +613,12 @@ function unwrapPackageName(obj: any, packageName: string): fixturify.DirJSON {
   return getFolder(obj, packageName);
 }
 
+function isError(e: unknown): e is Error {
+  return !!e && typeof e === 'object' && Object.prototype.toString.call(e) === '[object Error]' && 'message' in e;
+}
+
 function isErrnoException(e: unknown): e is NodeJS.ErrnoException {
-  return e instanceof Error && 'code' in e;
+  return isError(e) && 'code' in e;
 }
 
 function readString(name: string): string | undefined {
