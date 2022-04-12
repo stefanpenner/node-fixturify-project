@@ -4,15 +4,25 @@
   "repository": "git@github.com:stefanpenner/node-fixturify-project",
   "license": "MIT",
   "author": "Stefan Penner <stefan.penner@gmail.com>",
-  "main": "index.js",
+  "type": "module",
+  "exports": {
+    ".": {
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "files": [
-    "index.js",
-    "index.d.ts"
+    "dist"
   ],
   "scripts": {
-    "clean": "git clean -x -f",
+    "build": "tsup src/index.ts --format cjs,esm --dts --clean",
     "lint": "yarn prettier --check *.ts",
     "prepare": "tsc",
+    "prepublishOnly": "yarn build",
     "test": "mocha test -r source-map-support/register",
     "test:inspect": "mocha inspect test -r source-map-support/register"
   },
