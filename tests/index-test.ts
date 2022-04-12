@@ -1,10 +1,8 @@
-import chai from 'chai';
 import fs from 'fs-extra';
 import path from 'path';
 import { readSync } from 'fixturify';
-import { Project } from '../dist/index.js';
-
-const expect = chai.expect;
+import { describe, it, expect } from 'vitest';
+import { Project } from '../src/index';
 
 describe('Project', async () => {
   function readJSON(file: string) {
