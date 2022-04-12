@@ -1,8 +1,8 @@
-import chai = require('chai');
-import { Project } from './index';
-import fs = require('fs-extra');
-import path = require('path');
+import chai from 'chai';
+import fs from 'fs-extra';
+import path from 'path';
 import { readSync } from 'fixturify';
+import { Project } from '../dist/index.js';
 
 const expect = chai.expect;
 
