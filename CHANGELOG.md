@@ -1,4 +1,17 @@
 
+## v4.1.2 (2022-04-12)
+
+#### :bug: Bug Fix
+* [#59](https://github.com/stefanpenner/node-fixturify-project/pull/59) Fixes typeguard to correctly evaluate Error type when globals don't match ([@scalvert](https://github.com/scalvert))
+
+#### :house: Internal
+* [#60](https://github.com/stefanpenner/node-fixturify-project/pull/60) Adding release-it setup ([@scalvert](https://github.com/scalvert))
+
+#### Committers: 1
+- Steve Calvert ([@scalvert](https://github.com/scalvert))
+
+
+
 # 4.0.2
 - [BUGFIX] Fix odd double project directory structure when resolving linked deps
 
