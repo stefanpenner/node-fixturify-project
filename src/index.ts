@@ -1,12 +1,12 @@
 import fixturify from 'fixturify';
-import tmp = require('tmp');
-import fs = require('fs-extra');
-import path = require('path');
-import resolvePackagePath = require('resolve-package-path');
-import CacheGroup = require('resolve-package-path/lib/cache-group');
-import binLinks = require('bin-links');
+import tmp from 'tmp';
+import fs from 'fs-extra';
+import path from 'path';
+import resolvePackagePath from 'resolve-package-path';
+import CacheGroup from 'resolve-package-path/lib/cache-group';
+import binLinks from 'bin-links';
 import { PackageJson as BasePackageJson } from 'type-fest';
-import walkSync = require('walk-sync');
+import walkSync from 'walk-sync';
 import { deprecate } from 'util';
 const { entries } = walkSync;
 

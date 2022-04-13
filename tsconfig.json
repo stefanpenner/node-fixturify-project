@@ -1,14 +1,24 @@
 {
   "compilerOptions": {
-    "target": "es2018",
-    "module": "commonjs",
-    "declaration": true,
-    "esModuleInterop": true,
+    "allowUnreachableCode": false,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "strict": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "declaration": true,
+    "declarationMap": true,
     "sourceMap": true,
-    "allowUnreachableCode": false,
-    "strict": true
+    "esModuleInterop": true,
+    "target": "es2018",
+    "baseUrl": ".",
+    "outDir": "dist",
+    "rootDir": "src",
+    "skipLibCheck": true,
+    "paths": {
+      "*": ["./types/*"]
+    }
   },
-  "files": ["global.d.ts", "test.ts"]
+  "include": ["./src"],
+  "exclude": ["**/node_modules/**"]
 }
