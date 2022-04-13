@@ -48,7 +48,7 @@
     "vitest": "^0.9.3"
   },
   "engines": {
-    "node": "12.* || >= 14.*"
+    "node": ">= 14.*"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
