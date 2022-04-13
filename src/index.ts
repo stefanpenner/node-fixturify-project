@@ -257,15 +257,18 @@ export class Project {
     this.pkg.version = value;
   }
 
-  async write() {
-    this.writeProject();
-    await this.binLinks();
+  mergeFiles(dirJSON: fixturify.DirJSON) {
+    this.files = deepmerge(this.files, dirJSON);
   }
 
-  writeDirJSON(dirJSON: fixturify.DirJSON) {
-    this.files = deepmerge(this.files, dirJSON);
+  async write(dirJSON?: fixturify.DirJSON): Promise<void> {
+    if (dirJSON) {
+      this.mergeFiles(dirJSON);
+    }
 
-    return this.write();
+    this.writeProject();
+
+    await this.binLinks();
   }
 
   /**

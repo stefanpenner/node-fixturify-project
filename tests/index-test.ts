@@ -105,9 +105,7 @@ describe('Project', async () => {
       version: '3.1.4',
     });
 
-    await project.write();
-
-    await project.writeDirJSON({
+    await project.write({
       top: {
         middle: {
           bottom: {
