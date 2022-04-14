@@ -8,6 +8,7 @@ import binLinks from 'bin-links';
 import { PackageJson as BasePackageJson } from 'type-fest';
 import walkSync from 'walk-sync';
 import { deprecate } from 'util';
+import deepmerge from 'deepmerge';
 const { entries } = walkSync;
 
 type PackageJson = BasePackageJson & Record<string, any>; // we also allow adding arbitrary key/value pairs to a PackageJson
@@ -256,8 +257,17 @@ export class Project {
     this.pkg.version = value;
   }
 
-  async write() {
+  mergeFiles(dirJSON: fixturify.DirJSON) {
+    this.files = deepmerge(this.files, dirJSON);
+  }
+
+  async write(dirJSON?: fixturify.DirJSON): Promise<void> {
+    if (dirJSON) {
+      this.mergeFiles(dirJSON);
+    }
+
     this.writeProject();
+
     await this.binLinks();
   }
 

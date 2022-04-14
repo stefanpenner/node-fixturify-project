@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "bin-links": "^3.0.0",
+    "deepmerge": "^4.2.2",
     "fixturify": "^2.1.1",
     "resolve-package-path": "^4.0.3",
     "tmp": "^0.0.33",

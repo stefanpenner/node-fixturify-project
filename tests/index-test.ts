@@ -3,6 +3,7 @@ import path from 'path';
 import { readSync } from 'fixturify';
 import { describe, it, expect } from 'vitest';
 import { Project } from '../src/index';
+import walkSync from 'walk-sync';
 
 describe('Project', async () => {
   function readJSON(file: string) {
@@ -96,6 +97,61 @@ describe('Project', async () => {
     expect(nodeModules.sort()).to.eql(['@ember', 'ember-cli', 'ember-source']);
 
     expect(index).to.eql('module.exports = "Hello, World!";');
+  });
+
+  it('can write a DirJSON', async function () {
+    let project = new Project({
+      name: 'rsvp',
+      version: '3.1.4',
+    });
+
+    await project.write({
+      top: {
+        middle: {
+          bottom: {
+            'foo.js': 'console.log("bar");',
+          },
+        },
+      },
+    });
+
+    expect(walkSync(project.baseDir)).to.eql([
+      'index.js',
+      'package.json',
+      'top/',
+      'top/middle/',
+      'top/middle/bottom/',
+      'top/middle/bottom/foo.js',
+    ]);
+  });
+
+  it('can merge files in the correct order', async function () {
+    let project = new Project({
+      name: 'rsvp',
+      version: '3.1.4',
+      files: {
+        'foo.js': 'console.log("bar");',
+      },
+    });
+
+    expect(project.files).to.eql({
+      'foo.js': 'console.log("bar");',
+      'index.js': `
+    'use strict';
+     module.exports = {};`,
+    });
+
+    project.mergeFiles({
+      'bar.js': 'console.log("baz");',
+    });
+
+    expect(project.files).to.eql({
+      'foo.js': 'console.log("bar");',
+      'bar.js': 'console.log("baz");',
+      'index.js': `
+    'use strict';
+     module.exports = {};`,
+    });
   });
 
   describe('project constructor with callback DSL', function () {
