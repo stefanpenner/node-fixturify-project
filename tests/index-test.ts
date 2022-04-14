@@ -125,6 +125,35 @@ describe('Project', async () => {
     ]);
   });
 
+  it('can merge files in the correct order', async function () {
+    let project = new Project({
+      name: 'rsvp',
+      version: '3.1.4',
+      files: {
+        'foo.js': 'console.log("bar");',
+      },
+    });
+
+    expect(project.files).to.eql({
+      'foo.js': 'console.log("bar");',
+      'index.js': `
+    'use strict';
+     module.exports = {};`,
+    });
+
+    project.mergeFiles({
+      'bar.js': 'console.log("baz");',
+    });
+
+    expect(project.files).to.eql({
+      'foo.js': 'console.log("bar");',
+      'bar.js': 'console.log("baz");',
+      'index.js': `
+    'use strict';
+     module.exports = {};`,
+    });
+  });
+
   describe('project constructor with callback DSL', function () {
     it('name, version, cb', async () => {
       const projects: { [key: string]: Project } = {};
