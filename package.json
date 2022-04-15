@@ -20,7 +20,7 @@
   ],
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts --clean",
-    "docs:generate": "yarn build && readme-api-generator src/index.ts --ts",
+    "docs:generate": "readme-api-generator src/index.ts --ts",
     "lint": "yarn prettier --check *.ts",
     "prepare": "yarn build",
     "prepublishOnly": "yarn build",
@@ -36,7 +36,7 @@
     "walk-sync": "^3.0.0"
   },
   "devDependencies": {
-    "@scalvert/readme-api-generator": "^0.2.1",
+    "@scalvert/readme-api-generator": "^0.2.3",
     "@types/chai": "^4.2.18",
     "@types/fs-extra": "^9.0.11",
     "@types/node": "^16.9.1",

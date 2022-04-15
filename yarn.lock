@@ -1100,10 +1100,10 @@
   dependencies:
     "@octokit/openapi-types" "^11.2.0"
 
-"@scalvert/readme-api-generator@^0.2.1":
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/@scalvert/readme-api-generator/-/readme-api-generator-0.2.1.tgz#677b76ecf5bdff009372464aa7627b0645114ab1"
-  integrity sha512-maaOvjQ4bp8HVqe8Tvbb+so8ZpfFge3HQUANBZdDqMqzsB5Cr1B3cmfW+4HVgWPgkKBS9pyvASLzUBxyJIYuZw==
+"@scalvert/readme-api-generator@^0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@scalvert/readme-api-generator/-/readme-api-generator-0.2.3.tgz#de4b22239c22f5f0cbba2db5447dc0763b84819c"
+  integrity sha512-5wkkRdbwqGFbryn92dBs3+FFAXpFbFpSPtGIRuFOWPcbrsycIUdrwcZavTZQeNjW4W9AbrgEUQj2obQOS+F9IA==
   dependencies:
     "@babel/cli" "^7.17.6"
     "@babel/core" "^7.17.9"
