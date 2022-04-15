@@ -1,4 +1,20 @@
 
+
+## v5.0.1 (2022-04-15)
+
+#### :boom: Breaking Change
+* [#62](https://github.com/stefanpenner/node-fixturify-project/pull/62) Converts to multi-target publishing (cjs/esm) w/ declaration files. ([@scalvert](https://github.com/scalvert))
+
+#### :rocket: Enhancement
+* [#64](https://github.com/stefanpenner/node-fixturify-project/pull/64) Adding write(dirJSON), mergeFiles APIs ([@scalvert](https://github.com/scalvert))
+
+#### :memo: Documentation
+* [#66](https://github.com/stefanpenner/node-fixturify-project/pull/66) Add readme-api-generator to auto-generate API documentation for README ([@scalvert](https://github.com/scalvert))
+
+#### Committers: 1
+- Steve Calvert ([@scalvert](https://github.com/scalvert))
+
+
 ## v4.1.2 (2022-04-12)
 
 #### :bug: Bug Fix
