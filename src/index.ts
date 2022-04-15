@@ -11,95 +11,23 @@ import { deprecate } from 'util';
 import deepmerge from 'deepmerge';
 const { entries } = walkSync;
 
-type PackageJson = BasePackageJson & Record<string, any>; // we also allow adding arbitrary key/value pairs to a PackageJson
-
-tmp.setGracefulCleanup();
-
-function deserializePackageJson(serialized: string): PackageJson {
-  return JSON.parse(serialized);
-}
-
-function keys(object: any) {
-  if (object !== null && (typeof object === 'object' || Array.isArray(object))) {
-    return Object.keys(object);
-  } else {
-    return [];
-  }
-}
-
-function isProjectCallback(maybe: ProjectCallback | any): maybe is ProjectCallback {
-  return typeof maybe === 'function';
-}
-
-function getString<Obj extends Object, KeyOfObj extends keyof Obj>(
-  obj: Obj,
-  propertyName: KeyOfObj,
-  errorMessage?: string
-): string {
-  const value = obj[propertyName];
-  if (typeof value === 'string') {
-    return value;
-  } else {
-    throw new TypeError(errorMessage || `expected 'string' but got '${typeof value}'`);
-  }
-}
-
-/**
- A utility method access a file from a DirJSON that is type-safe and runtime safe.
-
-```ts
-getFile(folder, 'package.json') // the files content, or it will throw
-```
- */
-function getFile<Dir extends fixturify.DirJSON, FileName extends keyof Dir>(dir: Dir, fileName: FileName): string {
-  const value = dir[fileName];
-  if (typeof value === 'string') {
-    return value;
-  } else if (typeof value === 'object' && value !== null) {
-    throw new TypeError(`Expected a file for name '${fileName}' but got a 'Folder'`);
-  } else {
-    throw new TypeError(`Expected a file for name '${fileName}' but got '${typeof value}'`);
-  }
-}
-
-/**
- A utility method access a file from a DirJSON that is type-safe and runtime safe
-
-```ts
-getFolder(folder, 'node_modules') // => the DirJSON of folder['node_module'] or it will throw
-```
- */
-function getFolder<Dir extends fixturify.DirJSON, FileName extends keyof Dir>(
-  dir: Dir,
-  fileName: FileName
-): fixturify.DirJSON {
-  const value = dir[fileName];
-
-  if (isDirJSON(value)) {
-    return value;
-  } else if (typeof value === 'string') {
-    throw new TypeError(`Expected a file for name '${fileName}' but got 'File'`);
-  } else {
-    throw new TypeError(`Expected a folder for name '${fileName}' but got '${typeof value}'`);
-  }
-}
-
-function isDirJSON(value: any): value is fixturify.DirJSON {
-  return typeof value === 'object' && value !== null;
-}
-
-function getPackageName(pkg: PackageJson): string {
-  return getString(pkg, 'name', `package.json is missing a name.`);
-}
-
-function getPackageVersion(pkg: PackageJson): string {
-  return getString(pkg, 'version', `${getPackageName(pkg)}'s package.json is missing a version.`);
-}
+// we also allow adding arbitrary key/value pairs to a PackageJson
+type PackageJson = BasePackageJson & Record<string, any>;
+type ProjectCallback = (project: Project) => void;
 
 interface ReadDirOpts {
   linkDeps?: boolean;
   linkDevDeps?: boolean;
 }
+
+export interface ProjectArgs {
+  name?: string;
+  version?: string;
+  files?: fixturify.DirJSON;
+  requestedRange?: string;
+}
+
+tmp.setGracefulCleanup();
 
 // This only shallow-merges with any user-provided files, which is OK right now
 // because this is only one level deep. If we ever make it deeper, we'll need to
@@ -110,14 +38,6 @@ const defaultFiles = {
      module.exports = {};`,
 };
 
-export interface ProjectArgs {
-  name?: string;
-  version?: string;
-  files?: fixturify.DirJSON;
-  requestedRange?: string;
-}
-
-type ProjectCallback = (project: Project) => void;
 export class Project {
   pkg: PackageJson;
   files: fixturify.DirJSON;
@@ -127,15 +47,12 @@ export class Project {
   private _devDependencies: { [name: string]: Project } = {};
   private _baseDir: string | undefined;
   private _tmp: tmp.SynchrounousResult | undefined;
-
   // when used as a dependency in another Project, this is the semver range it
   // will appear as within the parent's package.json
   private requestedRange: string;
-
   private dependencyLinks: Map<string, { dir: string; requestedRange: string }> = new Map();
   private linkIsDevDependency: Set<string> = new Set();
   private usingHardLinks = true;
-
   // we keep our own package resolution cache because the default global one
   // could get polluted by us resolving test-specific things that will change on
   // subsequent tests.
@@ -151,6 +68,10 @@ export class Project {
   constructor(name?: string, version?: string, projectCallback?: ProjectCallback);
   constructor(name?: string, args?: Omit<ProjectArgs, 'name'>, projectCallback?: ProjectCallback);
   constructor(args?: ProjectArgs, projectCallback?: ProjectCallback);
+  /**
+   * @constructor Project
+   *
+   */
   constructor(
     first?: string | ProjectArgs,
     second?: string | Omit<ProjectArgs, 'name'> | ProjectCallback,
@@ -213,10 +134,22 @@ export class Project {
     }
   }
 
+  /**
+   * @deprecated Please use baseDir instead.
+   *
+   * @readonly
+   * @memberof Project
+   */
   get root() {
     throw new Error('.root has been removed, please review the readme but you likely actually want .baseDir now');
   }
 
+  /**
+   * Sets the base directory of the project.
+   *
+   * @memberof Project
+   * @param dir - The directory path.
+   */
   set baseDir(dir: string) {
     if (this._baseDir) {
       throw new Error(`this Project already has a baseDir`);
@@ -224,6 +157,12 @@ export class Project {
     this._baseDir = dir;
   }
 
+  /**
+   * Gets the base directory path, usually a tmp directory unless a baseDir has been explicitly set.
+   *
+   * @readonly
+   * @memberof Project
+   */
   get baseDir() {
     if (!this._baseDir) {
       throw new Error(
@@ -241,26 +180,73 @@ export class Project {
     return this._baseDir;
   }
 
+  /**
+   * Gets the package name from the package.json.
+   *
+   * @type {string}
+   * @memberof Project
+   */
   get name(): string {
     return getPackageName(this.pkg);
   }
 
+  /**
+   * Sets the package name in the package.json.
+   *
+   * @memberof Project
+   */
   set name(value: string) {
     this.pkg.name = value;
   }
 
+  /**
+   * Gets the version number from the package.json.
+   *
+   * @type {string}
+   * @memberof Project
+   */
   get version(): string {
     return getPackageVersion(this.pkg);
   }
 
+  /**
+   * Sets the version number in the package.json.
+   *
+   * @memberof Project
+   */
   set version(value: string) {
     this.pkg.version = value;
   }
 
+  /**
+   * Reads an existing project from the specified root.
+   *
+   * @param root - The base directory to read the project from.
+   * @param opts - An options object.
+   * @param opts.linkDeps - Include linking dependencies from the Project's node_modules.
+   * @param opts.linkDevDeps - Include linking devDependencies from the Project's node_modules.
+   * @returns - The deserialized Project.
+   */
+  static fromDir(root: string, opts?: ReadDirOpts): Project {
+    let project = new Project();
+    project.readSync(root, opts);
+    return project;
+  }
+
+  /**
+   * Merges an object containing a directory represention with the existing files.
+   *
+   * @param dirJSON - An object containing a directory representation to merge.
+   */
   mergeFiles(dirJSON: fixturify.DirJSON) {
     this.files = deepmerge(this.files, dirJSON);
   }
 
+  /**
+   * Writes the existing files property containing a directory representation to the tmp directory.
+   *
+   * @param dirJSON? - An optional object containing a directory representation to write.
+   */
   async write(dirJSON?: fixturify.DirJSON): Promise<void> {
     if (dirJSON) {
       this.mergeFiles(dirJSON);
@@ -272,10 +258,195 @@ export class Project {
   }
 
   /**
-   * @deprecated please use `await project.write()` instead.
+   * @deprecated Please use `await project.write()` instead.
    */
   writeSync() {
     this.writeProject();
+  }
+
+  addDependency(
+    name?: string,
+    version?: string,
+    args?: Omit<ProjectArgs, 'name' | 'version'>,
+    projectCallback?: ProjectCallback
+  ): Project;
+  addDependency(name?: string, version?: string, projectCallback?: ProjectCallback): Project;
+  addDependency(name?: string, args?: Omit<ProjectArgs, 'name'>, projectCallback?: ProjectCallback): Project;
+  addDependency(args?: ProjectArgs, projectCallback?: ProjectCallback): Project;
+  addDependency(args?: Project, projectCallback?: ProjectCallback): Project;
+  /**
+   * Adds a dependency to the Project's package.json.
+   *
+   * @returns - The Project instance.
+   */
+  addDependency(
+    first?: string | ProjectArgs | Project,
+    second?: string | Omit<ProjectArgs, 'name'> | ProjectCallback,
+    third?: Omit<ProjectArgs, 'name' | 'version'> | ProjectCallback,
+    fourth?: ProjectCallback
+  ): Project {
+    let projectCallback;
+
+    const arity = arguments.length;
+    if (arity > 1) {
+      fourth;
+      const maybeProjectCallback = arguments[arity - 1];
+      if (isProjectCallback(maybeProjectCallback)) {
+        projectCallback = maybeProjectCallback;
+      }
+    }
+
+    if (isProjectCallback(second)) {
+      second = undefined;
+    }
+    if (isProjectCallback(third)) {
+      third = undefined;
+    }
+
+    return this.addDep(first, second, third, '_dependencies', projectCallback);
+  }
+
+  /**
+   * Adds a devDependency to the Project's package.json.
+   *
+   * @returns - The Project instance.
+   */
+  addDevDependency(
+    name?: string,
+    version?: string,
+    args?: Omit<ProjectArgs, 'name' | 'version'>,
+    projectCallback?: ProjectCallback
+  ): Project;
+  addDevDependency(name?: string, version?: string, projectCallback?: ProjectCallback): Project;
+  addDevDependency(name?: string, args?: Omit<ProjectArgs, 'name'>, projectCallback?: ProjectCallback): Project;
+  addDevDependency(args?: ProjectArgs, projectCallback?: ProjectCallback): Project;
+  addDevDependency(args?: Project, projectCallback?: ProjectCallback): Project;
+  addDevDependency(
+    first?: string | ProjectArgs | Project,
+    second?: string | Omit<ProjectArgs, 'name'> | ProjectCallback,
+    third?: Omit<ProjectArgs, 'name' | 'version'> | ProjectCallback,
+    fourth?: ProjectCallback
+  ): Project {
+    let projectCallback;
+
+    const arity = arguments.length;
+    if (arity > 1) {
+      fourth;
+      const maybeProjectCallback = arguments[arity - 1];
+      if (isProjectCallback(maybeProjectCallback)) {
+        projectCallback = maybeProjectCallback;
+      }
+    }
+
+    if (isProjectCallback(second)) {
+      second = undefined;
+    }
+    if (isProjectCallback(third)) {
+      third = undefined;
+    }
+
+    return this.addDep(first, second, third, '_devDependencies', projectCallback);
+  }
+
+  /**
+   * Removes a dependency to the Project's package.json.
+   *
+   * @param name - The name of the dependency to remove.
+   */
+  removeDependency(name: string) {
+    delete this._dependencies[name];
+    this.dependencyLinks.delete(name);
+    this.linkIsDevDependency.delete(name);
+  }
+
+  /**
+   * Removes a devDependency.
+   *
+   * @param name - The name of the devDependency to remove.
+   */
+  removeDevDependency(name: string) {
+    delete this._devDependencies[name];
+    this.dependencyLinks.delete(name);
+    this.linkIsDevDependency.delete(name);
+  }
+
+  /**
+   * Links a dependency.
+   *
+   * @param name - The name of the dependency to link.
+   */
+  linkDependency(
+    name: string,
+    opts:
+      | { baseDir: string; resolveName?: string; requestedRange?: string }
+      | { target: string; requestedRange?: string }
+  ) {
+    this.removeDependency(name);
+    this.removeDevDependency(name);
+    let dir: string;
+    if ('baseDir' in opts) {
+      let pkgJSONPath = resolvePackagePath(opts.resolveName || name, opts.baseDir, this.resolutionCache);
+      if (!pkgJSONPath) {
+        throw new Error(`failed to locate ${opts.resolveName || name} in ${opts.baseDir}`);
+      }
+      dir = path.dirname(pkgJSONPath);
+    } else {
+      dir = opts.target;
+    }
+    let requestedRange = opts?.requestedRange ?? fs.readJsonSync(path.join(dir, 'package.json')).version;
+    this.dependencyLinks.set(name, { dir, requestedRange });
+  }
+
+  /**
+   * Links a devDependency.
+   *
+   * @param name - The name of the dependency to link.
+   */
+  linkDevDependency(name: string, opts: { baseDir: string; resolveName?: string } | { target: string }) {
+    this.linkDependency(name, opts);
+    this.linkIsDevDependency.add(name);
+  }
+
+  /**
+   * @returns - An array of the dependencies for this Projct.
+   */
+  dependencyProjects() {
+    return Object.keys(this._dependencies).map(dependency => this._dependencies[dependency]);
+  }
+
+  /**
+   * @returns - An array of the devDependencies for this Projct.
+   */
+  devDependencyProjects() {
+    return Object.keys(this._devDependencies).map(dependency => this._devDependencies[dependency]);
+  }
+
+  /**
+   * @returns - The cloned Project.
+   */
+  clone(): Project {
+    let cloned: Project = new (this.constructor as typeof Project)();
+    cloned.pkg = JSON.parse(JSON.stringify(this.pkg));
+    cloned.files = JSON.parse(JSON.stringify(this.files));
+    for (let [name, depProject] of Object.entries(this._dependencies)) {
+      cloned._dependencies[name] = depProject.clone();
+    }
+    for (let [name, depProject] of Object.entries(this._devDependencies)) {
+      cloned._devDependencies[name] = depProject.clone();
+    }
+    cloned.dependencyLinks = new Map(this.dependencyLinks);
+    cloned.linkIsDevDependency = new Set(this.linkIsDevDependency);
+    cloned.requestedRange = this.requestedRange;
+    return cloned;
+  }
+
+  /**
+   * Disposes of the tmp directory that the Project is stored in.
+   */
+  dispose() {
+    if (this._tmp) {
+      this._tmp.removeCallback();
+    }
   }
 
   protected writeProject() {
@@ -360,12 +531,6 @@ export class Project {
     fs.copyFileSync(source, destination, fs.constants.COPYFILE_FICLONE | fs.constants.COPYFILE_EXCL);
   }
 
-  static fromDir(root: string, opts?: ReadDirOpts): Project {
-    let project = new Project();
-    project.readSync(root, opts);
-    return project;
-  }
-
   private readSync(root: string, opts?: ReadDirOpts): void {
     const files = fixturify.readSync(root, {
       // when linking deps, we don't need to crawl all of node_modules
@@ -404,43 +569,6 @@ export class Project {
     }
   }
 
-  addDependency(
-    name?: string,
-    version?: string,
-    args?: Omit<ProjectArgs, 'name' | 'version'>,
-    projectCallback?: ProjectCallback
-  ): Project;
-  addDependency(name?: string, version?: string, projectCallback?: ProjectCallback): Project;
-  addDependency(name?: string, args?: Omit<ProjectArgs, 'name'>, projectCallback?: ProjectCallback): Project;
-  addDependency(args?: ProjectArgs, projectCallback?: ProjectCallback): Project;
-  addDependency(args?: Project, projectCallback?: ProjectCallback): Project;
-  addDependency(
-    first?: string | ProjectArgs | Project,
-    second?: string | Omit<ProjectArgs, 'name'> | ProjectCallback,
-    third?: Omit<ProjectArgs, 'name' | 'version'> | ProjectCallback,
-    fourth?: ProjectCallback
-  ): Project {
-    let projectCallback;
-
-    const arity = arguments.length;
-    if (arity > 1) {
-      fourth;
-      const maybeProjectCallback = arguments[arity - 1];
-      if (isProjectCallback(maybeProjectCallback)) {
-        projectCallback = maybeProjectCallback;
-      }
-    }
-
-    if (isProjectCallback(second)) {
-      second = undefined;
-    }
-    if (isProjectCallback(third)) {
-      third = undefined;
-    }
-
-    return this.addDep(first, second, third, '_dependencies', projectCallback);
-  }
-
   private addDep(
     first: string | ProjectArgs | Project | undefined,
     second: string | Omit<ProjectArgs, 'name'> | undefined,
@@ -475,90 +603,6 @@ export class Project {
     return dep;
   }
 
-  removeDependency(name: string) {
-    delete this._dependencies[name];
-    this.dependencyLinks.delete(name);
-    this.linkIsDevDependency.delete(name);
-  }
-
-  removeDevDependency(name: string) {
-    delete this._devDependencies[name];
-    this.dependencyLinks.delete(name);
-    this.linkIsDevDependency.delete(name);
-  }
-
-  addDevDependency(
-    name?: string,
-    version?: string,
-    args?: Omit<ProjectArgs, 'name' | 'version'>,
-    projectCallback?: ProjectCallback
-  ): Project;
-  addDevDependency(name?: string, version?: string, projectCallback?: ProjectCallback): Project;
-  addDevDependency(name?: string, args?: Omit<ProjectArgs, 'name'>, projectCallback?: ProjectCallback): Project;
-  addDevDependency(args?: ProjectArgs, projectCallback?: ProjectCallback): Project;
-  addDevDependency(args?: Project, projectCallback?: ProjectCallback): Project;
-  addDevDependency(
-    first?: string | ProjectArgs | Project,
-    second?: string | Omit<ProjectArgs, 'name'> | ProjectCallback,
-    third?: Omit<ProjectArgs, 'name' | 'version'> | ProjectCallback,
-    fourth?: ProjectCallback
-  ): Project {
-    let projectCallback;
-
-    const arity = arguments.length;
-    if (arity > 1) {
-      fourth;
-      const maybeProjectCallback = arguments[arity - 1];
-      if (isProjectCallback(maybeProjectCallback)) {
-        projectCallback = maybeProjectCallback;
-      }
-    }
-
-    if (isProjectCallback(second)) {
-      second = undefined;
-    }
-    if (isProjectCallback(third)) {
-      third = undefined;
-    }
-
-    return this.addDep(first, second, third, '_devDependencies', projectCallback);
-  }
-
-  linkDependency(
-    name: string,
-    opts:
-      | { baseDir: string; resolveName?: string; requestedRange?: string }
-      | { target: string; requestedRange?: string }
-  ) {
-    this.removeDependency(name);
-    this.removeDevDependency(name);
-    let dir: string;
-    if ('baseDir' in opts) {
-      let pkgJSONPath = resolvePackagePath(opts.resolveName || name, opts.baseDir, this.resolutionCache);
-      if (!pkgJSONPath) {
-        throw new Error(`failed to locate ${opts.resolveName || name} in ${opts.baseDir}`);
-      }
-      dir = path.dirname(pkgJSONPath);
-    } else {
-      dir = opts.target;
-    }
-    let requestedRange = opts?.requestedRange ?? fs.readJsonSync(path.join(dir, 'package.json')).version;
-    this.dependencyLinks.set(name, { dir, requestedRange });
-  }
-
-  linkDevDependency(name: string, opts: { baseDir: string; resolveName?: string } | { target: string }) {
-    this.linkDependency(name, opts);
-    this.linkIsDevDependency.add(name);
-  }
-
-  dependencyProjects() {
-    return Object.keys(this._dependencies).map(dependency => this._dependencies[dependency]);
-  }
-
-  devDependencyProjects() {
-    return Object.keys(this._devDependencies).map(dependency => this._devDependencies[dependency]);
-  }
-
   private pkgJSONWithDeps(): PackageJson {
     let dependencies = this.depsToObject(this.dependencyProjects());
     let devDependencies = this.depsToObject(this.devDependencyProjects());
@@ -575,33 +619,78 @@ export class Project {
     });
   }
 
-  clone(): Project {
-    let cloned: Project = new (this.constructor as typeof Project)();
-    cloned.pkg = JSON.parse(JSON.stringify(this.pkg));
-    cloned.files = JSON.parse(JSON.stringify(this.files));
-    for (let [name, depProject] of Object.entries(this._dependencies)) {
-      cloned._dependencies[name] = depProject.clone();
-    }
-    for (let [name, depProject] of Object.entries(this._devDependencies)) {
-      cloned._devDependencies[name] = depProject.clone();
-    }
-    cloned.dependencyLinks = new Map(this.dependencyLinks);
-    cloned.linkIsDevDependency = new Set(this.linkIsDevDependency);
-    cloned.requestedRange = this.requestedRange;
-    return cloned;
-  }
-
-  dispose() {
-    if (this._tmp) {
-      this._tmp.removeCallback();
-    }
-  }
-
   private depsToObject(deps: Project[]) {
     let obj: { [name: string]: string } = {};
     deps.forEach(dep => (obj[dep.name] = dep.requestedRange));
     return obj;
   }
+}
+
+function deserializePackageJson(serialized: string): PackageJson {
+  return JSON.parse(serialized);
+}
+
+function keys(object: any) {
+  if (object !== null && (typeof object === 'object' || Array.isArray(object))) {
+    return Object.keys(object);
+  } else {
+    return [];
+  }
+}
+
+function isProjectCallback(maybe: ProjectCallback | any): maybe is ProjectCallback {
+  return typeof maybe === 'function';
+}
+
+function getString<Obj extends Object, KeyOfObj extends keyof Obj>(
+  obj: Obj,
+  propertyName: KeyOfObj,
+  errorMessage?: string
+): string {
+  const value = obj[propertyName];
+  if (typeof value === 'string') {
+    return value;
+  } else {
+    throw new TypeError(errorMessage || `expected 'string' but got '${typeof value}'`);
+  }
+}
+
+function getFile<Dir extends fixturify.DirJSON, FileName extends keyof Dir>(dir: Dir, fileName: FileName): string {
+  const value = dir[fileName];
+  if (typeof value === 'string') {
+    return value;
+  } else if (typeof value === 'object' && value !== null) {
+    throw new TypeError(`Expected a file for name '${fileName}' but got a 'Folder'`);
+  } else {
+    throw new TypeError(`Expected a file for name '${fileName}' but got '${typeof value}'`);
+  }
+}
+
+function getFolder<Dir extends fixturify.DirJSON, FileName extends keyof Dir>(
+  dir: Dir,
+  fileName: FileName
+): fixturify.DirJSON {
+  const value = dir[fileName];
+
+  if (isDirJSON(value)) {
+    return value;
+  } else if (typeof value === 'string') {
+    throw new TypeError(`Expected a file for name '${fileName}' but got 'File'`);
+  } else {
+    throw new TypeError(`Expected a folder for name '${fileName}' but got '${typeof value}'`);
+  }
+}
+
+function isDirJSON(value: any): value is fixturify.DirJSON {
+  return typeof value === 'object' && value !== null;
+}
+
+function getPackageName(pkg: PackageJson): string {
+  return getString(pkg, 'name', `package.json is missing a name.`);
+}
+
+function getPackageVersion(pkg: PackageJson): string {
+  return getString(pkg, 'version', `${getPackageName(pkg)}'s package.json is missing a version.`);
 }
 
 function parseScoped(name: string) {
