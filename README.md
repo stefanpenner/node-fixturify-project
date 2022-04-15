@@ -120,3 +120,38 @@ original dependencies, but with "extra.js" added.
 By default, `linkDeps` will only link up `dependencies` (which is appropriate
 for libraries). If you want to also include `devDependencies` (which is
 appropriate for apps) you can use `linkDevDeps` instead.
+
+## API
+
+<!--DOCS_START-->
+## Functions
+
+<dl>
+<dt><a href="#getFile">getFile()</a></dt>
+<dd><p>A utility method access a file from a DirJSON that is type-safe and runtime safe.</p>
+<pre class="prettyprint source lang-ts"><code>getFile(folder, 'package.json') // the files content, or it will throw
+</code></pre></dd>
+<dt><a href="#getFolder">getFolder()</a></dt>
+<dd><p>A utility method access a file from a DirJSON that is type-safe and runtime safe</p>
+<pre class="prettyprint source lang-ts"><code>getFolder(folder, 'node_modules') // => the DirJSON of folder['node_module'] or it will throw
+</code></pre></dd>
+</dl>
+
+<a name="getFile"></a>
+
+## getFile()
+<p>A utility method access a file from a DirJSON that is type-safe and runtime safe.</p>
+<pre class="prettyprint source lang-ts"><code>getFile(folder, 'package.json') // the files content, or it will throw
+</code></pre>
+
+**Kind**: global function  
+<a name="getFolder"></a>
+
+## getFolder()
+<p>A utility method access a file from a DirJSON that is type-safe and runtime safe</p>
+<pre class="prettyprint source lang-ts"><code>getFolder(folder, 'node_modules') // => the DirJSON of folder['node_module'] or it will throw
+</code></pre>
+
+**Kind**: global function  
+
+<!--DOCS_END-->
