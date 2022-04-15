@@ -1,6 +1,6 @@
 # node-fixturify-project
 
-[![npm version](https://badge.fury.io/js/ember-template-lint.svg)](https://badge.fury.io/js/ember-template-lint)
+[![npm version](https://badge.fury.io/js/fixturify-project.svg)](https://badge.fury.io/js/fixturify-project)
 [![CI](https://github.com/stefanpenner/node-fixturify-project/workflows/CI/badge.svg)](https://github.com/stefanpenner/node-fixturify-project/actions/workflows/ci.yml)
 
 When implementing JS build tooling it is common to have complete projects as
