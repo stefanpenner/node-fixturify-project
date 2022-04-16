@@ -4,7 +4,7 @@
 [![CI](https://github.com/stefanpenner/node-fixturify-project/workflows/CI/badge.svg)](https://github.com/stefanpenner/node-fixturify-project/actions/workflows/ci.yml)
 
 When implementing JS build tooling it is common to have complete projects as
-fixture data. Unfortunately fixtures committed to disk can be somewhat to
+fixture data. Unfortunately fixtures committed to disk can be somewhat hard to
 maintain and augment.
 
 ## Basic Usage
