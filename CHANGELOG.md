@@ -1,5 +1,19 @@
 
 
+
+## v5.0.2 (2022-04-18)
+
+#### :bug: Bug Fix
+* [#69](https://github.com/stefanpenner/node-fixturify-project/pull/69) Fixes ESM output ([@scalvert](https://github.com/scalvert))
+
+#### :memo: Documentation
+* [#67](https://github.com/stefanpenner/node-fixturify-project/pull/67) Readme typo fix ([@thoov](https://github.com/thoov))
+
+#### Committers: 2
+- Steve Calvert ([@scalvert](https://github.com/scalvert))
+- Travis Hoover ([@thoov](https://github.com/thoov))
+
+
 ## v5.0.1 (2022-04-15)
 
 #### :boom: Breaking Change
