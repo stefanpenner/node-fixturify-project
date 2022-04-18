@@ -19,7 +19,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup src/index.ts --format cjs,esm --dts --clean",
+    "build": "tsup-node src/index.ts --format cjs,esm --external 'fs-extra' --dts --clean",
     "docs:generate": "readme-api-generator src/index.ts --ts",
     "lint": "yarn prettier --check *.ts",
     "prepare": "yarn build",

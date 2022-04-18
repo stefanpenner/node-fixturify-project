@@ -3,7 +3,7 @@ import tmp from 'tmp';
 import fs from 'fs-extra';
 import path from 'path';
 import resolvePackagePath from 'resolve-package-path';
-import CacheGroup from 'resolve-package-path/lib/cache-group';
+import CacheGroup from 'resolve-package-path/lib/cache-group.js';
 import binLinks from 'bin-links';
 import { PackageJson as BasePackageJson } from 'type-fest';
 import walkSync from 'walk-sync';
