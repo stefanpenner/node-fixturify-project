@@ -462,7 +462,7 @@ export class Project {
       dep.writeProject();
     }
     for (let [name, { dir: target }] of this.dependencyLinks) {
-      this.writeLinkedPackage(name, target);
+      this.writeLinkedPackage(name, target, path.join(this.baseDir, 'node_modules', name));
     }
   }
 
@@ -473,10 +473,9 @@ export class Project {
     }
   }
 
-  private writeLinkedPackage(name: string, target: string) {
+  private writeLinkedPackage(name: string, target: string, destination: string) {
     let targetPkg = fs.readJsonSync(`${target}/package.json`);
     let peers = new Set(Object.keys(targetPkg.peerDependencies ?? {}));
-    let destination = path.join(this.baseDir, 'node_modules', name);
 
     if (peers.size === 0) {
       // no peerDeps, so we can just symlink the whole package
@@ -499,7 +498,7 @@ export class Project {
               `[FixturifyProject] package ${name} in ${target} depends on ${depName} but we could not resolve it`
             );
           }
-          fs.ensureSymlinkSync(path.dirname(depTarget), path.join(destination, 'node_modules', depName));
+          this.writeLinkedPackage(depName, path.dirname(depTarget), path.join(destination, 'node_modules', depName));
         }
       }
     }
