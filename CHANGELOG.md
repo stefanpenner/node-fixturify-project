@@ -1,6 +1,15 @@
 
 
 
+
+## v5.0.3 (2022-05-21)
+
+#### :bug: Bug Fix
+* [#70](https://github.com/stefanpenner/node-fixturify-project/pull/70) Fix transitive peer dependencies ([@ef4](https://github.com/ef4))
+
+#### Committers: 1
+- Edward Faulkner ([@ef4](https://github.com/ef4))
+
 ## v5.0.2 (2022-04-18)
 
 #### :bug: Bug Fix
