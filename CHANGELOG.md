@@ -2,6 +2,15 @@
 
 
 
+
+## v5.1.0 (2022-09-15)
+
+#### :rocket: Enhancement
+* [#73](https://github.com/stefanpenner/node-fixturify-project/pull/73) allow linking to other Projects ([@ef4](https://github.com/ef4))
+
+#### Committers: 1
+- Edward Faulkner ([@ef4](https://github.com/ef4))
+
 ## v5.0.3 (2022-05-21)
 
 #### :bug: Bug Fix
