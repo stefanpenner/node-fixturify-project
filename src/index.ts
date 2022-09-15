@@ -50,7 +50,7 @@ export class Project {
   // when used as a dependency in another Project, this is the semver range it
   // will appear as within the parent's package.json
   private requestedRange: string;
-  private dependencyLinks: Map<string, { dir: string; requestedRange: string }> = new Map();
+  private dependencyLinks: Map<string, LinkParams> = new Map();
   private linkIsDevDependency: Set<string> = new Set();
   private usingHardLinks = true;
   // we keep our own package resolution cache because the default global one
@@ -375,26 +375,10 @@ export class Project {
    *
    * @param name - The name of the dependency to link.
    */
-  linkDependency(
-    name: string,
-    opts:
-      | { baseDir: string; resolveName?: string; requestedRange?: string }
-      | { target: string; requestedRange?: string }
-  ) {
+  linkDependency(name: string, opts: LinkParams): void {
     this.removeDependency(name);
     this.removeDevDependency(name);
-    let dir: string;
-    if ('baseDir' in opts) {
-      let pkgJSONPath = resolvePackagePath(opts.resolveName || name, opts.baseDir, this.resolutionCache);
-      if (!pkgJSONPath) {
-        throw new Error(`failed to locate ${opts.resolveName || name} in ${opts.baseDir}`);
-      }
-      dir = path.dirname(pkgJSONPath);
-    } else {
-      dir = opts.target;
-    }
-    let requestedRange = opts?.requestedRange ?? fs.readJsonSync(path.join(dir, 'package.json')).version;
-    this.dependencyLinks.set(name, { dir, requestedRange });
+    this.dependencyLinks.set(name, opts);
   }
 
   /**
@@ -402,7 +386,7 @@ export class Project {
    *
    * @param name - The name of the dependency to link.
    */
-  linkDevDependency(name: string, opts: { baseDir: string; resolveName?: string } | { target: string }) {
+  linkDevDependency(name: string, opts: LinkParams) {
     this.linkDependency(name, opts);
     this.linkIsDevDependency.add(name);
   }
@@ -450,20 +434,86 @@ export class Project {
   }
 
   protected writeProject() {
+    // this recurses through all our dependent Projects in three phases
+
+    // first every package gets assigned its base dir
+    this.assignBaseDirs();
+
+
+    let resolvedLinksMap = new Map();
+
+    // then we write out all the files, including their package.jsons. Since the
+    // requeste ranges of the dependencies in package.json default to the actual
+    // discovered dependencies, this step also resolves dependencies.
+    this.writeFiles(resolvedLinksMap);
+
+    // only after all the files are in place for Projects that we are creating
+    // do we handle creating symlinks and/or hard links to existing packages and
+    // between Projects.
+    this.finalizeWrite(resolvedLinksMap);
+  }
+
+  private assignBaseDirs() {
     this.autoBaseDir();
+    for (let depList of [this.dependencyProjects(), this.devDependencyProjects()]) {
+      for (let dep of depList) {
+        dep.baseDir = path.join(this.baseDir, 'node_modules', dep.name);
+        dep.assignBaseDirs();
+      }
+    }
+  }
+
+  private writeFiles(resolvedLinksMap: Map<Project, ResolvedLinks>) {
     fixturify.writeSync(this.baseDir, this.files);
-    fs.outputJSONSync(path.join(this.baseDir, 'package.json'), this.pkgJSONWithDeps(), { spaces: 2 });
-    for (let dep of this.dependencyProjects()) {
-      dep.baseDir = path.join(this.baseDir, 'node_modules', dep.name);
-      dep.writeProject();
+    for (let depList of [this.dependencyProjects(), this.devDependencyProjects()]) {
+      for (let dep of depList) {
+        dep.writeFiles(resolvedLinksMap);
+      }
     }
-    for (let dep of this.devDependencyProjects()) {
-      dep.baseDir = path.join(this.baseDir, 'node_modules', dep.name);
-      dep.writeProject();
-    }
-    for (let [name, { dir: target }] of this.dependencyLinks) {
+    let resolvedLinks = this.resolveLinks();
+    fs.outputJSONSync(path.join(this.baseDir, 'package.json'), this.pkgJSONWithDeps(resolvedLinks), { spaces: 2 });
+    resolvedLinksMap.set(this, resolvedLinks);
+  }
+
+  private finalizeWrite(resolvedLinksMap: Map<Project, ResolvedLinks>) {
+    for (let [name, { dir: target }] of resolvedLinksMap.get(this)!) {
       this.writeLinkedPackage(name, target, path.join(this.baseDir, 'node_modules', name));
     }
+    for (let depList of [this.dependencyProjects(), this.devDependencyProjects()]) {
+      for (let dep of depList) {
+        dep.finalizeWrite(resolvedLinksMap);
+      }
+    }
+  }
+
+  private resolveLinks(): ResolvedLinks {
+    return new Map(
+      [...this.dependencyLinks.entries()].map(([name, opts]) => {
+        let dir: string;
+        if ('baseDir' in opts) {
+          let pkgJSONPath = resolvePackagePath(opts.resolveName || name, opts.baseDir, this.resolutionCache);
+          if (!pkgJSONPath) {
+            throw new Error(`failed to locate ${opts.resolveName || name} in ${opts.baseDir}`);
+          }
+          dir = path.dirname(pkgJSONPath);
+        } else if ('target' in opts) {
+          dir = opts.target;
+        } else {
+          dir = opts.project.baseDir;
+        }
+
+        let requestedRange: string;
+        if (opts.requestedRange) {
+          requestedRange = opts.requestedRange;
+         } else if ('target' in opts || 'baseDir' in opts) {
+          requestedRange = fs.readJsonSync(path.join(dir, 'package.json')).version;
+         } else {
+          requestedRange = opts.project.version
+         }
+
+        return [name, { requestedRange, dir }];
+      })
+    );
   }
 
   private async binLinks() {
@@ -602,10 +652,10 @@ export class Project {
     return dep;
   }
 
-  private pkgJSONWithDeps(): PackageJson {
+  private pkgJSONWithDeps(resolvedLinks: Map<string, { requestedRange: string; dir: string }>): PackageJson {
     let dependencies = this.depsToObject(this.dependencyProjects());
     let devDependencies = this.depsToObject(this.devDependencyProjects());
-    for (let [name, { requestedRange }] of this.dependencyLinks.entries()) {
+    for (let [name, { requestedRange }] of resolvedLinks) {
       if (this.linkIsDevDependency.has(name)) {
         devDependencies[name] = requestedRange;
       } else {
@@ -777,3 +827,10 @@ Project.prototype.writeSync = deprecate(
   Project.prototype.writeSync,
   'project.writeSync() is deprecated. Use await project.write() instead'
 );
+
+export type LinkParams =
+  | { baseDir: string; resolveName?: string; requestedRange?: string }
+  | { target: string; requestedRange?: string }
+  | { project: Project; requestedRange?: string };
+
+type ResolvedLinks = Map<string, { dir: string; requestedRange: string }>;

@@ -521,6 +521,18 @@ describe('Project', async () => {
     expect(fs.readlinkSync(path.join(project.baseDir, 'node_modules', 'moment'))).to.eql(baseProject.baseDir);
   });
 
+  it('supports linking between dependencies', async () => {
+    let project = new Project('my-app');
+    let depA = project.addDependency('dep-a');
+    let depB = project.addDependency('dep-b');
+    let depC = project.addDependency('dep-c');
+    depB.linkDependency('dep-a', { project: depA });
+    depB.linkDependency('dep-c', { project: depC });
+    await project.write();
+    expect(fs.readlinkSync(path.join(depB.baseDir, 'node_modules', 'dep-a'))).to.eql(depA.baseDir);
+    expect(fs.readlinkSync(path.join(depB.baseDir, 'node_modules', 'dep-c'))).to.eql(depC.baseDir);
+  });
+
   it('supports linking to existing dependency from within nested project', async () => {
     let baseProject = new Project('base');
     baseProject.addDependency('moment');
