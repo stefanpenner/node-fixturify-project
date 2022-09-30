@@ -661,6 +661,90 @@ describe('Project', async () => {
     expect(myAppModule.gammasBetaVersion()).to.eql('1.2.0');
   });
 
+  it('correctly adjusts deeply nested peerDependencies of linked dependencies when satisfied elsewhere', async () => {
+    let baseProject = new Project('base', {
+      files: {
+        'index.js': `
+          exports.alphasBetaVersion = function() {
+            return require('alpha').betaVersion();
+          }
+          exports.gammasBetaVersion = function() {
+            return require('alpha').gammasBetaVersion();
+          }
+          exports.gammasDeltaVersion = function() {
+            return require('alpha').gammasDeltaVersion();
+          }
+        `,
+      },
+    });
+
+    // alpha is a direct dependency of base and has a peer dep on beta
+    let alpha = baseProject.addDependency('alpha', {
+      files: {
+        'index.js': `
+          exports.betaVersion = function() {
+            return require('beta/package.json').version;
+          }
+          exports.gammasBetaVersion = function() {
+            return require('gamma').betaVersion();
+          }
+          exports.gammasDeltaVersion = function() {
+            return require('gamma').deltaVersion();
+          }
+        `,
+      },
+    });
+    alpha.pkg.peerDependencies = { beta: '^1.0.0' };
+
+    // gamma is a direct dependency of alpha and shares the peer dep on beta
+    let gamma = alpha.addDependency('gamma', {
+      files: {
+        'index.js': `
+          exports.betaVersion = function() {
+            return require('beta/package.json').version;
+          }
+          exports.deltaVersion = function() {
+            return require('delta/package.json').version;
+          }
+        `,
+      },
+    });
+    gamma.pkg.peerDependencies = { delta: '^1.0.0' };
+    baseProject.addDependency('delta', { version: '1.7.0' })
+    baseProject.addDependency('beta', { version: '1.1.0' });
+    await baseProject.write();
+
+    // precondition: in the baseProject, alpha and gamma sees their beta peerDep as beta@1.1.0
+    let baseModule = require(baseProject.baseDir);
+    expect(baseModule.alphasBetaVersion()).to.eql('1.1.0');
+    expect(baseModule.gammasBetaVersion()).to.eql('1.1.0');
+    expect(baseModule.gammasDeltaVersion()).to.eql('1.7.0');
+
+    let project = new Project('my-app', {
+      files: {
+        'index.js': `
+          exports.alphasBetaVersion = function() {
+            return require('alpha').betaVersion();
+          }
+          exports.gammasBetaVersion = function() {
+            return require('alpha').gammasBetaVersion();
+          }
+          exports.gammasDeltaVersion = function() {
+            return require('alpha').gammasDeltaVersion();
+          }
+      `,
+      },
+    });
+    project.linkDependency('alpha', { baseDir: baseProject.baseDir });
+    project.addDependency('beta', { version: '1.2.0' });
+    await project.write();
+
+    let myAppModule = require(project.baseDir);
+    expect(myAppModule.alphasBetaVersion()).to.eql('1.2.0');
+    expect(myAppModule.gammasBetaVersion()).to.eql('1.2.0');
+    expect(myAppModule.gammasDeltaVersion()).to.eql('1.7.0');
+  });
+
   it('adds linked dependencies to package.json', async () => {
     let baseProject = new Project('base');
     baseProject.addDependency('moment', '1.2.3');
