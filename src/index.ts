@@ -165,15 +165,6 @@ export class Project {
    */
   get baseDir() {
     if (!this._baseDir) {
-      throw new Error(
-        `this project has no baseDir yet. Either set one manually or call write to have one chosen for you`
-      );
-    }
-    return this._baseDir;
-  }
-
-  private autoBaseDir(): string {
-    if (!this._baseDir) {
       this._tmp = tmp.dirSync({ unsafeCleanup: true });
       this._baseDir = fs.realpathSync(this._tmp.name);
     }
@@ -454,7 +445,7 @@ export class Project {
   }
 
   private assignBaseDirs() {
-    this.autoBaseDir();
+    this.baseDir;
     for (let depList of [this.dependencyProjects(), this.devDependencyProjects()]) {
       for (let dep of depList) {
         dep.baseDir = path.join(this.baseDir, 'node_modules', dep.name);
