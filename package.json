@@ -1,6 +1,6 @@
 {
   "name": "fixturify-project",
-  "version": "5.1.0",
+  "version": "5.2.0",
   "repository": "git@github.com:stefanpenner/node-fixturify-project",
   "license": "MIT",
   "author": "Stefan Penner <stefan.penner@gmail.com>",

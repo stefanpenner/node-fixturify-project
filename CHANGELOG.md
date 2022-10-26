@@ -3,6 +3,15 @@
 
 
 
+
+## v5.2.0 (2022-10-26)
+
+#### :rocket: Enhancement
+* [#76](https://github.com/stefanpenner/node-fixturify-project/pull/76) provide access to baseDir before write ([@ef4](https://github.com/ef4))
+
+#### Committers: 1
+- Edward Faulkner ([@ef4](https://github.com/ef4))
+
 ## v5.1.0 (2022-09-15)
 
 #### :rocket: Enhancement
