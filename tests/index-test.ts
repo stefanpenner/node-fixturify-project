@@ -727,6 +727,38 @@ describe('Project', async () => {
     expect(fs.existsSync(path.join(myApp.baseDir, 'node_modules', 'custom-addon', 'layered-extra.js'))).to.eql(true);
   });
 
+  it('throws an error for linked deps when version is missing', async () => {
+    let template = new Project('template');
+    template.addDependency('local-lib', './local-lib');
+    template.mergeFiles({
+      'local-lib': {
+        'package.json': JSON.stringify({
+          name: 'local-lib',
+          main: 'index.js',
+        }),
+        'index.js': 'console.log("hello world");',
+      },
+    });
+
+    await template.write();
+
+    let localLibPkgPath = path.join(template.baseDir, 'node_modules', 'local-lib', 'package.json');
+
+    let localLibPkgJson = await fs.readJSON(localLibPkgPath);
+    // we have to manually remove the version from the package.json bc fixturify automatically adds it
+    // when calling `addDependency`
+    delete localLibPkgJson.version;
+    await fs.writeJSON(localLibPkgPath, localLibPkgJson);
+
+    let app = Project.fromDir(template.baseDir, { linkDeps: true });
+    await expect(app.write()).rejects.toThrowError(
+      'No version found for package local-lib. All dependencies must have both a name and version in their package.json.'
+    );
+
+    template.dispose();
+    app.dispose();
+  });
+
   it('can read a project with linked dev dependencies', async () => {
     // start with a template app
     let appTemplate = new Project('stock-app');
