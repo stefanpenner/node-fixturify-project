@@ -647,6 +647,11 @@ export class Project {
     let dependencies = this.depsToObject(this.dependencyProjects());
     let devDependencies = this.depsToObject(this.devDependencyProjects());
     for (let [name, { requestedRange }] of resolvedLinks) {
+      if (requestedRange === undefined) {
+        throw new Error(
+          `No version found for package ${name}. All dependencies must have both a name and version in their package.json.`
+        );
+      }
       if (this.linkIsDevDependency.has(name)) {
         devDependencies[name] = requestedRange;
       } else {
