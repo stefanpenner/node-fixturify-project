@@ -7,7 +7,6 @@ import CacheGroup from 'resolve-package-path/lib/cache-group.js';
 import binLinks from 'bin-links';
 import { PackageJson as BasePackageJson } from 'type-fest';
 import walkSync from 'walk-sync';
-import { deprecate } from 'util';
 import deepmerge from 'deepmerge';
 const { entries } = walkSync;
 
@@ -236,13 +235,6 @@ export class Project {
     this.writeProject();
 
     await this.binLinks();
-  }
-
-  /**
-   * @deprecated Please use `await project.write()` instead.
-   */
-  writeSync() {
-    this.writeProject();
   }
 
   addDependency(
@@ -803,11 +795,6 @@ function readPackages(modulesPath: string): { pkg: PackageJson; path: string }[]
   }
   return pkgs;
 }
-
-Project.prototype.writeSync = deprecate(
-  Project.prototype.writeSync,
-  'project.writeSync() is deprecated. Use await project.write() instead'
-);
 
 export type LinkParams =
   | { baseDir: string; resolveName?: string; requestedRange?: string }

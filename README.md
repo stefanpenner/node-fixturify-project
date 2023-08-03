@@ -27,12 +27,12 @@ project.addDependency('chai', '5.2.0');
 project.pkg; // => the contents of package.json for the given project
 project.files; // => read or write the set of files further
 
-// if you don't set this, a new temp dir will be made for you when you writeSync()
+// if you don't set this, a new temp dir will be made for you when you write()
 project.baseDir = 'some/base/dir/';
 
 await project.write();
 
-// after writeSync(), you can read project.baseDir even if you didn't set it
+// after write(), you can read project.baseDir even if you didn't set it
 expect(fs.existsSync(join(project.baseDir, 'index.js'))).to.eql(true);
 ```
 
@@ -144,7 +144,6 @@ appropriate for apps) you can use `linkDevDeps` instead.
     - [project.version](#projectversion)
     - [project.mergeFiles(dirJSON)](#projectmergefilesdirjson)
     - [project.write(dirJSON?)](#projectwritedirjson)
-    - [~~project.writeSync()~~](#projectwritesync)
     - [project.addDependency() ⇒](#projectadddependency-)
     - [project.addDevDependency() ⇒](#projectadddevdependency-)
     - [project.removeDependency(name)](#projectremovedependencyname)
@@ -218,14 +217,6 @@ appropriate for apps) you can use `linkDevDeps` instead.
 | Param | Description |
 | --- | --- |
 | dirJSON? | <p>An optional object containing a directory representation to write.</p> |
-
-<a name="Project+writeSync"></a>
-
-### ~~project.writeSync()~~
-***Deprecated***
-
-**Kind**: instance method of [<code>Project</code>](#Project)
-<a name="Project+addDependency"></a>
 
 ### project.addDependency() ⇒
 <p>Adds a dependency to the Project's package.json.</p>
