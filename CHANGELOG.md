@@ -4,6 +4,24 @@
 
 
 
+
+## v6.0.0 (2023-08-03)
+
+#### :boom: Breaking Change
+* [#85](https://github.com/stefanpenner/node-fixturify-project/pull/85) Bump Node to 16, drop deprecated methods ([@lolmaus](https://github.com/lolmaus))
+
+#### :bug: Bug Fix
+* [#82](https://github.com/stefanpenner/node-fixturify-project/pull/82) throw if no version is specified in dependency's package.json ([@cafreeman](https://github.com/cafreeman))
+
+#### :house: Internal
+* [#83](https://github.com/stefanpenner/node-fixturify-project/pull/83) Maintenance: bump Node, typescript and type-fest ([@lolmaus](https://github.com/lolmaus))
+
+#### Committers: 4
+- Andrey Mikhaylov (lolmaus) ([@lolmaus](https://github.com/lolmaus))
+- Chris Freeman ([@cafreeman](https://github.com/cafreeman))
+- Edward Faulkner ([@ef4](https://github.com/ef4))
+- Stefan Penner ([@stefanpenner](https://github.com/stefanpenner))
+
 ## v5.2.0 (2022-10-26)
 
 #### :rocket: Enhancement
