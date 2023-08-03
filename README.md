@@ -27,12 +27,12 @@ project.addDependency('chai', '5.2.0');
 project.pkg; // => the contents of package.json for the given project
 project.files; // => read or write the set of files further
 
-// if you don't set this, a new temp dir will be made for you when you writeSync()
-project.baseDir = 'some/root/';
+// if you don't set this, a new temp dir will be made for you when you write()
+project.baseDir = 'some/base/dir/';
 
 await project.write();
 
-// after writeSync(), you can read project.baseDir even if you didn't set it
+// after write(), you can read project.baseDir even if you didn't set it
 expect(fs.existsSync(join(project.baseDir, 'index.js'))).to.eql(true);
 ```
 
@@ -40,10 +40,10 @@ The above example produces the following files (and most importantly the
 appropriate file contents:
 
 ```sh
-some/root/package.json
-some/root/index.js
-some/root/node_modules/mocha/package.json
-some/root/node_modules/chai/package.json
+some/base/dir/package.json
+some/base/dir/index.js
+some/base/dir/node_modules/mocha/package.json
+some/base/dir/node_modules/chai/package.json
 ```
 
 ### Nesting Dependencies
@@ -136,16 +136,14 @@ appropriate for apps) you can use `linkDevDeps` instead.
     - [Linking to real dependencies](#linking-to-real-dependencies)
   - [API](#api)
   - [Project](#project)
-    - [~~project.root~~](#projectroot)
     - [project.baseDir](#projectbasedir)
     - [project.baseDir](#projectbasedir-1)
-    - [project.name : <code>string</code>](#projectname--string)
+    - [project.name : string](#projectname--string)
     - [project.name](#projectname)
-    - [project.version : <code>string</code>](#projectversion--string)
+    - [project.version : string](#projectversion--string)
     - [project.version](#projectversion)
     - [project.mergeFiles(dirJSON)](#projectmergefilesdirjson)
     - [project.write(dirJSON?)](#projectwritedirjson)
-    - [~~project.writeSync()~~](#projectwritesync)
     - [project.addDependency() ⇒](#projectadddependency-)
     - [project.addDevDependency() ⇒](#projectadddevdependency-)
     - [project.removeDependency(name)](#projectremovedependencyname)
@@ -156,16 +154,7 @@ appropriate for apps) you can use `linkDevDeps` instead.
     - [project.devDependencyProjects() ⇒](#projectdevdependencyprojects-)
     - [project.clone() ⇒](#projectclone-)
     - [project.dispose()](#projectdispose)
-    - [Project.fromDir(root, opts) ⇒](#projectfromdirroot-opts-)
-
-<a name="Project+root"></a>
-
-### ~~project.root~~
-***Deprecated***
-
-**Kind**: instance property of [<code>Project</code>](#Project)
-**Read only**: true
-<a name="Project+baseDir"></a>
+    - [Project.fromDir(baseDir, opts) ⇒](#projectfromdirbasedir-opts-)
 
 ### project.baseDir
 <p>Sets the base directory of the project.</p>
@@ -228,14 +217,6 @@ appropriate for apps) you can use `linkDevDeps` instead.
 | Param | Description |
 | --- | --- |
 | dirJSON? | <p>An optional object containing a directory representation to write.</p> |
-
-<a name="Project+writeSync"></a>
-
-### ~~project.writeSync()~~
-***Deprecated***
-
-**Kind**: instance method of [<code>Project</code>](#Project)
-<a name="Project+addDependency"></a>
 
 ### project.addDependency() ⇒
 <p>Adds a dependency to the Project's package.json.</p>
@@ -326,8 +307,8 @@ appropriate for apps) you can use `linkDevDeps` instead.
 **Kind**: instance method of [<code>Project</code>](#Project)
 <a name="Project.fromDir"></a>
 
-### Project.fromDir(root, opts) ⇒
-<p>Reads an existing project from the specified root.</p>
+### Project.fromDir(baseDir, opts) ⇒
+<p>Reads an existing project from the specified base dir.</p>
 
 **Kind**: static method of [<code>Project</code>](#Project)
 **Returns**: <ul>
@@ -336,7 +317,7 @@ appropriate for apps) you can use `linkDevDeps` instead.
 
 | Param | Description |
 | --- | --- |
-| root | <p>The base directory to read the project from.</p> |
+| baseDir | <p>The base directory to read the project from.</p> |
 | opts | <p>An options object.</p> |
 | opts.linkDeps | <p>Include linking dependencies from the Project's node_modules.</p> |
 | opts.linkDevDeps | <p>Include linking devDependencies from the Project's node_modules.</p> |

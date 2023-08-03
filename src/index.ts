@@ -7,7 +7,6 @@ import CacheGroup from 'resolve-package-path/lib/cache-group.js';
 import binLinks from 'bin-links';
 import { PackageJson as BasePackageJson } from 'type-fest';
 import walkSync from 'walk-sync';
-import { deprecate } from 'util';
 import deepmerge from 'deepmerge';
 const { entries } = walkSync;
 
@@ -135,16 +134,6 @@ export class Project {
   }
 
   /**
-   * @deprecated Please use baseDir instead.
-   *
-   * @readonly
-   * @memberof Project
-   */
-  get root() {
-    throw new Error('.root has been removed, please review the readme but you likely actually want .baseDir now');
-  }
-
-  /**
    * Sets the base directory of the project.
    *
    * @memberof Project
@@ -210,17 +199,17 @@ export class Project {
   }
 
   /**
-   * Reads an existing project from the specified root.
+   * Reads an existing project from the specified base dir.
    *
-   * @param root - The base directory to read the project from.
+   * @param baseDir - The base directory to read the project from.
    * @param opts - An options object.
    * @param opts.linkDeps - Include linking dependencies from the Project's node_modules.
    * @param opts.linkDevDeps - Include linking devDependencies from the Project's node_modules.
    * @returns - The deserialized Project.
    */
-  static fromDir(root: string, opts?: ReadDirOpts): Project {
+  static fromDir(baseDir: string, opts?: ReadDirOpts): Project {
     let project = new Project();
-    project.readSync(root, opts);
+    project.readSync(baseDir, opts);
     return project;
   }
 
@@ -246,13 +235,6 @@ export class Project {
     this.writeProject();
 
     await this.binLinks();
-  }
-
-  /**
-   * @deprecated Please use `await project.write()` instead.
-   */
-  writeSync() {
-    this.writeProject();
   }
 
   addDependency(
@@ -571,8 +553,8 @@ export class Project {
     fs.copyFileSync(source, destination, fs.constants.COPYFILE_FICLONE | fs.constants.COPYFILE_EXCL);
   }
 
-  private readSync(root: string, opts?: ReadDirOpts): void {
-    const files = fixturify.readSync(root, {
+  private readSync(baseDir: string, opts?: ReadDirOpts): void {
+    const files = fixturify.readSync(baseDir, {
       // when linking deps, we don't need to crawl all of node_modules
       ignore: opts?.linkDeps || opts?.linkDevDeps ? ['node_modules'] : [],
     });
@@ -585,12 +567,12 @@ export class Project {
     if (opts?.linkDeps || opts?.linkDevDeps) {
       if (this.pkg.dependencies) {
         for (let dep of Object.keys(this.pkg.dependencies)) {
-          this.linkDependency(dep, { baseDir: root });
+          this.linkDependency(dep, { baseDir });
         }
       }
       if (this.pkg.devDependencies && opts.linkDevDeps) {
         for (let dep of Object.keys(this.pkg.devDependencies)) {
-          this.linkDevDependency(dep, { baseDir: root });
+          this.linkDevDependency(dep, { baseDir });
         }
       }
     } else {
@@ -818,11 +800,6 @@ function readPackages(modulesPath: string): { pkg: PackageJson; path: string }[]
   }
   return pkgs;
 }
-
-Project.prototype.writeSync = deprecate(
-  Project.prototype.writeSync,
-  'project.writeSync() is deprecated. Use await project.write() instead'
-);
 
 export type LinkParams =
   | { baseDir: string; resolveName?: string; requestedRange?: string }
