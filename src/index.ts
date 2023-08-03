@@ -700,9 +700,9 @@ function getFile<Dir extends fixturify.DirJSON, FileName extends keyof Dir>(dir:
   if (typeof value === 'string') {
     return value;
   } else if (typeof value === 'object' && value !== null) {
-    throw new TypeError(`Expected a file for name '${fileName}' but got a 'Folder'`);
+    throw new TypeError(`Expected a file for name '${String(fileName)}' but got a 'Folder'`);
   } else {
-    throw new TypeError(`Expected a file for name '${fileName}' but got '${typeof value}'`);
+    throw new TypeError(`Expected a file for name '${String(fileName)}' but got '${typeof value}'`);
   }
 }
 
@@ -715,9 +715,9 @@ function getFolder<Dir extends fixturify.DirJSON, FileName extends keyof Dir>(
   if (isDirJSON(value)) {
     return value;
   } else if (typeof value === 'string') {
-    throw new TypeError(`Expected a file for name '${fileName}' but got 'File'`);
+    throw new TypeError(`Expected a file for name '${String(fileName)}' but got 'File'`);
   } else {
-    throw new TypeError(`Expected a folder for name '${fileName}' but got '${typeof value}'`);
+    throw new TypeError(`Expected a folder for name '${String(fileName)}' but got '${typeof value}'`);
   }
 }
 
