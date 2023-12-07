@@ -896,4 +896,13 @@ describe('Project', async () => {
 
     expect(execFileSync(path.join(binPath, 'goodbye'), { encoding: 'utf8' })).to.eql('goodbye\n');
   });
+
+  it('should not share files', function () {
+    let project1 = new Project('my-app', '1.0.0');
+    project1.files['foo.js'] = 'foo';
+
+    let project2 = new Project('my-app', '1.0.0');
+
+    expect(project2.files['foo.js']).to.be.undefined;
+  })
 });
