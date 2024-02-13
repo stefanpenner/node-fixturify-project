@@ -28,9 +28,6 @@ export interface ProjectArgs {
 
 tmp.setGracefulCleanup();
 
-// This only shallow-merges with any user-provided files, which is OK right now
-// because this is only one level deep. If we ever make it deeper, we'll need to
-// switch to a proper deep merge.
 const defaultFiles = {
   'index.js': `
     'use strict';
@@ -107,7 +104,7 @@ export class Project {
 
     if (files && typeof files?.['package.json'] === 'string') {
       pkg = JSON.parse(files['package.json']);
-      files = Object.assign({}, files);
+      files = deepmerge({}, files);
       delete files['package.json'];
     }
 
@@ -117,9 +114,9 @@ export class Project {
       keywords: pkg.keywords || [],
     });
     if (files) {
-      this.files = { ...defaultFiles, ...files };
+      this.files = deepmerge({}, { ...defaultFiles, ...files });
     } else {
-      this.files = defaultFiles;
+      this.files = deepmerge({}, defaultFiles);
     }
     this.requestedRange = requestedRange || this.pkg.version!;
 
