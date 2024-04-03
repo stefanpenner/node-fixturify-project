@@ -22,23 +22,16 @@ jobs:
         node: ['16', '18']
         os: [ubuntu-latest, macOS-latest, windows-latest]
     steps:
-      - uses: actions/checkout@v2
-      - uses: volta-cli/action@v1
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+        name: Install pnpm
+        with:
+          version: 7
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
-
-      - uses: actions/cache@v2
-        id: yarn-cache
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
-      - name: yarn --frozen-lockfile
-        if: steps.yarn-cache.outputs.cache-hit != 'true'
-        run: yarn --frozen-lockfile
-      - name: yarn prepare
-        if: steps.yarn-cache.outputs.cache-hit == 'true'
-        run: yarn prepare
-      - run: yarn lint
-      - run: yarn test
+          cache: pnpm
+      - run: pnpm i --frozen-lockfile
+      - run: pnpm prepare
+      - run: pnpm lint
+      - run: pnpm test

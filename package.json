@@ -21,9 +21,9 @@
   "scripts": {
     "build": "tsup-node src/index.ts --format cjs,esm --external 'fs-extra' --dts --clean",
     "docs:generate": "readme-api-generator src/index.ts --ts",
-    "lint": "yarn prettier --check *.ts",
-    "prepare": "yarn build",
-    "prepublishOnly": "yarn build",
+    "lint": "pnpm prettier --check *.ts",
+    "prepare": "pnpm build",
+    "prepublishOnly": "pnpm build",
     "test": "vitest run"
   },
   "dependencies": {
@@ -48,6 +48,7 @@
     "release-it-lerna-changelog": "^4.0.1",
     "tsup": "^5.12.5",
     "typescript": "^5.1.6",
+    "vite": "^5.2.7",
     "vitest": "^0.9.3"
   },
   "engines": {
@@ -70,9 +71,5 @@
       "release": true,
       "tokenRef": "GITHUB_AUTH"
     }
-  },
-  "volta": {
-    "node": "18.17.0",
-    "yarn": "1.22.4"
   }
 }
