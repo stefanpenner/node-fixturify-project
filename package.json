@@ -21,7 +21,7 @@
   "scripts": {
     "build": "tsup-node src/index.ts --sourcemap --format cjs,esm --dts --clean",
     "docs:generate": "readme-api-generator src/index.ts --ts",
-    "lint": "pnpm prettier --check *.ts",
+    "lint": "pnpm prettier --check **/*.ts",
     "prepare": "pnpm build",
     "prepublishOnly": "pnpm build",
     "test": "vitest run"
