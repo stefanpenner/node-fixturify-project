@@ -10,7 +10,7 @@ maintain and augment.
 ## Basic Usage
 
 ```sh
-yarn add fixturify-project
+npm install --save-dev fixturify-project
 ```
 
 ```js
