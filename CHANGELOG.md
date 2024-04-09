@@ -5,6 +5,19 @@
 
 
 
+
+## v7.0.0 (2024-04-09)
+
+#### :boom: Breaking Change
+* [#87](https://github.com/stefanpenner/node-fixturify-project/pull/87) Closes [#86](https://github.com/stefanpenner/node-fixturify-project/issues/86) Files leak across instances of Project ([@lolmaus](https://github.com/lolmaus)). This is marked as breaking because it changes the merging behavior of the `files` argument to `new Project` to do deep merging when it didn't before.
+
+#### :house: Internal
+* [#89](https://github.com/stefanpenner/node-fixturify-project/pull/89) swap to pnpm ([@mansona](https://github.com/mansona))
+
+#### Committers: 2
+- Andrey Mikhaylov (lolmaus) ([@lolmaus](https://github.com/lolmaus))
+- Chris Manson ([@mansona](https://github.com/mansona))
+
 ## v6.0.0 (2023-08-03)
 
 #### :boom: Breaking Change
