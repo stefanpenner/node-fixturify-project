@@ -6,9 +6,9 @@ import resolvePackagePath from 'resolve-package-path';
 import CacheGroup from 'resolve-package-path/lib/cache-group.js';
 import binLinks from 'bin-links';
 import { PackageJson as BasePackageJson } from 'type-fest';
-import walkSync from 'walk-sync';
 import deepmerge from 'deepmerge';
-const { entries } = walkSync;
+import Arborist from '@npmcli/arborist';
+import packList from 'npm-packlist';
 
 // we also allow adding arbitrary key/value pairs to a PackageJson
 type PackageJson = BasePackageJson & Record<string, any>;
@@ -229,7 +229,7 @@ export class Project {
       this.mergeFiles(dirJSON);
     }
 
-    this.writeProject();
+    await this.writeProject();
 
     await this.binLinks();
   }
@@ -403,12 +403,11 @@ export class Project {
     }
   }
 
-  protected writeProject() {
+  private async writeProject() {
     // this recurses through all our dependent Projects in three phases
 
     // first every package gets assigned its base dir
     this.assignBaseDirs();
-
 
     let resolvedLinksMap = new Map();
 
@@ -420,7 +419,7 @@ export class Project {
     // only after all the files are in place for Projects that we are creating
     // do we handle creating symlinks and/or hard links to existing packages and
     // between Projects.
-    this.finalizeWrite(resolvedLinksMap);
+    await this.finalizeWrite(resolvedLinksMap);
   }
 
   private assignBaseDirs() {
@@ -445,9 +444,9 @@ export class Project {
     resolvedLinksMap.set(this, resolvedLinks);
   }
 
-  private finalizeWrite(resolvedLinksMap: Map<Project, ResolvedLinks>) {
+  private async finalizeWrite(resolvedLinksMap: Map<Project, ResolvedLinks>) {
     for (let [name, { dir: target }] of resolvedLinksMap.get(this)!) {
-      this.writeLinkedPackage(name, target, path.join(this.baseDir, 'node_modules', name));
+      await this.writeLinkedPackage(name, target, path.join(this.baseDir, 'node_modules', name));
     }
     for (let depList of [this.dependencyProjects(), this.devDependencyProjects()]) {
       for (let dep of depList) {
@@ -475,11 +474,11 @@ export class Project {
         let requestedRange: string;
         if (opts.requestedRange) {
           requestedRange = opts.requestedRange;
-         } else if ('target' in opts || 'baseDir' in opts) {
+        } else if ('target' in opts || 'baseDir' in opts) {
           requestedRange = fs.readJsonSync(path.join(dir, 'package.json')).version;
-         } else {
-          requestedRange = opts.project.version
-         }
+        } else {
+          requestedRange = opts.project.version;
+        }
 
         return [name, { requestedRange, dir }];
       })
@@ -493,7 +492,7 @@ export class Project {
     }
   }
 
-  private writeLinkedPackage(name: string, target: string, destination: string) {
+  private async writeLinkedPackage(name: string, target: string, destination: string) {
     let targetPkg = fs.readJsonSync(`${target}/package.json`);
     let peers = new Set(Object.keys(targetPkg.peerDependencies ?? {}));
 
@@ -504,7 +503,7 @@ export class Project {
     }
 
     // need to reproduce the package structure in our own location
-    this.hardLinkContents(target, destination);
+    await this.hardLinkContents(target, destination);
 
     for (let section of ['dependencies', 'peerDependencies']) {
       if (targetPkg[section]) {
@@ -518,20 +517,22 @@ export class Project {
               `[FixturifyProject] package ${name} in ${target} depends on ${depName} but we could not resolve it`
             );
           }
-          this.writeLinkedPackage(depName, path.dirname(depTarget), path.join(destination, 'node_modules', depName));
+          await this.writeLinkedPackage(depName, path.dirname(depTarget), path.join(destination, 'node_modules', depName));
         }
       }
     }
   }
 
-  private hardLinkContents(target: string, destination: string) {
+  private async publishedPackageContents(targetDir: string): Promise<string[]> {
+    let tree = await new Arborist({ path: targetDir }).loadActual();
+    return await packList(tree);
+  }
+
+  private async hardLinkContents(target: string, destination: string) {
     fs.ensureDirSync(destination);
-    for (let entry of entries(target, { ignore: ['node_modules'] })) {
-      if (entry.isDirectory()) {
-        fs.ensureDirSync(path.join(destination, entry.relativePath));
-      } else {
-        this.hardLinkFile(entry.fullPath, path.join(destination, entry.relativePath));
-      }
+    for (let relativePath of await this.publishedPackageContents(target)) {
+      fs.ensureDirSync(path.dirname(path.join(destination, relativePath)));
+      this.hardLinkFile(path.join(target, relativePath), path.join(destination, relativePath));
     }
   }
 

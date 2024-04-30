@@ -19,7 +19,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup-node src/index.ts --format cjs,esm --external 'fs-extra' --dts --clean",
+    "build": "tsup-node src/index.ts --format cjs,esm --dts --clean",
     "docs:generate": "readme-api-generator src/index.ts --ts",
     "lint": "pnpm prettier --check *.ts",
     "prepare": "pnpm build",
@@ -27,29 +27,33 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@npmcli/arborist": "^7.5.0",
     "bin-links": "^3.0.0",
     "deepmerge": "^4.2.2",
+    "fs-extra": "^10.0.0",
     "fixturify": "^3.0.0",
+    "npm-packlist": "^8.0.2",
     "resolve-package-path": "^4.0.3",
     "tmp": "^0.0.33",
-    "type-fest": "^4.1.0",
-    "walk-sync": "^3.0.0"
+    "type-fest": "^4.1.0"
   },
   "devDependencies": {
     "@scalvert/readme-api-generator": "^0.2.3",
     "@types/chai": "^4.2.18",
     "@types/fs-extra": "^9.0.11",
     "@types/node": "^16.9.1",
+    "@types/npm-packlist": "^7.0.3",
+    "@types/npmcli__arborist": "^5.6.6",
     "@types/tmp": "^0.0.33",
     "chai": "^4.3.4",
-    "fs-extra": "^10.0.0",
     "prettier": "^2.3.0",
     "release-it": "^14.2.1",
     "release-it-lerna-changelog": "^4.0.1",
     "tsup": "^5.12.5",
     "typescript": "^5.1.6",
     "vite": "^5.2.7",
-    "vitest": "^0.9.3"
+    "vitest": "^0.9.3",
+    "walk-sync": "^3.0.0"
   },
   "engines": {
     "node": ">= 14.*"
