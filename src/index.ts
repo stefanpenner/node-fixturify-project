@@ -8,7 +8,6 @@ import binLinks from 'bin-links';
 import { PackageJson as BasePackageJson } from 'type-fest';
 import walkSync from 'walk-sync';
 import deepmerge from 'deepmerge';
-const { entries } = walkSync;
 
 // we also allow adding arbitrary key/value pairs to a PackageJson
 type PackageJson = BasePackageJson & Record<string, any>;
@@ -503,7 +502,7 @@ export class Project {
     }
 
     // need to reproduce the package structure in our own location
-    this.hardLinkContents(target, destination);
+    this.hardLinkContents(target, targetPkg, destination);
 
     for (let section of ['dependencies', 'peerDependencies']) {
       if (targetPkg[section]) {
@@ -523,14 +522,18 @@ export class Project {
     }
   }
 
-  private hardLinkContents(target: string, destination: string) {
+  private publishedPackageContents(
+    packageDir: string,
+    _pkgJSON: any,
+  ): string[] {
+    return walkSync(packageDir, { directories: false, ignore: ['node_modules'] });
+  }
+
+  private hardLinkContents(source: string, pkgJSON: any, destination: string) {
     fs.ensureDirSync(destination);
-    for (let entry of entries(target, { ignore: ['node_modules'] })) {
-      if (entry.isDirectory()) {
-        fs.ensureDirSync(path.join(destination, entry.relativePath));
-      } else {
-        this.hardLinkFile(entry.fullPath, path.join(destination, entry.relativePath));
-      }
+    for (let relativePath of this.publishedPackageContents(source, pkgJSON)) {
+      fs.ensureDirSync(path.dirname(path.join(destination, relativePath)));
+      this.hardLinkFile(path.join(source, relativePath), path.join(destination, relativePath));
     }
   }
 

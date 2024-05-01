@@ -27,6 +27,10 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@pnpm/find-workspace-dir": "^7.0.0",
+    "@pnpm/fs.packlist": "^2.0.0",
+    "@pnpm/logger": "^5.0.0",
+    "@pnpm/workspace.find-packages": "^2.0.3",
     "bin-links": "^3.0.0",
     "deepmerge": "^4.2.2",
     "fixturify": "^3.0.0",
