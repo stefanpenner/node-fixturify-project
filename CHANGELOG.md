@@ -6,6 +6,18 @@
 
 
 
+
+## v7.1.0 (2024-05-01)
+
+#### :rocket: Enhancement
+* [#93](https://github.com/stefanpenner/node-fixturify-project/pull/93) Apply the "pnpm pack" rules when hard linking in-monorepo deps ([@ef4](https://github.com/ef4))
+
+#### :bug: Bug Fix
+* [#92](https://github.com/stefanpenner/node-fixturify-project/pull/92) fs-extra is a dep not a dev-dep ([@ef4](https://github.com/ef4))
+
+#### Committers: 1
+- Edward Faulkner ([@ef4](https://github.com/ef4))
+
 ## v7.0.0 (2024-04-09)
 
 #### :boom: Breaking Change
