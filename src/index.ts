@@ -228,8 +228,7 @@ export class Project {
       this.mergeFiles(dirJSON);
     }
 
-    this.writeProject();
-
+    await this.writeProject();
     await this.binLinks();
   }
 
@@ -402,7 +401,7 @@ export class Project {
     }
   }
 
-  protected writeProject() {
+  private async writeProject() {
     // this recurses through all our dependent Projects in three phases
 
     // first every package gets assigned its base dir
@@ -418,7 +417,7 @@ export class Project {
     // only after all the files are in place for Projects that we are creating
     // do we handle creating symlinks and/or hard links to existing packages and
     // between Projects.
-    this.finalizeWrite(resolvedLinksMap);
+    await this.finalizeWrite(resolvedLinksMap);
   }
 
   private assignBaseDirs() {
@@ -443,13 +442,13 @@ export class Project {
     resolvedLinksMap.set(this, resolvedLinks);
   }
 
-  private finalizeWrite(resolvedLinksMap: Map<Project, ResolvedLinks>) {
+  private async finalizeWrite(resolvedLinksMap: Map<Project, ResolvedLinks>) {
     for (let [name, { dir: target }] of resolvedLinksMap.get(this)!) {
-      this.writeLinkedPackage(name, target, path.join(this.baseDir, 'node_modules', name));
+      await this.writeLinkedPackage(name, target, path.join(this.baseDir, 'node_modules', name));
     }
     for (let depList of [this.dependencyProjects(), this.devDependencyProjects()]) {
       for (let dep of depList) {
-        dep.finalizeWrite(resolvedLinksMap);
+        await dep.finalizeWrite(resolvedLinksMap);
       }
     }
   }
@@ -491,7 +490,7 @@ export class Project {
     }
   }
 
-  private writeLinkedPackage(name: string, target: string, destination: string) {
+  private async writeLinkedPackage(name: string, target: string, destination: string) {
     let targetPkg = fs.readJsonSync(`${target}/package.json`);
     let peers = new Set(Object.keys(targetPkg.peerDependencies ?? {}));
 
@@ -502,7 +501,7 @@ export class Project {
     }
 
     // need to reproduce the package structure in our own location
-    this.hardLinkContents(target, targetPkg, destination);
+    await this.hardLinkContents(target, targetPkg, destination);
 
     for (let section of ['dependencies', 'peerDependencies']) {
       if (targetPkg[section]) {
@@ -516,22 +515,22 @@ export class Project {
               `[FixturifyProject] package ${name} in ${target} depends on ${depName} but we could not resolve it`
             );
           }
-          this.writeLinkedPackage(depName, path.dirname(depTarget), path.join(destination, 'node_modules', depName));
+          await this.writeLinkedPackage(depName, path.dirname(depTarget), path.join(destination, 'node_modules', depName));
         }
       }
     }
   }
 
-  private publishedPackageContents(
+  private async publishedPackageContents(
     packageDir: string,
     _pkgJSON: any,
-  ): string[] {
+  ): Promise<string[]> {
     return walkSync(packageDir, { directories: false, ignore: ['node_modules'] });
   }
 
-  private hardLinkContents(source: string, pkgJSON: any, destination: string) {
+  private async hardLinkContents(source: string, pkgJSON: any, destination: string) {
     fs.ensureDirSync(destination);
-    for (let relativePath of this.publishedPackageContents(source, pkgJSON)) {
+    for (let relativePath of await this.publishedPackageContents(source, pkgJSON)) {
       fs.ensureDirSync(path.dirname(path.join(destination, relativePath)));
       this.hardLinkFile(path.join(source, relativePath), path.join(destination, relativePath));
     }
