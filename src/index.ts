@@ -409,7 +409,6 @@ export class Project {
     // first every package gets assigned its base dir
     this.assignBaseDirs();
 
-
     let resolvedLinksMap = new Map();
 
     // then we write out all the files, including their package.jsons. Since the
@@ -475,11 +474,11 @@ export class Project {
         let requestedRange: string;
         if (opts.requestedRange) {
           requestedRange = opts.requestedRange;
-         } else if ('target' in opts || 'baseDir' in opts) {
+        } else if ('target' in opts || 'baseDir' in opts) {
           requestedRange = fs.readJsonSync(path.join(dir, 'package.json')).version;
-         } else {
-          requestedRange = opts.project.version
-         }
+        } else {
+          requestedRange = opts.project.version;
+        }
 
         return [name, { requestedRange, dir }];
       })
