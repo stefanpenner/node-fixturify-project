@@ -8,6 +8,9 @@ import binLinks from 'bin-links';
 import { PackageJson as BasePackageJson } from 'type-fest';
 import walkSync from 'walk-sync';
 import deepmerge from 'deepmerge';
+import { findWorkspaceDir } from '@pnpm/find-workspace-dir';
+import { findWorkspacePackages } from '@pnpm/workspace.find-packages';
+import { packlist } from '@pnpm/fs.packlist';
 
 // we also allow adding arbitrary key/value pairs to a PackageJson
 type PackageJson = BasePackageJson & Record<string, any>;
@@ -409,6 +412,8 @@ export class Project {
 
     let resolvedLinksMap = new Map();
 
+    await this.discoverWorkspaces();
+
     // then we write out all the files, including their package.jsons. Since the
     // requeste ranges of the dependencies in package.json default to the actual
     // discovered dependencies, this step also resolves dependencies.
@@ -521,10 +526,51 @@ export class Project {
     }
   }
 
+  private knownWorkspaces: Map<string, boolean> = new Map();
+
+  private async discoverWorkspaces(): Promise<void> {
+    for (let opts of this.dependencyLinks.values()) {
+      if (!('baseDir' in opts)) {
+        continue;
+      }
+      let dir = opts.baseDir;
+      if (this.knownWorkspaces.has(dir)) {
+        continue;
+      }
+      let top = await findWorkspaceDir(dir);
+      if (top) {
+        let packages = await findWorkspacePackages(top);
+        for (let { dir } of packages) {
+          this.knownWorkspaces.set(dir, true);
+        }
+        if (!this.knownWorkspaces.has(dir)) {
+          // the dir is not itself one of the workspace packages but was nested
+          // within the monorepo. We don't need to recheck it, so make sure it
+          // goes into the map.
+          this.knownWorkspaces.set(dir, false);
+        }
+      } else {
+        this.knownWorkspaces.set(dir, false);
+      }
+    }
+  }
+
+
+
   private async publishedPackageContents(
     packageDir: string,
-    _pkgJSON: any,
+    pkgJSON: any,
   ): Promise<string[]> {
+    if (this.knownWorkspaces.get(packageDir)) {
+      // when we know that a package is under development, we determine its
+      // files the same way "pnpm pack" would.
+      return await packlist(packageDir, { packageJsonCache: { packageDir: pkgJSON } });
+    }
+    // when it's not under development (it was installed by the package
+    // manager), we can't really use "pnpm pack", because the inputs to that
+    // process include files that are not necessarily themselves packed. But we
+    // also don't need to, because what we see on disk is necessarily the
+    // published contents already.
     return walkSync(packageDir, { directories: false, ignore: ['node_modules'] });
   }
 
