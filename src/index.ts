@@ -8,7 +8,9 @@ import binLinks from 'bin-links';
 import { PackageJson as BasePackageJson } from 'type-fest';
 import walkSync from 'walk-sync';
 import deepmerge from 'deepmerge';
-const { entries } = walkSync;
+import { findWorkspaceDir } from '@pnpm/find-workspace-dir';
+import { findWorkspacePackages } from '@pnpm/workspace.find-packages';
+import { packlist } from '@pnpm/fs.packlist';
 
 // we also allow adding arbitrary key/value pairs to a PackageJson
 type PackageJson = BasePackageJson & Record<string, any>;
@@ -229,8 +231,7 @@ export class Project {
       this.mergeFiles(dirJSON);
     }
 
-    this.writeProject();
-
+    await this.writeProject();
     await this.binLinks();
   }
 
@@ -403,14 +404,15 @@ export class Project {
     }
   }
 
-  protected writeProject() {
+  private async writeProject() {
     // this recurses through all our dependent Projects in three phases
 
     // first every package gets assigned its base dir
     this.assignBaseDirs();
 
-
     let resolvedLinksMap = new Map();
+
+    await this.discoverWorkspaces();
 
     // then we write out all the files, including their package.jsons. Since the
     // requeste ranges of the dependencies in package.json default to the actual
@@ -420,7 +422,7 @@ export class Project {
     // only after all the files are in place for Projects that we are creating
     // do we handle creating symlinks and/or hard links to existing packages and
     // between Projects.
-    this.finalizeWrite(resolvedLinksMap);
+    await this.finalizeWrite(resolvedLinksMap);
   }
 
   private assignBaseDirs() {
@@ -445,13 +447,13 @@ export class Project {
     resolvedLinksMap.set(this, resolvedLinks);
   }
 
-  private finalizeWrite(resolvedLinksMap: Map<Project, ResolvedLinks>) {
+  private async finalizeWrite(resolvedLinksMap: Map<Project, ResolvedLinks>) {
     for (let [name, { dir: target }] of resolvedLinksMap.get(this)!) {
-      this.writeLinkedPackage(name, target, path.join(this.baseDir, 'node_modules', name));
+      await this.writeLinkedPackage(name, target, path.join(this.baseDir, 'node_modules', name));
     }
     for (let depList of [this.dependencyProjects(), this.devDependencyProjects()]) {
       for (let dep of depList) {
-        dep.finalizeWrite(resolvedLinksMap);
+        await dep.finalizeWrite(resolvedLinksMap);
       }
     }
   }
@@ -475,11 +477,11 @@ export class Project {
         let requestedRange: string;
         if (opts.requestedRange) {
           requestedRange = opts.requestedRange;
-         } else if ('target' in opts || 'baseDir' in opts) {
+        } else if ('target' in opts || 'baseDir' in opts) {
           requestedRange = fs.readJsonSync(path.join(dir, 'package.json')).version;
-         } else {
-          requestedRange = opts.project.version
-         }
+        } else {
+          requestedRange = opts.project.version;
+        }
 
         return [name, { requestedRange, dir }];
       })
@@ -493,7 +495,7 @@ export class Project {
     }
   }
 
-  private writeLinkedPackage(name: string, target: string, destination: string) {
+  private async writeLinkedPackage(name: string, target: string, destination: string) {
     let targetPkg = fs.readJsonSync(`${target}/package.json`);
     let peers = new Set(Object.keys(targetPkg.peerDependencies ?? {}));
 
@@ -504,7 +506,7 @@ export class Project {
     }
 
     // need to reproduce the package structure in our own location
-    this.hardLinkContents(target, destination);
+    await this.hardLinkContents(target, targetPkg, destination);
 
     for (let section of ['dependencies', 'peerDependencies']) {
       if (targetPkg[section]) {
@@ -518,20 +520,65 @@ export class Project {
               `[FixturifyProject] package ${name} in ${target} depends on ${depName} but we could not resolve it`
             );
           }
-          this.writeLinkedPackage(depName, path.dirname(depTarget), path.join(destination, 'node_modules', depName));
+          await this.writeLinkedPackage(depName, path.dirname(depTarget), path.join(destination, 'node_modules', depName));
         }
       }
     }
   }
 
-  private hardLinkContents(target: string, destination: string) {
-    fs.ensureDirSync(destination);
-    for (let entry of entries(target, { ignore: ['node_modules'] })) {
-      if (entry.isDirectory()) {
-        fs.ensureDirSync(path.join(destination, entry.relativePath));
-      } else {
-        this.hardLinkFile(entry.fullPath, path.join(destination, entry.relativePath));
+  private knownWorkspaces: Map<string, boolean> = new Map();
+
+  private async discoverWorkspaces(): Promise<void> {
+    for (let opts of this.dependencyLinks.values()) {
+      if (!('baseDir' in opts)) {
+        continue;
       }
+      let dir = opts.baseDir;
+      if (this.knownWorkspaces.has(dir)) {
+        continue;
+      }
+      let top = await findWorkspaceDir(dir);
+      if (top) {
+        let packages = await findWorkspacePackages(top);
+        for (let { dir } of packages) {
+          this.knownWorkspaces.set(dir, true);
+        }
+        if (!this.knownWorkspaces.has(dir)) {
+          // the dir is not itself one of the workspace packages but was nested
+          // within the monorepo. We don't need to recheck it, so make sure it
+          // goes into the map.
+          this.knownWorkspaces.set(dir, false);
+        }
+      } else {
+        this.knownWorkspaces.set(dir, false);
+      }
+    }
+  }
+
+
+
+  private async publishedPackageContents(
+    packageDir: string,
+    pkgJSON: any,
+  ): Promise<string[]> {
+    if (this.knownWorkspaces.get(packageDir)) {
+      // when we know that a package is under development, we determine its
+      // files the same way "pnpm pack" would.
+      return await packlist(packageDir, { packageJsonCache: { packageDir: pkgJSON } });
+    }
+    // when it's not under development (it was installed by the package
+    // manager), we can't really use "pnpm pack", because the inputs to that
+    // process include files that are not necessarily themselves packed. But we
+    // also don't need to, because what we see on disk is necessarily the
+    // published contents already.
+    return walkSync(packageDir, { directories: false, ignore: ['node_modules'] });
+  }
+
+  private async hardLinkContents(source: string, pkgJSON: any, destination: string) {
+    fs.ensureDirSync(destination);
+    for (let relativePath of await this.publishedPackageContents(source, pkgJSON)) {
+      fs.ensureDirSync(path.dirname(path.join(destination, relativePath)));
+      this.hardLinkFile(path.join(source, relativePath), path.join(destination, relativePath));
     }
   }
 
