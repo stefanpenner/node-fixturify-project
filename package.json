@@ -27,6 +27,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@embroider/shared-internals": "^2.6.0",
     "@pnpm/find-workspace-dir": "^7.0.0",
     "@pnpm/fs.packlist": "^2.0.0",
     "@pnpm/logger": "^5.0.0",
