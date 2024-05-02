@@ -11,6 +11,7 @@ import deepmerge from 'deepmerge';
 import { findWorkspaceDir } from '@pnpm/find-workspace-dir';
 import { findWorkspacePackages } from '@pnpm/workspace.find-packages';
 import { packlist } from '@pnpm/fs.packlist';
+import { PackageCache } from '@embroider/shared-internals';
 
 // we also allow adding arbitrary key/value pairs to a PackageJson
 type PackageJson = BasePackageJson & Record<string, any>;
@@ -495,9 +496,51 @@ export class Project {
     }
   }
 
+  private transitivePeersCache = new Map<string, Set<string>>();
+
+  private transitivePeers(dir: string): Set<string> {
+    let peers = this.transitivePeersCache.get(dir);
+    if (peers) {
+      return peers;
+    }
+
+    peers = new Set<string>();
+    // we prefill the cache before recursing so that we never get trapped in a
+    // cycle.
+    this.transitivePeersCache.set(dir, peers);
+
+    let pkg = PackageCache.shared('fixturify-project', this.baseDir).get(dir);
+    let deps = pkg.dependencies;
+
+    for (let dep of deps) {
+      if (pkg.categorizeDependency(dep.name) === 'dependencies') {
+        for (let peer of this.transitivePeers(dep.root)) {
+          if (pkg.hasDependency(peer)) {
+            // we satisfied our dep's peer requirement, either with a
+            // non-peer-dep (in which case it's definitely not in our
+            // transitivePeers) or with our own peerDep (in which case it will
+            // end up handled below when we look at our own peerDeps)
+          } else {
+            // dep has a peer requirement that we don't satsify, so that makes
+            // it part of our own transitivePeers.
+            peers.add(peer);
+          }
+        }
+      }
+    }
+
+    for (let dep of deps) {
+      if (pkg.categorizeDependency(dep.name) === 'peerDependencies') {
+        // our own direct peer deps are also part of our transitive peers
+        peers.add(dep.name);
+      }
+    }
+    return peers;
+  }
+
   private async writeLinkedPackage(name: string, target: string, destination: string) {
     let targetPkg = fs.readJsonSync(`${target}/package.json`);
-    let peers = new Set(Object.keys(targetPkg.peerDependencies ?? {}));
+    let peers = this.transitivePeers(target);
 
     if (peers.size === 0) {
       // no peerDeps, so we can just symlink the whole package
@@ -508,21 +551,30 @@ export class Project {
     // need to reproduce the package structure in our own location
     await this.hardLinkContents(target, targetPkg, destination);
 
+    // This Set deduplicates things that happen to appear in both dependencies
+    // and peerDependencies so that we don't try to link the same dep twice,
+    // causing EEXIST failures.
+    let depsToLink = new Set<string>();
+
     for (let section of ['dependencies', 'peerDependencies']) {
       if (targetPkg[section]) {
         for (let depName of Object.keys(targetPkg[section])) {
           if (peers.has(depName)) {
             continue;
           }
-          let depTarget = resolvePackagePath(depName, target, this.resolutionCache);
-          if (!depTarget) {
-            throw new Error(
-              `[FixturifyProject] package ${name} in ${target} depends on ${depName} but we could not resolve it`
-            );
-          }
-          await this.writeLinkedPackage(depName, path.dirname(depTarget), path.join(destination, 'node_modules', depName));
+          depsToLink.add(depName);
         }
       }
+    }
+
+    for (let depName of depsToLink) {
+      let depTarget = resolvePackagePath(depName, target, this.resolutionCache);
+      if (!depTarget) {
+        throw new Error(
+          `[FixturifyProject] package ${name} in ${target} depends on ${depName} but we could not resolve it`
+        );
+      }
+      await this.writeLinkedPackage(depName, path.dirname(depTarget), path.join(destination, 'node_modules', depName));
     }
   }
 
@@ -555,12 +607,7 @@ export class Project {
     }
   }
 
-
-
-  private async publishedPackageContents(
-    packageDir: string,
-    pkgJSON: any,
-  ): Promise<string[]> {
+  private async publishedPackageContents(packageDir: string, pkgJSON: any): Promise<string[]> {
     if (this.knownWorkspaces.get(packageDir)) {
       // when we know that a package is under development, we determine its
       // files the same way "pnpm pack" would.
@@ -588,6 +635,9 @@ export class Project {
         fs.linkSync(source, destination);
         return;
       } catch (err: any) {
+        if (err.code === 'EEXIST') {
+          debugger;
+        }
         if (err.code !== 'EXDEV') {
           throw err;
         }
