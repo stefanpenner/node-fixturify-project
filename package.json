@@ -19,7 +19,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup-node src/index.ts --format cjs,esm --dts --clean",
+    "build": "tsup-node src/index.ts --sourcemap --format cjs,esm --dts --clean",
     "docs:generate": "readme-api-generator src/index.ts --ts",
     "lint": "pnpm prettier --check *.ts",
     "prepare": "pnpm build",
