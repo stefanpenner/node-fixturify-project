@@ -7,6 +7,18 @@
 
 
 
+
+## v7.1.1 (2024-05-02)
+
+#### :rocket: Enhancement
+* [#94](https://github.com/stefanpenner/node-fixturify-project/pull/94) Publish with sourcemaps ([@ef4](https://github.com/ef4))
+
+#### :bug: Bug Fix
+* [#95](https://github.com/stefanpenner/node-fixturify-project/pull/95) Handle "transitive peer deps" correctly when hardlinking dependencies ([@ef4](https://github.com/ef4))
+
+#### Committers: 1
+- Edward Faulkner ([@ef4](https://github.com/ef4))
+
 ## v7.1.0 (2024-05-01)
 
 #### :rocket: Enhancement
