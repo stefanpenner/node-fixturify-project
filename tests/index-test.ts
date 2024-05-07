@@ -904,5 +904,5 @@ describe('Project', async () => {
     let project2 = new Project('my-app', '1.0.0');
 
     expect(project2.files['foo.js']).to.be.undefined;
-  })
+  });
 });
