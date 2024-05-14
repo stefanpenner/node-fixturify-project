@@ -567,8 +567,22 @@ export class Project {
       }
     }
 
+    // collect a list of optional peers
+    let optionalPeers = [];
+    for (let depName of Object.keys(targetPkg['peerDependenciesMeta'] ?? {})) {
+      if (targetPkg['peerDependenciesMeta'][depName]?.optional === true) {
+        optionalPeers.push(depName);
+      }
+    }
+
     for (let depName of depsToLink) {
       let depTarget = resolvePackagePath(depName, target, this.resolutionCache);
+
+      if (!depTarget && optionalPeers.includes(depName)) {
+        // don't link or error about missing optional peer deps
+        continue;
+      }
+
       if (!depTarget) {
         throw new Error(
           `[FixturifyProject] package ${name} in ${target} depends on ${depName} but we could not resolve it`
