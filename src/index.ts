@@ -154,7 +154,8 @@ export class Project {
    */
   get baseDir() {
     if (!this._baseDir) {
-      this._tmp = tmp.dirSync({ unsafeCleanup: true });
+      const tmpdir = process.env.CI && path.resolve(process.cwd(), 'tmp');
+      this._tmp = tmp.dirSync({ unsafeCleanup: true, dir: tmpdir });
       this._baseDir = fs.realpathSync(this._tmp.name);
     }
     return this._baseDir;
