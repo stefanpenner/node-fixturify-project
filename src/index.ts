@@ -652,10 +652,9 @@ export class Project {
         if (err.code === 'EEXIST') {
           debugger;
         }
-        if (err.code !== 'EXDEV') {
-          throw err;
+        if (err.code === 'EXDEV') {
+          this.usingHardLinks = false;
         }
-        this.usingHardLinks = false;
       }
     }
     fs.copyFileSync(source, destination, fs.constants.COPYFILE_FICLONE | fs.constants.COPYFILE_EXCL);
