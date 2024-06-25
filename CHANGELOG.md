@@ -8,6 +8,16 @@
 
 
 
+
+## v7.1.2 (2024-06-25)
+
+#### :bug: Bug Fix
+* [#99](https://github.com/stefanpenner/node-fixturify-project/pull/99) fix windows hard links ([@patricklx](https://github.com/patricklx))
+
+#### Committers: 2
+- Chris Manson ([@mansona](https://github.com/mansona))
+- Patrick Pircher ([@patricklx](https://github.com/patricklx))
+
 ## v7.1.1 (2024-05-02)
 
 #### :rocket: Enhancement
