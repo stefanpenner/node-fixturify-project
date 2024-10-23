@@ -11,7 +11,10 @@ import deepmerge from 'deepmerge';
 import { findWorkspaceDir } from '@pnpm/find-workspace-dir';
 import { findWorkspacePackages } from '@pnpm/workspace.find-packages';
 import { packlist } from '@pnpm/fs.packlist';
-import { PackageCache } from '@embroider/shared-internals';
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
+const { PackageCache } = require('@embroider/shared-internals');
 
 // we also allow adding arbitrary key/value pairs to a PackageJson
 type PackageJson = BasePackageJson & Record<string, any>;
