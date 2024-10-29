@@ -1,5 +1,17 @@
 # Changelog
 
+## Release (2024-10-29)
+
+fixturify-project 7.1.3 (patch)
+
+#### :house: Internal
+* `fixturify-project`
+  * [#90](https://github.com/stefanpenner/node-fixturify-project/pull/90) Move to release-plan for releases ([@mansona](https://github.com/mansona))
+  * [#102](https://github.com/stefanpenner/node-fixturify-project/pull/102) test both cjs and esm versions (and fix the esm version)  ([@mansona](https://github.com/mansona))
+
+#### Committers: 1
+- Chris Manson ([@mansona](https://github.com/mansona))
+
 
 
 
