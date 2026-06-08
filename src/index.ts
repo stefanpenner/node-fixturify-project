@@ -11,10 +11,7 @@ import deepmerge from 'deepmerge';
 import { findWorkspaceDir } from '@pnpm/find-workspace-dir';
 import { findWorkspacePackages } from '@pnpm/workspace.find-packages';
 import { packlist } from '@pnpm/fs.packlist';
-import { createRequire } from 'module';
-
-const require = createRequire(import.meta.url);
-const { PackageCache } = require('@embroider/shared-internals');
+import { PackageCache } from '@embroider/shared-internals';
 
 // we also allow adding arbitrary key/value pairs to a PackageJson
 type PackageJson = BasePackageJson & Record<string, any>;
@@ -48,7 +45,7 @@ export class Project {
   private _dependencies: { [name: string]: Project } = {};
   private _devDependencies: { [name: string]: Project } = {};
   private _baseDir: string | undefined;
-  private _tmp: tmp.SynchrounousResult | undefined;
+  private _tmp: tmp.DirResult | undefined;
   // when used as a dependency in another Project, this is the semver range it
   // will appear as within the parent's package.json
   private requestedRange: string;
