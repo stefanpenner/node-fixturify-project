@@ -44,14 +44,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 18
-          # This creates an .npmrc that reads the NODE_AUTH_TOKEN environment variable
-          registry-url: 'https://registry.npmjs.org'
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 9
+      - uses: jdx/mise-action@v4
+      - name: Configure npm registry auth
+        # mise-action does not configure npm auth the way actions/setup-node's
+        # `registry-url` did. Write the auth line explicitly; the literal
+        # ${NODE_AUTH_TOKEN} placeholder is expanded by pnpm at publish time.
+        run: |
+          echo '//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}' >> .npmrc
+          echo 'registry=https://registry.npmjs.org/' >> .npmrc
       - run: pnpm install --frozen-lockfile
       - name: npm publish
         run: pnpm release-plan publish
