@@ -1,5 +1,20 @@
 # Changelog
 
+## Release (2026-06-09)
+
+* fixturify-project 8.0.0 (major)
+
+#### :boom: Breaking Change
+* `fixturify-project`
+  * [#105](https://github.com/stefanpenner/node-fixturify-project/pull/105) Require Node >= 22 and pin toolchain with mise ([@scalvert](https://github.com/scalvert))
+
+#### :house: Internal
+* `fixturify-project`
+  * [#106](https://github.com/stefanpenner/node-fixturify-project/pull/106) Upgrade dependencies to clear security advisories ([@scalvert](https://github.com/scalvert))
+
+#### Committers: 1
+- Steve Calvert ([@scalvert](https://github.com/scalvert))
+
 ## Release (2024-10-29)
 
 fixturify-project 7.1.3 (patch)
