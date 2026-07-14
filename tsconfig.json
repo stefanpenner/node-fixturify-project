@@ -4,20 +4,14 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "strict": true,
-    "module": "esnext",
-    "moduleResolution": "node",
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    "esModuleInterop": true,
-    "target": "es2018",
-    "baseUrl": ".",
+    "target": "es2022",
     "outDir": "dist",
     "rootDir": "src",
     "skipLibCheck": true,
-    "paths": {
-      "*": ["./types/*"]
-    }
+    "types": ["./types/bin-links.d.ts"]
   },
   "include": ["./src"],
   "exclude": ["**/node_modules/**"]
