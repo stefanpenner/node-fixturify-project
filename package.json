@@ -7,19 +7,15 @@
   "type": "module",
   "exports": {
     ".": {
-      "require": "./dist/index.cjs",
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     }
   },
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "tsup-node src/index.ts --sourcemap --format cjs,esm --dts --clean",
+    "build": "tsc",
     "docs:generate": "readme-api-generator src/index.ts --ts",
     "lint": "pnpm prettier --check **/*.ts",
     "prepare": "pnpm build",
@@ -50,8 +46,7 @@
     "chai": "^4.3.4",
     "prettier": "^2.3.0",
     "release-plan": "^0.18.0",
-    "tsup": "^8.5.1",
-    "typescript": "^5.1.6",
+    "typescript": "^7.0.2",
     "vite": "^7.3.5",
     "vitest": "^4.1.8"
   },
